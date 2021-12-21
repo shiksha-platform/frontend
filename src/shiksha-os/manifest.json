@@ -1,0 +1,73 @@
+{
+  "@type": "samagraos.app.manifest",
+  "@version": "1",
+  "name": "Samagra Shiksha",
+  "short_name": "samagra-shiksha",
+  "theme_color": "#fff",
+  "background_color": "#fff",
+  "display": "browser",
+  "orientation": "portrait",
+
+  "modules": ["Attendance", "Registry"],
+
+  "menus": {
+    "hamburger": [
+      {
+        "title": "My Classes",
+        "icon": "email",
+        "module": "Registry",
+        "route": "/apps/registry/view",
+        "routeparameters": {}
+      },
+      {
+        "title": "View Attendance",
+        "icon": "home",
+        "module": "Attendance",
+        "route": "/apps/attendance/view",
+        "routeparameters": {}
+      }
+    ],
+    "main": [
+      {
+        "title": "My Classes",
+        "icon": "email",
+        "module": "Registry",
+        "route": "/classes",
+        "routeparameters": {}
+      },
+      {
+        "title": "View Attendance",
+        "icon": "person",
+        "module": "Attendance",
+        "route": "/attendance",
+        "routeparameters": {}
+      },
+      {
+        "title": "Mark Attendance",
+        "icon": "calendar",
+        "module": "Attendance",
+        "route": "/attendance",
+        "routeparameters": {}
+      }
+    ]
+  },
+  "roles": [
+    { "id": "school-admin", "title": "School Admin" },
+
+    { "id": "school-teacher", "title": "School Teacher" }
+  ],
+
+  "config": [{}],
+  "languages": [
+    {
+      "title": "UK English",
+      "path": "samagra-shiksha.en-gb.json",
+      "code": "en-gb"
+    },
+    {
+      "title": "Hindi",
+      "path": "samagra-shiksha.hi-in.json",
+      "code": "hi-in"
+    }
+  ]
+}
