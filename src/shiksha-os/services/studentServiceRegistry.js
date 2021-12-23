@@ -1,6 +1,6 @@
-import React from "react";
 import * as generalServices from "./generalServices";
 import mapInterfaceData from "./mapInterfaceData";
+import manifest from "../manifest.json";
 
 const interfaceData = {
   id: "osid",
@@ -25,7 +25,7 @@ export const getAll = async (
   }
 ) => {
   const result = await generalServices.post(
-    process.env.REACT_APP_API_URL + "Student/search",
+    manifest.api_url + "Student/search",
     filters
   );
   if (result.data) {

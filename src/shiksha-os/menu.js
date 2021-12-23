@@ -1,26 +1,35 @@
 import React from "react";
 import {
-  IconButton,
   HStack,
   Text,
   VStack,
-  Icon,
   Box,
   StatusBar,
   Pressable,
+  Select,
+  CheckIcon,
 } from "native-base";
 import manifest from "./manifest";
 import { Link } from "react-router-dom";
-import Menu from "@mui/icons-material/Menu";
-import HomeIcon from "@mui/icons-material/Home";
+import Icon from "../components/IconByName";
 
-export default function AppBar() {
+export default function AppBar(props) {
+  const token = sessionStorage.getItem("token");
+
+  const setLang = (e) => {
+    if (e === "logout") {
+      sessionStorage.setItem("token", "");
+    } else {
+      localStorage.setItem("lang", e);
+    }
+    window.location.reload();
+  };
+
   return (
     <>
       <StatusBar backgroundColor="gray.600" barStyle="light-content" />
       <Box safeAreaTop backgroundColor="gray.600" />
       <HStack
-        // bg="gray.600"
         bg="lightBlue.900"
         px="1"
         py="3"
@@ -28,33 +37,34 @@ export default function AppBar() {
         alignItems="center"
       >
         <HStack space="4" alignItems="center">
-          <IconButton size="sm" color="white" icon={<Menu />} />
+          <Icon size="sm" color="white" name="Menu" />
           <Text color="white" fontSize="20" fontWeight="bold">
-            {manifest.name}
+            {props.title ?? manifest.name}
           </Text>
         </HStack>
         <HStack space="2">
           <Link to="/">
-            <IconButton size="sm" color="white" icon={<HomeIcon />} />
+            <Icon size="sm" color="white" name="Home" />
           </Link>
-          {/* <IconButton
-            icon={
-              <Icon
-                as={<MaterialIcons name="search" />}
-                color="white"
-                size="sm"
-              />
-            }
-          />
-          <IconButton
-            icon={
-              <Icon
-                as={<MaterialIcons name="more-vert" />}
-                size="sm"
-                color="white"
-              />
-            }
-          /> */}
+          <Select
+            selectedValue={localStorage.getItem("lang")}
+            minWidth="75"
+            maxWidth="75"
+            borderWidth="0"
+            accessibilityLabel="Lang"
+            placeholder="Lang"
+            bgColor="white"
+            _selectedItem={{
+              bg: "white",
+              endIcon: <CheckIcon size="5" />,
+            }}
+            onValueChange={(itemValue) => setLang(itemValue)}
+          >
+            {manifest.languages.map((e, index) => (
+              <Select.Item key={index} label={e.title} value={e.code} />
+            ))}
+            {token ? <Select.Item label={"Logout"} value={"logout"} /> : <></>}
+          </Select>
         </HStack>
       </HStack>
     </>

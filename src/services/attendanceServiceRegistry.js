@@ -1,6 +1,6 @@
-import React from "react";
 import * as generalServices from "../shiksha-os/services/generalServices";
 import mapInterfaceData from "../shiksha-os/services/mapInterfaceData";
+import manifest from "../shiksha-os/manifest.json";
 
 const interfaceData = {
   id: "osid",
@@ -27,7 +27,7 @@ export const getAll = async (
   }
 ) => {
   const result = await generalServices.post(
-    process.env.REACT_APP_API_URL + "Attendance/search",
+    manifest.api_url + "Attendance/search",
     filters
   );
   if (result.data) {
@@ -39,12 +39,12 @@ export const getAll = async (
 
 export const create = async (parameters) => {
   const result = await generalServices.post(
-    process.env.REACT_APP_API_URL + "Attendance/invite",
+    manifest.api_url + "Attendance",
     parameters
   );
   if (result.data) {
     return true;
-    return result.data.map((e) => mapInterfaceData(e, interfaceData));
+    // return result.data.map((e) => mapInterfaceData(e, interfaceData));
   } else {
     return [];
   }

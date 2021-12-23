@@ -13,13 +13,14 @@ import {
   Avatar,
   Spacer,
 } from "native-base";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import PersonIcon from "@mui/icons-material/Person";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
+import { useTranslation } from "react-i18next";
 
 // Start editing here, save and see your changes.
 export default function App() {
+  const { t } = useTranslation();
   const [students, setStudents] = useState([]);
 
   useEffect(() => {
@@ -62,33 +63,33 @@ export default function App() {
             colorScheme="default"
             background="gray.100"
           >
-            Share
+            {t("Share")}
           </Button>
         </Box>
         <Stack p="4" space={1}>
           <Stack space={2}>
             <Text color="green.700" bold={true}>
-              SUMMARY
+              {t("SUMMARY")}
             </Text>
           </Stack>
           <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
             <HStack space={3}>
               <Text>
-                <Text bold>Students:</Text> 10
+                <Text bold>{t("Students")}:</Text> 10
               </Text>
               <Text>
-                <Text bold>Girls:</Text> 5
+                <Text bold>{t("Girls")}:</Text> 5
               </Text>
               <Text>
-                <Text bold>Boys:</Text> 5
+                <Text bold>{t("Boys")}:</Text> 5
               </Text>
             </HStack>
 
             <Text>
-              <Text bold>Age group:</Text> 15
+              <Text bold>{t("Age group")}:</Text> 15
             </Text>
             <Text>
-              <Text bold>Class teacher:</Text>
+              <Text bold>{t("Class teacher")}:</Text>
             </Text>
           </Box>
         </Stack>
@@ -96,7 +97,7 @@ export default function App() {
         <Stack pt="0" p="4" space={1}>
           <Stack space={2}>
             <Text color="green.700" bold={true}>
-              STUDENTS
+              {t("Students")}
             </Text>
           </Stack>
 

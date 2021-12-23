@@ -34,20 +34,6 @@
         "module": "Registry",
         "route": "/classes",
         "routeparameters": {}
-      },
-      {
-        "title": "View Attendance",
-        "icon": "person",
-        "module": "Attendance",
-        "route": "/attendance",
-        "routeparameters": {}
-      },
-      {
-        "title": "Mark Attendance",
-        "icon": "calendar",
-        "module": "Attendance",
-        "route": "/attendance",
-        "routeparameters": {}
       }
     ]
   },
@@ -62,12 +48,13 @@
     {
       "title": "UK English",
       "path": "samagra-shiksha.en-gb.json",
-      "code": "en-gb"
+      "code": "en"
     },
     {
       "title": "Hindi",
       "path": "samagra-shiksha.hi-in.json",
-      "code": "hi-in"
+      "code": "hi"
     }
-  ]
+  ],
+  "api_url": "https://dev-shiksha.uniteframework.io/registry/api/v1/"
 }
