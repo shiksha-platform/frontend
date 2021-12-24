@@ -29,9 +29,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      
+
       - name: Install dependencies and build
-        run: cd /var/www/dev-shiksha.uniteframework.io/
-        run: npm install
-        run: npm run build
-      
+        run: |
+          cd /var/www/dev-shiksha.uniteframework.io/
+          npm install
+          npm run build
