@@ -25,13 +25,8 @@ jobs:
       - name: Deploy files with rsync
         run: rsync -avz --exclude '.git' --exclude '.github' . ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/dev-shiksha.uniteframework.io/
 
-      - name: Rebuild containers with docker
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /var/www/dev-shiksha.uniteframework.io/
-            npm install
-            npm run build
+      - name: Build
+        run: |
+          cd /var/www/dev-shiksha.uniteframework.io/
+          npm install
+          npm run build
