@@ -31,7 +31,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies and build
-        run: |
-          cd /var/www/dev-shiksha.uniteframework.io/
-          npm install
-          npm run build
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/dev-shiksha.uniteframework.io/
+            npm install
+            npm run build
