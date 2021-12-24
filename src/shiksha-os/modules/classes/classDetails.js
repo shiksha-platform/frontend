@@ -15,13 +15,17 @@ export default function App() {
   const { id } = useParams();
 
   useEffect(() => {
-    getData();
-  }, []);
+    let ignore = false;
 
-  const getData = async () => {
-    let classes = await classServiceRegistry.getAll();
-    setClassObject(classes.find((e) => e.id === id));
-  };
+    const getData = async () => {
+      let classes = await classServiceRegistry.getAll();
+      if (!ignore) setClassObject(classes.find((e) => e.id === id));
+    };
+    getData();
+    return () => {
+      ignore = true;
+    };
+  }, [id]);
 
   return (
     <>

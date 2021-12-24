@@ -108,23 +108,26 @@ export default function App() {
   const { classId } = useParams();
 
   useEffect(() => {
+    let ignore = false;
+    async function getData() {
+      setStudents(
+        await studentServiceRegistry.getAll({
+          filters: {
+            currentClassID: {
+              eq: "1",
+            },
+          },
+        })
+      );
+      let classes = await classServiceRegistry.getAll();
+      if (!ignore) setClassObject(classes.find((e) => e.id === classId));
+    }
     getData();
     getAttendance();
-  }, []);
-
-  async function getData() {
-    setStudents(
-      await studentServiceRegistry.getAll({
-        filters: {
-          currentClassID: {
-            eq: "1",
-          },
-        },
-      })
-    );
-    let classes = await classServiceRegistry.getAll();
-    setClassObject(classes.find((e) => e.id === classId));
-  }
+    return () => {
+      ignore = true;
+    };
+  }, [classId]);
 
   const getAttendance = async () => {
     setAttendance(
