@@ -25,12 +25,13 @@ jobs:
       - name: Deploy files with rsync
         run: rsync -avz --exclude '.git' --exclude '.github' . ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/dev-shiksha.uniteframework.io/
 
-      - name: Rebuild
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /var/www/dev-shiksha.uniteframework.io/
-            npm install
-            npm run build
+          node-version: ${{ matrix.node-version }}
+      
+      - name: Install dependencies and build
+        run: cd /var/www/dev-shiksha.uniteframework.io/
+        run: npm install
+        run: npm run build
+      
