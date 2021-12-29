@@ -38,5 +38,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/dev-shiksha.uniteframework.io/
-            npm install
-            npm run build
+            sudo npm install
+            sudo npm run build
