@@ -2,6 +2,7 @@ import AppBar from "./shiksha-os/menu";
 import { Center, NativeBaseProvider } from "native-base";
 import Home from "./shiksha-os/home";
 import Students from "./shiksha-os/modules/students/student";
+import StudentDetails from "./shiksha-os/modules/students/studentDetails";
 import Classes from "./shiksha-os/modules/classes/classes";
 import ClassDetails from "./shiksha-os/modules/classes/classDetails";
 import Attendance from "./modules/attendance/attendance";
@@ -77,6 +78,14 @@ export default function App() {
           element={
             <SubApp title={t("My Students")}>
               <Students />
+            </SubApp>
+          }
+        />
+        <Route
+          path="/students/:studentId"
+          element={
+            <SubApp title={t("Students detail")}>
+              <StudentDetails />
             </SubApp>
           }
         />

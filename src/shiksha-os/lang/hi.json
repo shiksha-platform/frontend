@@ -29,5 +29,14 @@
   "Roll Number": "रोल नंबर",
   "Login": "लॉग इन करें",
   "Username": "प्रयोक्ता नाम",
-  "Password": "पासवर्ड"
+  "Password": "पासवर्ड",
+  "DETAILS": "विवरण",
+  "Address": "पता",
+  "Parent name": "पिता का नाम",
+  "Phone number": "फोन नंबर",
+  "Joining year/date": "कार्यभार ग्रहण करने का वर्ष/तारीख",
+  "See more": "और देखें",
+  "Class": "कक्षा",
+  "Week attendance": "सप्ताह उपस्थिति",
+  "Full class attendance": "पूर्ण कक्षा उपस्थिति"
 }

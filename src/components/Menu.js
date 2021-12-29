@@ -35,7 +35,12 @@ export default function Menu({ items, type, routeDynamics, bg }) {
                     p="0"
                     color="primary.500"
                     _icon={{
-                      style: { fontSize: "45px" },
+                      style: {
+                        fontSize: "45px",
+                        border: "2px solid #54b8d4",
+                        borderRadius: "50%",
+                        padding: "20px",
+                      },
                     }}
                   />
                   <Text color="gray.700" fontWeight="500">

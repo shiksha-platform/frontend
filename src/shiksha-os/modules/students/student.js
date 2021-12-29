@@ -12,6 +12,7 @@ import {
   FlatList,
   Avatar,
   Spacer,
+  Link,
 } from "native-base";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import PersonIcon from "@mui/icons-material/Person";
@@ -56,12 +57,13 @@ export default function App() {
             </HStack>
           </Box>
           <Button
+            variant="ghost"
+            borderRadius="50"
+            colorScheme="default"
+            background="gray.100"
             position="absolute"
             bottom="2"
             right="2"
-            variant="outline"
-            colorScheme="default"
-            background="gray.100"
           >
             {t("Share")}
           </Button>
@@ -105,55 +107,57 @@ export default function App() {
             <FlatList
               data={students}
               renderItem={({ item }) => (
-                <Box
-                  borderBottomWidth="1"
-                  _dark={{
-                    borderColor: "gray.600",
-                  }}
-                  borderColor="coolGray.200"
-                  pl="4"
-                  pr="5"
-                  py="2"
-                >
-                  <HStack space={3} justifyContent="space-between">
-                    <Avatar
-                      size="48px"
-                      source={{
-                        uri: item.avatarUrl,
-                      }}
-                    />
-                    <VStack>
+                <Link href={"/students/" + item.id}>
+                  <Box
+                    borderBottomWidth="1"
+                    _dark={{
+                      borderColor: "gray.600",
+                    }}
+                    borderColor="coolGray.200"
+                    pl="4"
+                    pr="5"
+                    py="2"
+                  >
+                    <HStack space={3} justifyContent="space-between">
+                      <Avatar
+                        size="48px"
+                        source={{
+                          uri: item.avatarUrl,
+                        }}
+                      />
+                      <VStack>
+                        <Text
+                          _dark={{
+                            color: "warmGray.50",
+                          }}
+                          color="coolGray.800"
+                          bold
+                        >
+                          {item.fullName}
+                        </Text>
+                        <Text
+                          color="coolGray.600"
+                          _dark={{
+                            color: "warmGray.200",
+                          }}
+                        >
+                          {item.email}
+                        </Text>
+                      </VStack>
+                      <Spacer />
                       <Text
+                        fontSize="xs"
                         _dark={{
                           color: "warmGray.50",
                         }}
                         color="coolGray.800"
-                        bold
+                        alignSelf="flex-start"
                       >
-                        {item.fullName}
+                        {item.timeStamp}
                       </Text>
-                      <Text
-                        color="coolGray.600"
-                        _dark={{
-                          color: "warmGray.200",
-                        }}
-                      >
-                        {item.email}
-                      </Text>
-                    </VStack>
-                    <Spacer />
-                    <Text
-                      fontSize="xs"
-                      _dark={{
-                        color: "warmGray.50",
-                      }}
-                      color="coolGray.800"
-                      alignSelf="flex-start"
-                    >
-                      {item.timeStamp}
-                    </Text>
-                  </HStack>
-                </Box>
+                    </HStack>
+                  </Box>
+                </Link>
               )}
               keyExtractor={(item) => item.id}
             />

@@ -8,99 +8,26 @@ import {
   FlatList,
   VStack,
   Center,
+  ScrollView,
 } from "native-base";
 // import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
 import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
 import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
+import HdrAutoIcon from "@mui/icons-material/HdrAuto";
 import CircleIcon from "@mui/icons-material/Circle";
 import * as attendanceServiceRegistry from "../../services/attendanceServiceRegistry";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
 import Header from "../../components/Header";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-
-const weekDates = (
-  filter = { only: ["Sun", "Sat", "Monday"] },
-  current = new Date()
-) => {
-  var week = [];
-  function getIntday(data, type = "only") {
-    let weekName = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    let shortWeekName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    let resultWeek = weekName.reduce(function (a, e, i) {
-      if (
-        (type === "except" && !data.includes(e)) ||
-        (type === "only" && data.includes(e))
-      )
-        a.push(i);
-      return a;
-    }, []);
-    let resultShort = shortWeekName.reduce(function (a, e, i) {
-      if (
-        (type === "except" && !data.includes(e)) ||
-        (type === "only" && data.includes(e))
-      )
-        a.push(i);
-      return a;
-    }, []);
-    if (
-      type === "except" &&
-      resultWeek &&
-      resultWeek.length > 0 &&
-      resultShort &&
-      resultShort.length > 0
-    ) {
-      return resultWeek.filter((e) => resultShort.includes(e));
-    } else if (
-      type === "only" &&
-      resultWeek &&
-      resultWeek.length > 0 &&
-      resultShort &&
-      resultShort.length > 0
-    ) {
-      return resultWeek.concat(resultShort);
-    } else if (resultWeek && resultWeek.length > 0) {
-      return resultWeek;
-    } else if (resultShort && resultShort.length > 0) {
-      return resultShort;
-    }
-  }
-  // Starting Monday not Sunday
-  let weekInt = [];
-  const only = filter.only;
-  const except = filter.except;
-
-  if (only) {
-    weekInt = getIntday(only, "only");
-  } else if (except) {
-    weekInt = getIntday(except, "except");
-  }
-  current.setDate(current.getDate() - current.getDay() + 1);
-  for (var i = 0; i < 7; i++) {
-    if (weekInt.includes(current.getDay())) {
-      week.push(new Date(current));
-    }
-    current.setDate(current.getDate() + 1);
-    // console.log("current", current, "week", weekInt, current.getDay());
-  }
-  return week;
-};
+import weekDates from "../../helper/weekDays";
 
 // Start editing here, save and see your changes.
 export default function App() {
   const { t } = useTranslation();
-  const weekDays = weekDates({ except: ["Sun", "Sat"] });
+  const weekDays = weekDates();
   const todayDate = new Date();
   const [students, setStudents] = useState([]);
   const [classObject, setClassObject] = useState({});
@@ -208,7 +135,7 @@ export default function App() {
           </HStack>
         </Box>
       </Stack>
-      <Box bg="gray.100">
+      <Box bg="gray.200">
         <Stack p="2" space={1}>
           <HStack space={3} justifyContent="space-between">
             <Stack space={2}>
@@ -222,101 +149,117 @@ export default function App() {
               </Text>
             </Stack>
           </HStack>
-          <Box>
-            <FlatList
-              data={students}
-              renderItem={({ item, index }) => (
-                <Box borderBottomWidth="1" borderColor="coolGray.500">
-                  <HStack
-                    space={3}
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <VStack>
-                      {index === 0 ? <Text> </Text> : <></>}
-                      <Text color="coolGray.800" bold>
-                        {item.fullName}
-                      </Text>
-                      <Text color="coolGray.500" fontSize="xs">
-                        {t("Roll Number") + " " + item.admissionNo}
-                      </Text>
-                    </VStack>
-                    <VStack space="2">
-                      <HStack>
-                        {weekDays.map((e, subIndex) => {
-                          let dateValue =
-                            e.getFullYear() +
-                            "-" +
-                            (e.getMonth() + 1) +
-                            "-" +
-                            e.getDate();
-                          let attendanceItem = attendance
-                            .slice()
-                            .reverse()
-                            .find(
-                              (e) =>
-                                e.date === dateValue && e.studentId === item.id
+          <ScrollView horizontal={true} _contentContainerStyle={{ mb: "4" }}>
+            <Box>
+              <FlatList
+                data={students}
+                renderItem={({ item, index }) => (
+                  <Box borderBottomWidth="1" borderColor="coolGray.500">
+                    <HStack
+                      space={3}
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <VStack>
+                        {index === 0 ? <Text> </Text> : <></>}
+                        <Text color="coolGray.800" bold>
+                          {item.fullName}
+                        </Text>
+                        <Text color="coolGray.500" fontSize="xs">
+                          {t("Roll Number") + " " + item.admissionNo}
+                        </Text>
+                      </VStack>
+                      <VStack space="2">
+                        <HStack>
+                          {weekDays.map((e, subIndex) => {
+                            let dateValue =
+                              e.getFullYear() +
+                              "-" +
+                              (e.getMonth() + 1) +
+                              "-" +
+                              e.getDate();
+                            let attendanceItem = attendance
+                              .slice()
+                              .reverse()
+                              .find(
+                                (e) =>
+                                  e.date === dateValue &&
+                                  e.studentId === item.id
+                              );
+                            let iconColor = "gray.400";
+                            let circleIcon = <CircleIcon />;
+                            let attendanceType = "Present";
+                            if (
+                              typeof attendanceItem?.attendance !==
+                                "undefined" &&
+                              attendanceItem?.attendance === "Present"
+                            ) {
+                              iconColor = "green.600";
+                              circleIcon = <CheckCircleIcon />;
+                              attendanceType = "Absent";
+                            } else if (
+                              typeof attendanceItem?.attendance !==
+                                "undefined" &&
+                              attendanceItem?.attendance === "Absent"
+                            ) {
+                              iconColor = "danger.600";
+                              circleIcon = <HdrAutoIcon />;
+                              attendanceType = "Present";
+                            }
+                            return (
+                              <div key={subIndex}>
+                                <VStack
+                                  alignItems="center"
+                                  bgColor={
+                                    e.getDate() === todayDate.getDate()
+                                      ? "white"
+                                      : ""
+                                  }
+                                >
+                                  {index === 0 ? (
+                                    <Text
+                                      key={subIndex}
+                                      py={1}
+                                      color={
+                                        e.getDate() === todayDate.getDate()
+                                          ? "primary.500"
+                                          : ""
+                                      }
+                                    >
+                                      {e.getDate()}
+                                    </Text>
+                                  ) : (
+                                    <></>
+                                  )}
+                                  <IconButton
+                                    onPress={(current) => {
+                                      console.log(current);
+                                      if (e.getDate() === todayDate.getDate()) {
+                                        markAttendance(current, {
+                                          date: dateValue,
+                                          attendance: attendanceType,
+                                          id: item.id,
+                                        });
+                                      }
+                                    }}
+                                    size="sm"
+                                    py="3"
+                                    color={iconColor}
+                                    icon={circleIcon}
+                                  />
+                                </VStack>
+                              </div>
                             );
-                          let iconColor = "gray.400";
-                          let circleIcon = <CircleIcon />;
-                          let attendanceType = "Present";
-                          if (
-                            typeof attendanceItem?.attendance !== "undefined" &&
-                            attendanceItem?.attendance === "Present"
-                          ) {
-                            iconColor = "green.600";
-                            circleIcon = <CheckCircleIcon />;
-                            attendanceType = "Absent";
-                          } else if (
-                            typeof attendanceItem?.attendance !== "undefined" &&
-                            attendanceItem?.attendance === "Absent"
-                          ) {
-                            iconColor = "danger.600";
-                            circleIcon = <CancelIcon />;
-                            attendanceType = "Present";
-                          }
-                          return (
-                            <>
-                              <VStack
-                                alignItems="center"
-                                bgColor={
-                                  e.getDate() === todayDate.getDate()
-                                    ? "white"
-                                    : ""
-                                }
-                              >
-                                {index === 0 ? (
-                                  <Text key={subIndex}>{e.getDate()}</Text>
-                                ) : (
-                                  <></>
-                                )}
-                                <IconButton
-                                  onPress={(current) => {
-                                    if (e.getDate() === todayDate.getDate()) {
-                                      markAttendance(current, {
-                                        date: dateValue,
-                                        attendance: attendanceType,
-                                        id: item.id,
-                                      });
-                                    }
-                                  }}
-                                  size="sm"
-                                  py="3"
-                                  color={iconColor}
-                                  icon={circleIcon}
-                                />
-                              </VStack>
-                            </>
-                          );
-                        })}
-                      </HStack>
-                    </VStack>
-                  </HStack>
-                </Box>
-              )}
-              keyExtractor={(item) => item.id}
-            />
-          </Box>
+                          })}
+                        </HStack>
+                      </VStack>
+                    </HStack>
+                  </Box>
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </Box>
+          </ScrollView>
         </Stack>
       </Box>
     </>
