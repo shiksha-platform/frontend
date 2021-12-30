@@ -84,7 +84,7 @@ export default function App() {
         <Route
           path="/students/:studentId"
           element={
-            <SubApp title={t("Students detail")}>
+            <SubApp title={t("STUDENTS_DETAIL")}>
               <StudentDetails />
             </SubApp>
           }

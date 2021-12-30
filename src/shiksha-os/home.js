@@ -15,7 +15,7 @@ export default function Home() {
     <>
       <Header
         icon="InsertEmoticon"
-        heading={t("GOOD_MORNING, ") + firstName}
+        heading={t("GOOD_MORNING") + ", " + firstName}
         subHeading={t("THIS_IS_HOW_YOUR_DAY_LOOKS")}
         _box={{ backgroundColor: "lightBlue.100" }}
         _icon={{ color: "black" }}
@@ -23,7 +23,7 @@ export default function Home() {
         _subHeading={{ color: "black" }}
       />
       <Box backgroundColor="white" p={3}>
-        <Text color="green.700" bold={true}>
+        <Text color="green.700" bold={true} textTransform="uppercase">
           {t("TODAY")}
         </Text>
         {/* <Stack>
@@ -46,7 +46,7 @@ export default function Home() {
         </Stack> */}
       </Box>
       <Box backgroundColor="lightBlue.100" m={3} p={3}>
-        <Text color="green.700" bold={true}>
+        <Text color="green.700" bold={true} textTransform="uppercase">
           {t("THIS_WEEK")}
         </Text>
         {/* <HStack space={2}>

@@ -31,11 +31,11 @@ export default function App() {
     <>
       <Header
         icon="Group"
-        heading="The page shows"
-        subHeading="the classes you take"
+        heading={t("THE_PAGE_SHOWS")}
+        subHeading={t("THE_CLASSES_YOU_TAKE")}
       />
       <Box backgroundColor="gray.100" p={3}>
-        <Text color="primary.500" bold={true}>
+        <Text color="primary.500" bold={true} textTransform="uppercase">
           {t("TODAYS_CLASSES")}
         </Text>
         {/* <Stack>

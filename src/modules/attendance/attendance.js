@@ -81,7 +81,7 @@ export default function App() {
       <Header
         icon="AssignmentTurnedIn"
         heading={classObject.className}
-        subHeading="Attendance will automatically submit at end of the day"
+        subHeading={t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
       />
       <Stack space={1}>
         <Box bg="white" p="1">
@@ -126,7 +126,7 @@ export default function App() {
         <Stack p="2" space={1}>
           <HStack space={3} justifyContent="space-between">
             <Stack space={2}>
-              <Text color="primary.500" bold={true}>
+              <Text color="primary.500" bold={true} textTransform="uppercase">
                 {t("STUDENTS")}
               </Text>
             </Stack>

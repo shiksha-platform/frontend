@@ -1,5 +1,5 @@
 {
-  "TODAY": "TODAY",
+  "TODAY": "Today",
   "YOU_HAVE_3_CLASSES": "you have 3 classes",
   "STUDENT_PROFILE_IN_COMPLETE": "student profile in complete",
   "GOOD_MORNING": "Good Morning",
@@ -14,7 +14,7 @@
   "MY_STUDENTS": "My Students",
   "STUDENTS": "Students",
   "ATTENDANCE_SHEET": "Attendance Sheet",
-  "TODAYS_CLASSES": "TODAY'S CLASSES",
+  "TODAYS_CLASSES": "Today's classes",
   "SHOW_SUBJECT_WISE": "Show subject wise",
   "NOW": "Now",
   "MARK_ATTENDANCE": "Mark Attendance",
@@ -37,5 +37,10 @@
   "SEE_MORE": "See more",
   "CLASS": "Class",
   "WEEK_ATTENDANCE": "Week attendance",
-  "FULL_CLASS_ATTENDANCE": "Full class attendance"
+  "FULL_CLASS_ATTENDANCE": "Full class attendance",
+  "THE_PAGE_SHOWS": "The page shows",
+  "THE_CLASSES_YOU_TAKE": "the classes you take",
+  "STUDENTS_DETAIL": "Students detail",
+  "SUBMIT": "Submit",
+  "ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT": "Attendance will automatically submit at end of the day"
 }

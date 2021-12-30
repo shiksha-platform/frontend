@@ -86,7 +86,7 @@ export default function App() {
         </Box>
         <Stack p="4" space={1}>
           <Stack space={2}>
-            <Text color="green.700" bold={true}>
+            <Text color="green.700" bold={true} textTransform="uppercase">
               {t("SUMMARY")}
             </Text>
           </Stack>
@@ -114,7 +114,7 @@ export default function App() {
 
         <Stack pt="0" p="4" space={1}>
           <Stack space={2}>
-            <Text color="green.700" bold={true}>
+            <Text color="green.700" bold={true} textTransform="uppercase">
               {t("STUDENTS")}
             </Text>
           </Stack>

@@ -41,8 +41,8 @@ export default function App() {
               />
             </HStack>
             <HStack space="4" alignItems="center">
-              <Text fontSize="md" bold>
-                {t("today")}{" "}
+              <Text fontSize="md" bold textTransform="uppercase">
+                {t("TODAY")}{" "}
                 {(todayDate.getHours() > 12
                   ? todayDate.getHours() - 12
                   : todayDate.getHours()) +

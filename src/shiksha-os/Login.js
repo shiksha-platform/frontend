@@ -107,7 +107,7 @@ export default function Home() {
                   p={2}
                   onPress={handleLogin}
                 >
-                  {t("Submit")}
+                  {t("SUBMIT")}
                 </Button>
               </Stack>
             </Stack>
