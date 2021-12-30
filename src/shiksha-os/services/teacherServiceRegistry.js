@@ -4,21 +4,15 @@ import manifest from "../manifest.json";
 
 const interfaceData = {
   id: "osid",
-  classID: "classID",
-  schoolID: "schoolID",
-  class: "class",
-  section: "section",
-  className: "className",
-  osCreatedAt: "osCreatedAt",
-  osUpdatedAt: "osUpdatedAt",
-  osCreatedBy: "osCreatedBy",
-  osUpdatedBy: "osUpdatedBy",
+  fullName: "teacherFullName",
+  refId: "teacherRefId",
+  highestQualification: "highestQualification",
+  firstName: "teacherFirstName",
+  lastName: "teacherLastName",
+  currentServiceType: "currentServiceType",
+  email: "email",
   mergeParameterWithValue: {
-    title: "className",
-  },
-  mergeParameterWithDefaultValue: {
-    icon: "CalendarToday",
-    route: "/classes/:id",
+    title: "teacherFullName",
   },
 };
 
@@ -28,7 +22,7 @@ export const getAll = async (
   }
 ) => {
   const result = await generalServices.post(
-    manifest.api_url + "Class/search",
+    manifest.api_url + "Teacher/search",
     filters
   );
   if (result.data) {
@@ -39,14 +33,11 @@ export const getAll = async (
 };
 
 export const getOne = async (filters = {}, headers = {}) => {
-  const result = await generalServices.get(
-    manifest.api_url + "Class/" + filters.id,
-    {
-      headers: headers,
-    }
-  );
+  const result = await generalServices.get(manifest.api_url + "Teacher", {
+    headers: headers,
+  });
   if (result.data) {
-    return mapInterfaceData(result.data, interfaceData);
+    return mapInterfaceData(result.data[0], interfaceData);
   } else {
     return {};
   }

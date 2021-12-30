@@ -1,0 +1,4 @@
+{
+  "weekDays": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+  "attendancePastDays": 90
+}

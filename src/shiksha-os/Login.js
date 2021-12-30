@@ -11,6 +11,7 @@ import {
 import Header from "../components/Header";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
+import * as teacherServiceRegistry from "../shiksha-os/services/teacherServiceRegistry";
 
 // Start editing here, save and see your changes.
 export default function Home() {
@@ -18,8 +19,6 @@ export default function Home() {
   const { t } = useTranslation();
 
   const handleLogin = async () => {
-    console.log(credentials);
-
     const params = new URLSearchParams();
     params.append("client_id", "registry-frontend");
     params.append("username", credentials.username);
@@ -37,7 +36,19 @@ export default function Home() {
     const result = await axios.post(url, params, config);
     if (result.data) {
       sessionStorage.setItem("token", result.data.access_token);
-      window.location.reload();
+      const resultTeacher = await teacherServiceRegistry.getOne(
+        {},
+        { Authorization: "Bearer " + result.data.access_token }
+      );
+
+      if (resultTeacher) {
+        let id = resultTeacher.id.replace("1-", "");
+        sessionStorage.setItem("id", id);
+        sessionStorage.setItem("fullName", resultTeacher.fullName);
+        sessionStorage.setItem("firstName", resultTeacher.firstName);
+        sessionStorage.setItem("lastName", resultTeacher.lastName);
+        window.location.reload();
+      }
     } else {
       sessionStorage.setItem("token", "");
     }
@@ -47,7 +58,7 @@ export default function Home() {
     <>
       <Header
         icon="Login"
-        heading={t("Login")}
+        heading={t("LOGIN")}
         _box={{ backgroundColor: "lightBlue.100" }}
         _icon={{ color: "black" }}
         _heading={{ color: "black" }}
@@ -55,17 +66,17 @@ export default function Home() {
       />
       <Box backgroundColor="gray.100" m={3} p={3}>
         <Text color="green.700" bold={true}>
-          {t("Login")}
+          {t("LOGIN")}
         </Text>
         <HStack space={2}>
           <FormControl>
             <Stack space={5}>
               <Stack>
-                <FormControl.Label>{t("Username")}</FormControl.Label>
+                <FormControl.Label>{t("USERNAME")}</FormControl.Label>
                 <Input
                   variant="underlined"
                   p={2}
-                  placeholder={t("Username")}
+                  placeholder={t("USERNAME")}
                   onChange={(e) =>
                     setCredentials({
                       ...credentials,
@@ -75,11 +86,11 @@ export default function Home() {
                 />
               </Stack>
               <Stack>
-                <FormControl.Label>{t("Password")}</FormControl.Label>
+                <FormControl.Label>{t("PASSWORD")}</FormControl.Label>
                 <Input
                   variant="underlined"
                   p={2}
-                  placeholder={t("Password")}
+                  placeholder={t("PASSWORD")}
                   type="password"
                   onChange={(e) =>
                     setCredentials({

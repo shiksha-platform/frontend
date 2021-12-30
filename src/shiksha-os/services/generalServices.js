@@ -1,11 +1,11 @@
 import axios from "axios";
 
-export async function get(url) {
-  return await axios.get(url);
+export async function get(url, headers = {}) {
+  return await axios.get(url, headers);
 }
 
-export async function post(url, body) {
-  return await axios.post(url, body);
+export async function post(url, body, headers = {}) {
+  return await axios.post(url, body, headers);
 }
 
 export async function update(url, body) {}

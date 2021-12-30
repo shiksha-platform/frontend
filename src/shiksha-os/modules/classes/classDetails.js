@@ -12,28 +12,24 @@ export default function App() {
   const { t } = useTranslation();
   const todayDate = new Date();
   const [classObject, setClassObject] = useState({});
-  const { id } = useParams();
+  const { classId } = useParams();
 
   useEffect(() => {
     let ignore = false;
 
     const getData = async () => {
-      let classes = await classServiceRegistry.getAll();
-      if (!ignore) setClassObject(classes.find((e) => e.id === id));
+      let classObj = await classServiceRegistry.getOne({ id: classId });
+      if (!ignore) setClassObject(classObj);
     };
     getData();
     return () => {
       ignore = true;
     };
-  }, [id]);
+  }, [classId]);
 
   return (
     <>
-      <Header
-        icon="Group"
-        heading={classObject?.title ?? ""}
-        subHeading="the classes you take"
-      />
+      <Header icon="Group" heading={classObject?.title ?? ""} />
       <Stack space={1}>
         <Box bg="white" p="1">
           <HStack justifyContent="space-between" alignItems="center">
@@ -52,7 +48,7 @@ export default function App() {
                   : todayDate.getHours()) +
                   ":" +
                   todayDate.getMinutes()}{" "}
-                ({t("Now")})
+                ({t("NOW")})
               </Text>
             </HStack>
             <HStack space="2">
@@ -69,16 +65,16 @@ export default function App() {
         routeDynamics={true}
         items={[
           {
-            id: id,
-            title: t("Mark Attendance"),
+            id: classId,
+            title: t("MARK_ATTENDANCE"),
             icon: "EventNote",
             route: "/attendance/:id",
           },
           {
-            id: "1",
-            title: t("Students List"),
+            id: classId,
+            title: t("STUDENTS_LIST"),
             icon: "Person",
-            route: "/students",
+            route: "/students/class/:id",
           },
         ]}
         type={"veritical"}

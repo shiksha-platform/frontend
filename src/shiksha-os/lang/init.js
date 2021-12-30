@@ -1,6 +1,4 @@
-import { lazy } from "react";
-import en from "./en.json";
-import hi from "./hi.json";
+import manifest from "../manifest.json";
 
 const tryRequire = (path) => {
   try {
@@ -9,21 +7,22 @@ const tryRequire = (path) => {
     return {};
   }
 };
-const en_override = tryRequire("./en_override.json");
-const hi_override = tryRequire("./hi_override.json");
+let resources = {};
+if (manifest.languages) {
+  manifest.languages.forEach((e) => {
+    resources = {
+      ...resources,
+      [e.code]: {
+        translation: { ...tryRequire(e.path), ...tryRequire(e.overridePath) },
+      },
+    };
+  });
+}
 
 const init = {
-  resources: {
-    en: {
-      translation: { ...en, ...(en_override ? en_override : {}) },
-    },
-    hi: {
-      translation: { ...hi, ...(hi_override ? hi_override : {}) },
-    },
-  },
+  resources: resources,
   lng: localStorage.getItem("lang"),
   fallbackLng: "en",
-
   interpolation: {
     escapeValue: false,
   },

@@ -1,4 +1,18 @@
-const weekDates = (filter = {}, current = new Date()) => {
+import { useState, useEffect } from "react";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import HdrAutoIcon from "@mui/icons-material/HdrAuto";
+import CircleIcon from "@mui/icons-material/Circle";
+import { IconButton, VStack, Text } from "native-base";
+import * as attendanceServiceRegistry from "../services/attendanceServiceRegistry";
+import manifest from "../modules/attendance/manifest.json";
+
+export function weekDaysPageWise(weekPage) {
+  let date = new Date();
+  date.setDate(date.getDate() - weekPage * 7);
+  return weekDates({ only: manifest.weekDays }, date);
+}
+
+export const weekDates = (filter = {}, current = new Date()) => {
   var week = [];
   function getIntday(data = [], type = "except") {
     let weekName = [
@@ -73,4 +87,112 @@ const weekDates = (filter = {}, current = new Date()) => {
   return week;
 };
 
-export default weekDates;
+const AttendanceComponent = ({ weekPage, student, withDate }) => {
+  const todayDate = new Date();
+  const teacherId = sessionStorage.getItem("id");
+  const [attendance, setAttendance] = useState([]);
+  const [weekDays, setWeekDays] = useState([]);
+
+  useEffect(() => {
+    setWeekDays(weekDaysPageWise(weekPage));
+    getAttendance();
+  }, [weekPage]);
+
+  const getAttendance = async () => {
+    setAttendance(
+      await attendanceServiceRegistry.getAll({
+        filters: {
+          classId: {
+            eq: student.currentClassID,
+          },
+          teacherId: {
+            eq: teacherId,
+          },
+        },
+      })
+    );
+  };
+
+  const markAttendance = async (e, data) => {
+    attendanceServiceRegistry
+      .create({
+        studentId: data.id,
+        date: data.date,
+        attendance: data.attendance,
+        attendanceNote: "Test",
+        classId: student.currentClassID,
+        subjectId: "History",
+        teacherId: teacherId,
+      })
+      .then((e) => {
+        setTimeout(getAttendance, 900);
+      });
+  };
+
+  return weekDays.map((e, subIndex) => {
+    let dateValue =
+      e.getFullYear() + "-" + (e.getMonth() + 1) + "-" + e.getDate();
+    let attendanceItem = attendance
+      .slice()
+      .reverse()
+      .find((e) => e.date === dateValue && e.studentId === student.id);
+    let iconColor = "gray.400";
+    let circleIcon = <CircleIcon />;
+    let attendanceType = "Present";
+    if (
+      typeof attendanceItem?.attendance !== "undefined" &&
+      attendanceItem?.attendance === "Present"
+    ) {
+      iconColor = "green.600";
+      circleIcon = <CheckCircleIcon />;
+      attendanceType = "Absent";
+    } else if (
+      typeof attendanceItem?.attendance !== "undefined" &&
+      attendanceItem?.attendance === "Absent"
+    ) {
+      iconColor = "danger.600";
+      circleIcon = <HdrAutoIcon />;
+      attendanceType = "Present";
+    }
+    if (e > todayDate) {
+      iconColor = "gray.100";
+    }
+    return (
+      <div key={subIndex}>
+        <VStack
+          alignItems="center"
+          bgColor={e.getDate() === todayDate.getDate() ? "white" : ""}
+        >
+          {withDate ? (
+            <Text
+              key={subIndex}
+              py={1}
+              color={e.getDate() === todayDate.getDate() ? "primary.500" : ""}
+            >
+              {e.getDate()}
+            </Text>
+          ) : (
+            <></>
+          )}
+          <IconButton
+            onPress={(current) => {
+              if (e.getDate() === todayDate.getDate()) {
+                markAttendance(current, {
+                  date: dateValue,
+                  attendance: attendanceType,
+                  id: student.id,
+                });
+              }
+            }}
+            size="sm"
+            py="3"
+            color={iconColor}
+            icon={circleIcon}
+          />
+        </VStack>
+      </div>
+    );
+  });
+};
+
+export default AttendanceComponent;

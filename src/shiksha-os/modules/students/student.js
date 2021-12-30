@@ -17,20 +17,36 @@ import {
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import PersonIcon from "@mui/icons-material/Person";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
+import * as classServiceRegistry from "../../services/classServiceRegistry";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 
 // Start editing here, save and see your changes.
 export default function App() {
   const { t } = useTranslation();
   const [students, setStudents] = useState([]);
+  const [classObject, setClassObject] = useState({});
+  const { classId } = useParams();
+  const fullName = sessionStorage.getItem("fullName");
 
   useEffect(() => {
+    let ignore = false;
+    const getData = async () => {
+      setStudents(
+        await studentServiceRegistry.getAll({
+          filters: {
+            currentClassID: {
+              startsWith: classId,
+            },
+          },
+        })
+      );
+
+      let classObj = await classServiceRegistry.getOne({ id: classId });
+      if (!ignore) setClassObject(classObj);
+    };
     getData();
   }, []);
-
-  const getData = async () => {
-    setStudents(await studentServiceRegistry.getAll());
-  };
 
   return (
     <>
@@ -52,7 +68,7 @@ export default function App() {
             <HStack space={7} alignItems="center">
               <IconButton color="white" icon={<PersonIcon />} />
               <Text color="gray.100" fontWeight="700" fontSize="lg">
-                Class VI, Sec A
+                {classObject.className}
               </Text>
             </HStack>
           </Box>
@@ -65,7 +81,7 @@ export default function App() {
             bottom="2"
             right="2"
           >
-            {t("Share")}
+            {t("SHARE")}
           </Button>
         </Box>
         <Stack p="4" space={1}>
@@ -77,21 +93,21 @@ export default function App() {
           <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
             <HStack space={3}>
               <Text>
-                <Text bold>{t("Students")}:</Text> 10
+                <Text bold>{t("STUDENTS")}:</Text> {students.length}
               </Text>
               <Text>
-                <Text bold>{t("Girls")}:</Text> 5
+                <Text bold>{t("GIRLS")}:</Text>
               </Text>
               <Text>
-                <Text bold>{t("Boys")}:</Text> 5
+                <Text bold>{t("BOYS")}:</Text>
               </Text>
             </HStack>
 
             <Text>
-              <Text bold>{t("Age group")}:</Text> 15
+              <Text bold>{t("AGE_GROUP")}:</Text>
             </Text>
             <Text>
-              <Text bold>{t("Class teacher")}:</Text>
+              <Text bold>{t("CLASS_TEACHER")}:</Text> {fullName}
             </Text>
           </Box>
         </Stack>
@@ -99,7 +115,7 @@ export default function App() {
         <Stack pt="0" p="4" space={1}>
           <Stack space={2}>
             <Text color="green.700" bold={true}>
-              {t("Students")}
+              {t("STUDENTS")}
             </Text>
           </Stack>
 

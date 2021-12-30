@@ -36,7 +36,7 @@ export default function App() {
           <Route
             path="*"
             element={
-              <SubApp title={t("My School App")}>
+              <SubApp title={t("MY_SCHOOL_APP")}>
                 <Login />
               </SubApp>
             }
@@ -52,7 +52,7 @@ export default function App() {
         <Route
           path="/"
           element={
-            <SubApp title={t("My School App")}>
+            <SubApp title={t("MY_SCHOOL_APP")}>
               <Home />
             </SubApp>
           }
@@ -60,23 +60,23 @@ export default function App() {
         <Route
           path="/classes"
           element={
-            <SubApp title={t("My Classes")}>
+            <SubApp title={t("MY_CLASSES")}>
               <Classes />
             </SubApp>
           }
         />
         <Route
-          path="/classes/:id"
+          path="/classes/:classId"
           element={
-            <SubApp title={t("My Classes")}>
+            <SubApp title={t("MY_CLASSES")}>
               <ClassDetails />
             </SubApp>
           }
         />
         <Route
-          path="/students"
+          path="/students/class/:classId"
           element={
-            <SubApp title={t("My Students")}>
+            <SubApp title={t("MY_STUDENTS")}>
               <Students />
             </SubApp>
           }
@@ -92,7 +92,7 @@ export default function App() {
         <Route
           path="/attendance/:classId"
           element={
-            <SubApp title={t("Attendance Sheet")}>
+            <SubApp title={t("ATTENDANCE_SHEET")}>
               <Attendance />
             </SubApp>
           }

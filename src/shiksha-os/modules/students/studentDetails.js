@@ -1,82 +1,35 @@
 import React, { useEffect, useState } from "react";
 import {
-  IconButton,
-  Image,
   HStack,
   Text,
   VStack,
   Button,
   Stack,
-  AspectRatio,
   Box,
-  FlatList,
-  Avatar,
-  Spacer,
-  Link,
   ScrollView,
 } from "native-base";
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
-import PersonIcon from "@mui/icons-material/Person";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
 import { useParams } from "react-router-dom";
-import weekDates from "../../../helper/weekDays";
-import * as attendanceServiceRegistry from "../../../services/attendanceServiceRegistry";
-import CircleIcon from "@mui/icons-material/Circle";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import HdrAutoIcon from "@mui/icons-material/HdrAuto";
+import AttendanceComponent from "../../../helper/weekDays";
 
 // Start editing here, save and see your changes.
 export default function App() {
   const { t } = useTranslation();
   const [studentObject, setStudentObject] = useState({});
   const { studentId } = useParams();
-  const [attendance, setAttendance] = useState([]);
-  const todayDate = new Date();
-  const weekDays = weekDates();
 
   useEffect(() => {
     let ignore = false;
 
     const getData = async () => {
-      let students = await studentServiceRegistry.getAll();
-      if (!ignore) setStudentObject(students.find((e) => e.id === studentId));
+      let student = await studentServiceRegistry.getOne({ id: studentId });
+      if (!ignore) setStudentObject(student);
     };
     getData();
-    getAttendance();
   }, [studentId]);
 
-  const getAttendance = async () => {
-    setAttendance(
-      await attendanceServiceRegistry.getAll({
-        filters: {
-          classId: {
-            eq: "CLAS001",
-          },
-          teacherId: {
-            eq: "5b34b0a8-5209-41b6-8eca-339e7c20993a",
-          },
-        },
-      })
-    );
-  };
-
-  const markAttendance = async (e, data) => {
-    attendanceServiceRegistry
-      .create({
-        studentId: data.id,
-        date: data.date,
-        attendance: data.attendance,
-        attendanceNote: "Test",
-        classId: "CLAS001",
-        subjectId: "History",
-        teacherId: "5b34b0a8-5209-41b6-8eca-339e7c20993a",
-      })
-      .then((e) => {
-        setTimeout(getAttendance, 900);
-      });
-  };
   return (
     <>
       <Header
@@ -91,17 +44,20 @@ export default function App() {
           </Text>
         </Stack>
         <Text>
-          <Text bold>{t("Address")}:</Text>
+          <Text bold>{t("ADDRESS")} </Text>
         </Text>
 
         <Text>
-          <Text bold>{t("Parent name")}:</Text>
+          <Text bold>{t("FATHERS_NAME")} </Text>
+          {studentObject.fathersName}
         </Text>
         <Text>
-          <Text bold>{t("Phone number")}:</Text>
+          <Text bold>{t("ADMISSION_NO")} </Text>
+          {studentObject.admissionNo}
         </Text>
         <Text>
-          <Text bold>{t("Joining year/date")}:</Text>
+          <Text bold>{t("STUDYING_IN")} </Text>
+          {studentObject.currentClassID}
         </Text>
         <Button
           variant="ghost"
@@ -112,13 +68,13 @@ export default function App() {
           bottom="2"
           right="2"
         >
-          {t("See more")}
+          {t("SEE_MORE")}
         </Button>
       </Stack>
       <Stack p="4" space={1}>
         <Stack space={2}>
           <Text color="primary.500" bold={true}>
-            {t("Class")}
+            {t("CLASS")}
           </Text>
         </Stack>
         <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
@@ -131,81 +87,20 @@ export default function App() {
               <VStack>
                 <Text> </Text>
                 <Text color="coolGray.800" bold>
-                  {t("Week attendance")}
+                  {t("WEEK_ATTENDANCE")}
                 </Text>
               </VStack>
               <VStack space="2">
                 <HStack>
-                  {weekDays.map((e, subIndex) => {
-                    let dateValue =
-                      e.getFullYear() +
-                      "-" +
-                      (e.getMonth() + 1) +
-                      "-" +
-                      e.getDate();
-                    let attendanceItem = attendance
-                      .slice()
-                      .reverse()
-                      .find(
-                        (e) => e.date === dateValue && e.studentId === studentId
-                      );
-                    let iconColor = "gray.400";
-                    let circleIcon = <CircleIcon />;
-                    let attendanceType = "Present";
-                    if (
-                      typeof attendanceItem?.attendance !== "undefined" &&
-                      attendanceItem?.attendance === "Present"
-                    ) {
-                      iconColor = "green.600";
-                      circleIcon = <CheckCircleIcon />;
-                      attendanceType = "Absent";
-                    } else if (
-                      typeof attendanceItem?.attendance !== "undefined" &&
-                      attendanceItem?.attendance === "Absent"
-                    ) {
-                      iconColor = "danger.600";
-                      circleIcon = <HdrAutoIcon />;
-                      attendanceType = "Present";
-                    }
-                    return (
-                      <div key={subIndex}>
-                        <VStack
-                          alignItems="center"
-                          bgColor={
-                            e.getDate() === todayDate.getDate() ? "white" : ""
-                          }
-                        >
-                          <Text
-                            key={subIndex}
-                            py={1}
-                            color={
-                              e.getDate() === todayDate.getDate()
-                                ? "primary.500"
-                                : ""
-                            }
-                          >
-                            {e.getDate()}
-                          </Text>
-                          <IconButton
-                            onPress={(current) => {
-                              console.log(current);
-                              if (e.getDate() === todayDate.getDate()) {
-                                markAttendance(current, {
-                                  date: dateValue,
-                                  attendance: attendanceType,
-                                  id: studentId,
-                                });
-                              }
-                            }}
-                            size="sm"
-                            py="3"
-                            color={iconColor}
-                            icon={circleIcon}
-                          />
-                        </VStack>
-                      </div>
-                    );
-                  })}
+                  {studentObject && studentObject?.id ? (
+                    <AttendanceComponent
+                      weekPage={0}
+                      student={studentObject}
+                      withDate={true}
+                    />
+                  ) : (
+                    <></>
+                  )}
                 </HStack>
               </VStack>
             </HStack>
@@ -216,7 +111,7 @@ export default function App() {
             colorScheme="default"
             background="gray.100"
           >
-            {t("Full class attendance")}
+            {t("FULL_CLASS_ATTENDANCE")}
           </Button>
         </Box>
       </Stack>

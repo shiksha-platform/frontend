@@ -9,13 +9,14 @@ import { useTranslation } from "react-i18next";
 export default function Home() {
   const menus = manifest.menus.main;
   const { t } = useTranslation();
+  const firstName = sessionStorage.getItem("firstName");
 
   return (
     <>
       <Header
         icon="InsertEmoticon"
-        heading={t("Good Morning, Sheetal!")}
-        subHeading={t("This is how your day looks...")}
+        heading={t("GOOD_MORNING, ") + firstName}
+        subHeading={t("THIS_IS_HOW_YOUR_DAY_LOOKS")}
         _box={{ backgroundColor: "lightBlue.100" }}
         _icon={{ color: "black" }}
         _heading={{ color: "black" }}
@@ -25,12 +26,12 @@ export default function Home() {
         <Text color="green.700" bold={true}>
           {t("TODAY")}
         </Text>
-        <Stack>
+        {/* <Stack>
           <VStack>
-            <Text>{t("you have 3 classes")}</Text>
-            <Text>{t("21 student profile in complete")}</Text>
+            <Text>{t("YOU_HAVE_3_CLASSES")}</Text>
+            <Text>{t("STUDENT_PROFILE_IN_COMPLETE")}</Text>
             <HStack space={2}>
-              <Text>{t("New 1 activity added to school")}</Text>
+              <Text>{t("NEW_ACTIVITY_ADDED_TO_SCHOOL")}</Text>
               <Button
                 variant="outline"
                 colorScheme="default"
@@ -38,18 +39,18 @@ export default function Home() {
                 size="container"
                 px={1}
               >
-                {t("Time table")}
+                {t("TIME_TABLE")}
               </Button>
             </HStack>
           </VStack>
-        </Stack>
+        </Stack> */}
       </Box>
       <Box backgroundColor="lightBlue.100" m={3} p={3}>
         <Text color="green.700" bold={true}>
-          {t("THIS WEEK")}
+          {t("THIS_WEEK")}
         </Text>
-        <HStack space={2}>
-          <Text>{t("2 school activities, 1 official visit")}</Text>
+        {/* <HStack space={2}>
+          <Text>{t("2_SCHOOL_ACTIVITIES_1_OFFICIAL_VISIT")}</Text>
           <Button
             variant="outline"
             colorScheme="default"
@@ -57,9 +58,9 @@ export default function Home() {
             size="container"
             px={1}
           >
-            {t("Time table")}
+            {t("TIME_TABLE")}
           </Button>
-        </HStack>
+        </HStack> */}
       </Box>
       <Box backgroundColor="blue.300" p="3">
         <Menu bg="white" items={menus} />

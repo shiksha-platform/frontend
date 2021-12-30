@@ -6,6 +6,7 @@ const interfaceData = {
   id: "osid",
   fullName: "studentFullName",
   firstName: "studentFirstName",
+  fathersName: "studentFathersName",
   lastName: "studentLastName",
   refId: "studentRefId",
   admissionNo: "admissionNo",
@@ -32,5 +33,21 @@ export const getAll = async (
     return result.data.map((e) => mapInterfaceData(e, interfaceData));
   } else {
     return [];
+  }
+};
+
+export const getOne = async (filters = {}, headers = {}) => {
+  const result = await generalServices.get(
+    manifest.api_url + "Student/" + filters.id,
+    {
+      headers: headers,
+    }
+  );
+  if (result.data) {
+    let resultStudent = mapInterfaceData(result.data, interfaceData);
+    resultStudent.id = resultStudent.id.replace("1-", "");
+    return resultStudent;
+  } else {
+    return {};
   }
 };

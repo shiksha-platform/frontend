@@ -14,25 +14,25 @@ import {
 import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
 import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
 import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import HdrAutoIcon from "@mui/icons-material/HdrAuto";
-import CircleIcon from "@mui/icons-material/Circle";
-import * as attendanceServiceRegistry from "../../services/attendanceServiceRegistry";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
 import Header from "../../components/Header";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-import weekDates from "../../helper/weekDays";
+import AttendanceComponent, { weekDaysPageWise } from "../../helper/weekDays";
 
 // Start editing here, save and see your changes.
 export default function App() {
   const { t } = useTranslation();
-  const weekDays = weekDates();
   const todayDate = new Date();
+  const [weekPage, setWeekPage] = useState(0);
+  const [weekDays, setWeekDays] = useState([]);
   const [students, setStudents] = useState([]);
   const [classObject, setClassObject] = useState({});
-  const [attendance, setAttendance] = useState([]);
   const { classId } = useParams();
+
+  useEffect(() => {
+    setWeekDays(weekDaysPageWise(weekPage));
+  }, [weekPage]);
 
   useEffect(() => {
     let ignore = false;
@@ -41,7 +41,7 @@ export default function App() {
         await studentServiceRegistry.getAll({
           filters: {
             currentClassID: {
-              eq: "1",
+              eq: classId,
             },
           },
         })
@@ -50,41 +50,14 @@ export default function App() {
       if (!ignore) setClassObject(classes.find((e) => e.id === classId));
     }
     getData();
-    getAttendance();
     return () => {
       ignore = true;
     };
   }, [classId]);
 
-  const getAttendance = async () => {
-    setAttendance(
-      await attendanceServiceRegistry.getAll({
-        filters: {
-          classId: {
-            eq: "CLAS001",
-          },
-          teacherId: {
-            eq: "5b34b0a8-5209-41b6-8eca-339e7c20993a",
-          },
-        },
-      })
-    );
-  };
-
-  const markAttendance = async (e, data) => {
-    attendanceServiceRegistry
-      .create({
-        studentId: data.id,
-        date: data.date,
-        attendance: data.attendance,
-        attendanceNote: "Test",
-        classId: "CLAS001",
-        subjectId: "History",
-        teacherId: "5b34b0a8-5209-41b6-8eca-339e7c20993a",
-      })
-      .then((e) => {
-        setTimeout(getAttendance, 900);
-      });
+  const changeWeek = (e) => {
+    let result = parseInt(weekPage) + parseInt(e);
+    setWeekPage(result);
   };
 
   if (!classObject && !classObject?.className) {
@@ -115,32 +88,46 @@ export default function App() {
           <HStack justifyContent="space-between" alignItems="center">
             <HStack space="4" alignItems="center">
               <IconButton
+                onPress={(current) => {
+                  changeWeek("1");
+                }}
                 size="sm"
                 color="primary.500"
                 icon={<ArrowCircleLeftOutlinedIcon />}
               />
             </HStack>
             <HStack space="4" alignItems="center">
-              <Text fontSize="md" bold>
-                {t("This Week")}
-              </Text>
+              {weekPage == 0 ? (
+                <Text fontSize="md" bold>
+                  {t("THIS_WEEK")}
+                </Text>
+              ) : (
+                <Text fontSize="md" bold>
+                  {t("WEEK_STARTING")} {weekDays[0].getDate()}
+                  {"/"}
+                  {weekDays[0].getMonth() + 1}
+                </Text>
+              )}
             </HStack>
             <HStack space="2">
               <IconButton
+                onPress={(current) => {
+                  if (weekPage > 0) changeWeek("-1");
+                }}
                 size="sm"
-                color="primary.500"
+                color={weekPage > 0 ? "primary.500" : "gray.500"}
                 icon={<ArrowCircleRightOutlinedIcon />}
               />
             </HStack>
           </HStack>
         </Box>
       </Stack>
-      <Box bg="gray.200">
+      <Box bg="gray.100">
         <Stack p="2" space={1}>
           <HStack space={3} justifyContent="space-between">
             <Stack space={2}>
               <Text color="primary.500" bold={true}>
-                {t("Students")}
+                {t("STUDENTS")}
               </Text>
             </Stack>
             <Stack space={2}>
@@ -149,117 +136,43 @@ export default function App() {
               </Text>
             </Stack>
           </HStack>
-          <ScrollView horizontal={true} _contentContainerStyle={{ mb: "4" }}>
-            <Box>
-              <FlatList
-                data={students}
-                renderItem={({ item, index }) => (
-                  <Box borderBottomWidth="1" borderColor="coolGray.500">
-                    <HStack
-                      space={3}
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <VStack>
-                        {index === 0 ? <Text> </Text> : <></>}
-                        <Text color="coolGray.800" bold>
-                          {item.fullName}
-                        </Text>
-                        <Text color="coolGray.500" fontSize="xs">
-                          {t("Roll Number") + " " + item.admissionNo}
-                        </Text>
-                      </VStack>
-                      <VStack space="2">
-                        <HStack>
-                          {weekDays.map((e, subIndex) => {
-                            let dateValue =
-                              e.getFullYear() +
-                              "-" +
-                              (e.getMonth() + 1) +
-                              "-" +
-                              e.getDate();
-                            let attendanceItem = attendance
-                              .slice()
-                              .reverse()
-                              .find(
-                                (e) =>
-                                  e.date === dateValue &&
-                                  e.studentId === item.id
-                              );
-                            let iconColor = "gray.400";
-                            let circleIcon = <CircleIcon />;
-                            let attendanceType = "Present";
-                            if (
-                              typeof attendanceItem?.attendance !==
-                                "undefined" &&
-                              attendanceItem?.attendance === "Present"
-                            ) {
-                              iconColor = "green.600";
-                              circleIcon = <CheckCircleIcon />;
-                              attendanceType = "Absent";
-                            } else if (
-                              typeof attendanceItem?.attendance !==
-                                "undefined" &&
-                              attendanceItem?.attendance === "Absent"
-                            ) {
-                              iconColor = "danger.600";
-                              circleIcon = <HdrAutoIcon />;
-                              attendanceType = "Present";
-                            }
-                            return (
-                              <div key={subIndex}>
-                                <VStack
-                                  alignItems="center"
-                                  bgColor={
-                                    e.getDate() === todayDate.getDate()
-                                      ? "white"
-                                      : ""
-                                  }
-                                >
-                                  {index === 0 ? (
-                                    <Text
-                                      key={subIndex}
-                                      py={1}
-                                      color={
-                                        e.getDate() === todayDate.getDate()
-                                          ? "primary.500"
-                                          : ""
-                                      }
-                                    >
-                                      {e.getDate()}
-                                    </Text>
-                                  ) : (
-                                    <></>
-                                  )}
-                                  <IconButton
-                                    onPress={(current) => {
-                                      console.log(current);
-                                      if (e.getDate() === todayDate.getDate()) {
-                                        markAttendance(current, {
-                                          date: dateValue,
-                                          attendance: attendanceType,
-                                          id: item.id,
-                                        });
-                                      }
-                                    }}
-                                    size="sm"
-                                    py="3"
-                                    color={iconColor}
-                                    icon={circleIcon}
-                                  />
-                                </VStack>
-                              </div>
-                            );
-                          })}
-                        </HStack>
-                      </VStack>
-                    </HStack>
-                  </Box>
-                )}
-                keyExtractor={(item) => item.id}
-              />
-            </Box>
-          </ScrollView>
+          <Box>
+            <FlatList
+              data={students}
+              renderItem={({ item, index }) => (
+                <Box borderBottomWidth="1" borderColor="coolGray.500">
+                  <HStack
+                    space={3}
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <VStack>
+                      {index === 0 ? <Text> </Text> : <></>}
+                      <Text color="coolGray.800" bold>
+                        {item.fullName}
+                      </Text>
+                      <Text color="coolGray.500" fontSize="xs">
+                        {t("ROLL_NUMBER") + " : " + item.admissionNo}
+                      </Text>
+                      <Text color="coolGray.500" fontSize="xs">
+                        {t("FATHERS_NAME") + " : " + item.fathersName}
+                      </Text>
+                    </VStack>
+                    <VStack space="2">
+                      <HStack>
+                        <AttendanceComponent
+                          weekPage={weekPage}
+                          student={item}
+                          withDate={index === 0}
+                        />
+                      </HStack>
+                    </VStack>
+                  </HStack>
+                </Box>
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          </Box>
         </Stack>
       </Box>
     </>
