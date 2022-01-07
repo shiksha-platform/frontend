@@ -38,9 +38,10 @@
   "CLASS": "कक्षा",
   "WEEK_ATTENDANCE": "सप्ताह उपस्थिति",
   "FULL_CLASS_ATTENDANCE": "पूर्ण कक्षा उपस्थिति",
-  "THE_PAGE_SHOWS": "पेज दिखाता है",
-  "THE_CLASSES_YOU_TAKE": "आप जो कक्षाएं लेते हैं",
+  "THE_CLASSES_YOU_TAKE": "आपके द्वारा ली जाने वाली सभी कक्षाएं देखें",
   "STUDENTS_DETAIL": "छात्र विवरण",
   "SUBMIT": "प्रस्तुत करना",
-  "ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT": "दिन के अंत में उपस्थिति स्वतः जमा हो जाएगी"
+  "ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT": "दिन के अंत में उपस्थिति स्वतः जमा हो जाएगी",
+  "YOUR_CLASSES": "तुम्हारी कक्षाएं",
+  "HOW_YOU_WANT_TO_MARK": "आप कैसे चिह्नित करना चाहते हैं"
 }

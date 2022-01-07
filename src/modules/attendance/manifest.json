@@ -1,4 +1,5 @@
 {
   "weekDays": ["Mon", "Tue", "Wed", "Thu", "Fri"],
-  "attendancePastDays": 90
+  "attendancePastDays": 90,
+  "status": ["Present", "Late", "Absent"]
 }

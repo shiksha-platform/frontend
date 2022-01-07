@@ -9,6 +9,7 @@ export default function Header({
   icon,
   heading,
   subHeading,
+  button,
   _box,
   _heading,
   _subHeading,
@@ -49,6 +50,7 @@ export default function Header({
               )}
             </VStack>
           </HStack>
+          {button}
         </HStack>
       </Box>
     </Stack>

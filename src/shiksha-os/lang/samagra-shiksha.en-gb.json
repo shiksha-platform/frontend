@@ -38,9 +38,10 @@
   "CLASS": "Class",
   "WEEK_ATTENDANCE": "Week attendance",
   "FULL_CLASS_ATTENDANCE": "Full class attendance",
-  "THE_PAGE_SHOWS": "The page shows",
-  "THE_CLASSES_YOU_TAKE": "the classes you take",
+  "THE_CLASSES_YOU_TAKE": "View all classes you take",
   "STUDENTS_DETAIL": "Students detail",
   "SUBMIT": "Submit",
-  "ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT": "Attendance will automatically submit at end of the day"
+  "ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT": "Attendance will automatically submit at end of the day",
+  "YOUR_CLASSES": "Your Classes",
+  "HOW_YOU_WANT_TO_MARK": "How you want to mark"
 }

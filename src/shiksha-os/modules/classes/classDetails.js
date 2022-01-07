@@ -66,11 +66,13 @@ export default function App() {
         items={[
           {
             id: classId,
+            keyId: 1,
             title: t("MARK_ATTENDANCE"),
             icon: "EventNote",
             route: "/attendance/:id",
           },
           {
+            keyId: 2,
             id: classId,
             title: t("STUDENTS_LIST"),
             icon: "Person",

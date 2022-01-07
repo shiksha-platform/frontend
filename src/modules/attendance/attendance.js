@@ -8,7 +8,6 @@ import {
   FlatList,
   VStack,
   Center,
-  ScrollView,
 } from "native-base";
 // import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
@@ -18,12 +17,14 @@ import * as classServiceRegistry from "../../shiksha-os/services/classServiceReg
 import Header from "../../components/Header";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-import AttendanceComponent, { weekDaysPageWise } from "../../helper/weekDays";
+import AttendanceComponent, {
+  weekDaysPageWise,
+} from "../../components/weekDays";
+import manifest from "./manifest.json";
 
 // Start editing here, save and see your changes.
 export default function App() {
   const { t } = useTranslation();
-  const todayDate = new Date();
   const [weekPage, setWeekPage] = useState(0);
   const [weekDays, setWeekDays] = useState([]);
   const [students, setStudents] = useState([]);
@@ -84,30 +85,40 @@ export default function App() {
         subHeading={t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
       />
       <Stack space={1}>
-        <Box bg="white" p="1">
+        <Box bg="gray.500" p="1">
           <HStack justifyContent="space-between" alignItems="center">
             <HStack space="4" alignItems="center">
               <IconButton
                 onPress={(current) => {
-                  changeWeek("1");
+                  if (
+                    manifest.attendancePastDays / manifest.weekDays?.length >
+                    weekPage + 1
+                  ) {
+                    changeWeek("1");
+                  }
                 }}
                 size="sm"
-                color="primary.500"
+                color={
+                  manifest.attendancePastDays / manifest.weekDays?.length >
+                  weekPage + 1
+                    ? "gray.100"
+                    : "gray.400"
+                }
                 icon={<ArrowCircleLeftOutlinedIcon />}
               />
             </HStack>
             <HStack space="4" alignItems="center">
-              {weekPage == 0 ? (
-                <Text fontSize="md" bold>
-                  {t("THIS_WEEK")}
-                </Text>
-              ) : (
-                <Text fontSize="md" bold>
-                  {t("WEEK_STARTING")} {weekDays[0].getDate()}
-                  {"/"}
-                  {weekDays[0].getMonth() + 1}
-                </Text>
-              )}
+              <Text fontSize="md" bold color={"gray.100"}>
+                {weekPage === 0 ? (
+                  <>{t("THIS_WEEK")}</>
+                ) : (
+                  <>
+                    {t("WEEK_STARTING")} {weekDays[0].getDate()}
+                    {"/"}
+                    {weekDays[0].getMonth() + 1}
+                  </>
+                )}
+              </Text>
             </HStack>
             <HStack space="2">
               <IconButton
@@ -115,65 +126,38 @@ export default function App() {
                   if (weekPage > 0) changeWeek("-1");
                 }}
                 size="sm"
-                color={weekPage > 0 ? "primary.500" : "gray.500"}
+                color={weekPage > 0 ? "gray.100" : "gray.400"}
                 icon={<ArrowCircleRightOutlinedIcon />}
               />
             </HStack>
           </HStack>
         </Box>
       </Stack>
-      <Box bg="gray.100">
-        <Stack p="2" space={1}>
-          <HStack space={3} justifyContent="space-between">
-            <Stack space={2}>
-              <Text color="primary.500" bold={true} textTransform="uppercase">
-                {t("STUDENTS")}
-              </Text>
-            </Stack>
-            <Stack space={2}>
-              <Text color="gray.500" bold={true}>
-                {todayDate.getMonth() + 1 + " - " + todayDate.getFullYear()}
-              </Text>
-            </Stack>
-          </HStack>
-          <Box>
-            <FlatList
-              data={students}
-              renderItem={({ item, index }) => (
-                <Box borderBottomWidth="1" borderColor="coolGray.500">
-                  <HStack
-                    space={3}
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <VStack>
-                      {index === 0 ? <Text> </Text> : <></>}
-                      <Text color="coolGray.800" bold>
-                        {item.fullName}
-                      </Text>
-                      <Text color="coolGray.500" fontSize="xs">
-                        {t("ROLL_NUMBER") + " : " + item.admissionNo}
-                      </Text>
-                      <Text color="coolGray.500" fontSize="xs">
-                        {t("FATHERS_NAME") + " : " + item.fathersName}
-                      </Text>
-                    </VStack>
-                    <VStack space="2">
-                      <HStack>
-                        <AttendanceComponent
-                          weekPage={weekPage}
-                          student={item}
-                          withDate={index === 0}
-                        />
-                      </HStack>
-                    </VStack>
-                  </HStack>
-                </Box>
-              )}
-              keyExtractor={(item) => item.id}
-            />
-          </Box>
-        </Stack>
+      <Box bg="gray.100" p="2">
+        <FlatList
+          data={students}
+          renderItem={({ item, index }) => (
+            <Box
+              bg={"white"}
+              p="2"
+              mb="2"
+              borderColor="coolGray.300"
+              borderWidth="1"
+              _web={{
+                shadow: 2,
+              }}
+            >
+              <VStack space="2">
+                <AttendanceComponent
+                  weekPage={weekPage}
+                  student={item}
+                  withDate={1}
+                />
+              </VStack>
+            </Box>
+          )}
+          keyExtractor={(item) => item.id}
+        />
       </Box>
     </>
   );

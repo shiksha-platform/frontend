@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  HStack,
-  Text,
-  VStack,
-  Button,
-  Stack,
-  Box,
-  ScrollView,
-} from "native-base";
+import { Text, Button, Stack, Box } from "native-base";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
 import { useParams } from "react-router-dom";
-import AttendanceComponent from "../../../helper/weekDays";
+import AttendanceComponent from "../../../components/weekDays";
 
 // Start editing here, save and see your changes.
 export default function App() {
@@ -78,33 +70,15 @@ export default function App() {
           </Text>
         </Stack>
         <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
-          <ScrollView horizontal={true} _contentContainerStyle={{ mb: "4" }}>
-            <HStack
-              space={3}
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <VStack>
-                <Text> </Text>
-                <Text color="coolGray.800" bold>
-                  {t("WEEK_ATTENDANCE")}
-                </Text>
-              </VStack>
-              <VStack space="2">
-                <HStack>
-                  {studentObject && studentObject?.id ? (
-                    <AttendanceComponent
-                      weekPage={0}
-                      student={studentObject}
-                      withDate={true}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </HStack>
-              </VStack>
-            </HStack>
-          </ScrollView>
+          {studentObject && studentObject?.id ? (
+            <AttendanceComponent
+              weekPage={0}
+              student={studentObject}
+              withDate={true}
+            />
+          ) : (
+            <></>
+          )}
           <Button
             variant="ghost"
             borderRadius="50"
