@@ -46,7 +46,7 @@ export default function App() {
       if (!ignore) setClassObject(classObj);
     };
     getData();
-  }, []);
+  }, [classId]);
 
   return (
     <>
@@ -86,7 +86,7 @@ export default function App() {
         </Box>
         <Stack p="4" space={1}>
           <Stack space={2}>
-            <Text color="green.700" bold={true} textTransform="uppercase">
+            <Text color="green.700" bold={true}>
               {t("SUMMARY")}
             </Text>
           </Stack>
@@ -114,7 +114,7 @@ export default function App() {
 
         <Stack pt="0" p="4" space={1}>
           <Stack space={2}>
-            <Text color="green.700" bold={true} textTransform="uppercase">
+            <Text color="green.700" bold={true}>
               {t("STUDENTS")}
             </Text>
           </Stack>

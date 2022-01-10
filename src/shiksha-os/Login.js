@@ -12,6 +12,7 @@ import Header from "../components/Header";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import * as teacherServiceRegistry from "../shiksha-os/services/teacherServiceRegistry";
+import manifest from "../shiksha-os/manifest.json";
 
 // Start editing here, save and see your changes.
 export default function Home() {
@@ -30,15 +31,14 @@ export default function Home() {
         "Content-Type": "application/x-www-form-urlencoded",
       },
     };
-    let url =
-      "https://dev-shiksha.uniteframework.io/auth/realms/sunbird-rc/protocol/openid-connect/token";
 
-    const result = await axios.post(url, params, config);
-    if (result.data) {
-      sessionStorage.setItem("token", result.data.access_token);
+    const result = await axios.post(manifest.auth_url, params, config);
+    if (result?.data) {
+      let token = result.data.access_token;
+      sessionStorage.setItem("token", token);
       const resultTeacher = await teacherServiceRegistry.getOne(
         {},
-        { Authorization: "Bearer " + result.data.access_token }
+        { Authorization: "Bearer " + token }
       );
 
       if (resultTeacher) {

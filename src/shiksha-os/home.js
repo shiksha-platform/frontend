@@ -1,5 +1,5 @@
 import React from "react";
-import { HStack, Text, VStack, Button, Stack, Box } from "native-base";
+import { Text, Box } from "native-base";
 import manifest from "./manifest";
 import Menu from "../components/Menu";
 import Header from "../components/Header";
@@ -23,7 +23,7 @@ export default function Home() {
         _subHeading={{ color: "black" }}
       />
       <Box backgroundColor="white" p={3}>
-        <Text color="green.700" bold={true} textTransform="uppercase">
+        <Text color="green.700" bold={true}>
           {t("TODAY")}
         </Text>
         {/* <Stack>
@@ -46,7 +46,7 @@ export default function Home() {
         </Stack> */}
       </Box>
       <Box backgroundColor="lightBlue.100" m={3} p={3}>
-        <Text color="green.700" bold={true} textTransform="uppercase">
+        <Text color="green.700" bold={true}>
           {t("THIS_WEEK")}
         </Text>
         {/* <HStack space={2}>

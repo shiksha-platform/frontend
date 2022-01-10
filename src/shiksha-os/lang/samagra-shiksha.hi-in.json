@@ -36,6 +36,7 @@
   "STUDYING_IN": "इसमें पढ़ाई हो रही है",
   "SEE_MORE": "और देखें",
   "CLASS": "कक्षा",
+  "CLASS_TEST": "कक्षा परीक्षा",
   "WEEK_ATTENDANCE": "सप्ताह उपस्थिति",
   "FULL_CLASS_ATTENDANCE": "पूर्ण कक्षा उपस्थिति",
   "THE_CLASSES_YOU_TAKE": "आपके द्वारा ली जाने वाली सभी कक्षाएं देखें",
@@ -43,5 +44,11 @@
   "SUBMIT": "प्रस्तुत करना",
   "ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT": "दिन के अंत में उपस्थिति स्वतः जमा हो जाएगी",
   "YOUR_CLASSES": "तुम्हारी कक्षाएं",
-  "HOW_YOU_WANT_TO_MARK": "आप कैसे चिह्नित करना चाहते हैं"
+  "HOW_YOU_WANT_TO_MARK": "आप कैसे चिह्नित करना चाहते हैं",
+  "PREVIOUS_ASSIGNMENTS": "पिछला कार्य",
+  "LESSON_PLAN": "शिक्षण योजना",
+  "COURSE_MATERIAL": "पाठ्यक्रम सामग्री",
+  "MY_NOTES": "मेरी टिप्पणियाँ",
+  "YESTERDAY": "बीता हुआ कल",
+  "TOMORROW": "कल"
 }

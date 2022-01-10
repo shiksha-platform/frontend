@@ -36,6 +36,7 @@
   "STUDYING_IN": "Studying In",
   "SEE_MORE": "See more",
   "CLASS": "Class",
+  "CLASS_TEST": "Class test",
   "WEEK_ATTENDANCE": "Week attendance",
   "FULL_CLASS_ATTENDANCE": "Full class attendance",
   "THE_CLASSES_YOU_TAKE": "View all classes you take",
@@ -43,5 +44,11 @@
   "SUBMIT": "Submit",
   "ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT": "Attendance will automatically submit at end of the day",
   "YOUR_CLASSES": "Your Classes",
-  "HOW_YOU_WANT_TO_MARK": "How you want to mark"
+  "HOW_YOU_WANT_TO_MARK": "How you want to mark",
+  "PREVIOUS_ASSIGNMENTS": "Previous assignments",
+  "LESSON_PLAN": "Lesson plan",
+  "COURSE_MATERIAL": "Course material",
+  "MY_NOTES": "My notes",
+  "YESTERDAY": "Yesterday",
+  "TOMORROW": "Tomorrow"
 }

@@ -13,8 +13,25 @@ import Icon from "./IconByName";
 import { generatePath } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-export default function Menu({ items, type, routeDynamics, bg }) {
+export default function Menu({
+  items,
+  type,
+  routeDynamics,
+  bg,
+  _box,
+  _boxMenu,
+  _icon,
+}) {
   const { t } = useTranslation();
+
+  const chunk = (array, chunk) => {
+    return [].concat.apply(
+      [],
+      array.map(function (elem, i) {
+        return i % chunk ? [] : [array.slice(i, i + chunk)];
+      })
+    );
+  };
 
   const PressableNew = ({ item, children, ...prop }) => {
     return item?.route ? (
@@ -35,42 +52,45 @@ export default function Menu({ items, type, routeDynamics, bg }) {
   };
 
   if (type === "veritical") {
+    const newItems = chunk(items, 3);
     return (
-      <Box bg={bg} p={5}>
-        <HStack justifyContent="center">
-          {items.map((item) => (
-            <PressableNew
-              px="5"
-              py="3"
-              key={item.keyId ? item.keyId : item.id}
-              item={item}
-            >
-              <VStack space="4" my="2" mx="1" alignItems="center">
-                <Icon
-                  name={item.icon}
-                  p="0"
-                  color="primary.500"
-                  _icon={{
-                    style: {
-                      fontSize: "45px",
-                      border: "2px solid #54b8d4",
-                      borderRadius: "50%",
-                      padding: "20px",
-                    },
-                  }}
-                />
-                <Text color="gray.700" fontWeight="500">
-                  {item.title}
-                </Text>
-              </VStack>
-            </PressableNew>
-          ))}
-        </HStack>
+      <Box bg={bg} {..._box}>
+        {newItems.map((subItems, index) => (
+          <HStack key={index} justifyContent="center" space={6}>
+            {subItems.map((item) => (
+              <PressableNew key={item.keyId ? item.keyId : item.id} item={item}>
+                <VStack space="4" my="2" mx="1" textAlign="center">
+                  {item.icon ? (
+                    <Icon
+                      name={item.icon}
+                      p="0"
+                      color="primary.500"
+                      _icon={{
+                        style: {
+                          fontSize: "35px",
+                          border: "2px solid #54b8d4",
+                          borderRadius: "50%",
+                          padding: "20px",
+                        },
+                      }}
+                      {..._icon}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                  <Text color="gray.700" fontWeight="500" maxW={20} center>
+                    {item.title}
+                  </Text>
+                </VStack>
+              </PressableNew>
+            ))}
+          </HStack>
+        ))}
       </Box>
     );
   } else {
     return (
-      <Box bg={bg}>
+      <Box bg={bg} {..._box}>
         <FlatList
           data={items}
           renderItem={({ item }) => (
@@ -82,17 +102,23 @@ export default function Menu({ items, type, routeDynamics, bg }) {
               borderLeftWidth={item.activeMenu ? "5" : ""}
               borderLeftColor={item.activeMenu ? "primary.500" : ""}
               borderColor={"coolGray.200"}
+              {..._boxMenu}
             >
               <VStack space="6" my="2" mx="1">
                 <PressableNew px="5" py="1" item={item}>
                   <HStack space={3}>
-                    <HStack space="7" alignItems="center">
+                    <HStack
+                      space={item.leftText || item.icon ? "7" : ""}
+                      alignItems="center"
+                    >
                       {item.leftText ? (
                         <Text color="gray.700" fontWeight="500">
                           {item.leftText}
                         </Text>
+                      ) : item.icon ? (
+                        <Icon name={item.icon} p="0" {..._icon} />
                       ) : (
-                        <Icon name={item.icon} p="0" />
+                        <></>
                       )}
                       <Text color="gray.700" fontWeight="500">
                         {t(item.title)}

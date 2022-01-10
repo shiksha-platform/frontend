@@ -14,6 +14,9 @@ import {
   MoreVert,
   Person,
   Menu,
+  ArrowForwardIos,
+  AppRegistration,
+  MenuBook,
 } from "@mui/icons-material";
 
 function IconButton({ icon, ...props }) {
@@ -64,6 +67,15 @@ export default function IconByName(props) {
       break;
     case "Login":
       icon = <IconButton {...props} icon={<Login />} />;
+      break;
+    case "ArrowForwardIos":
+      icon = <IconButton {...props} icon={<ArrowForwardIos />} />;
+      break;
+    case "AppRegistration":
+      icon = <IconButton {...props} icon={<AppRegistration />} />;
+      break;
+    case "MenuBook":
+      icon = <IconButton {...props} icon={<MenuBook />} />;
       break;
     default:
       icon = <IconButton {...props} icon={<Home />} />;

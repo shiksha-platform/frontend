@@ -97,7 +97,7 @@ export default function App() {
       </Stack>
       <Box backgroundColor="gray.100" p={3}>
         <Box alignItems="center" p={2}>
-          <Text color="primary.500" bold={true} textTransform="uppercase">
+          <Text color="primary.500" bold={true}>
             {t("YOUR_CLASSES")}
           </Text>
         </Box>
