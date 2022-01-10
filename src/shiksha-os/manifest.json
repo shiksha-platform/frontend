@@ -13,7 +13,7 @@
   "menus": {
     "hamburger": [
       {
-        "title": "My Classes",
+        "title": "MY_CLASSES",
         "icon": "email",
         "module": "Registry",
         "route": "/apps/registry/view",
@@ -29,7 +29,7 @@
     ],
     "main": [
       {
-        "title": "My Classes",
+        "title": "MY_CLASSES",
         "icon": "email",
         "module": "Registry",
         "route": "/classes",
@@ -47,14 +47,17 @@
   "languages": [
     {
       "title": "UK English",
-      "path": "samagra-shiksha.en-gb.json",
+      "path": "./samagra-shiksha.en-gb.json",
+      "overridePath": "./override-samagra-shiksha.en-gb.json",
       "code": "en"
     },
     {
       "title": "Hindi",
-      "path": "samagra-shiksha.hi-in.json",
+      "path": "./samagra-shiksha.hi-in.json",
+      "overridePath": "./override-samagra-shiksha.hi-in.json",
       "code": "hi"
     }
   ],
-  "api_url": "https://dev-shiksha.uniteframework.io/registry/api/v1/"
+  "api_url": "https://dev-shiksha.uniteframework.io/registry/api/v1/",
+  "auth_url": "https://dev-shiksha.uniteframework.io/auth/realms/sunbird-rc/protocol/openid-connect/token"
 }
