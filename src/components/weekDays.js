@@ -9,8 +9,8 @@ import {
   Text,
   HStack,
   Box,
-  Modal,
   Pressable,
+  Actionsheet,
 } from "native-base";
 import * as attendanceServiceRegistry from "../services/attendanceServiceRegistry";
 import manifest from "../modules/attendance/manifest.json";
@@ -18,10 +18,11 @@ import { useTranslation } from "react-i18next";
 import { TouchableHighlight } from "react-native-web";
 import CircularProgress from "@mui/material/CircularProgress";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
+import moment from "moment";
 
 export function weekDaysPageWise(weekPage) {
   let date = new Date();
-  date.setDate(date.getDate() - weekPage * 7);
+  date.setDate(date.getDate() + weekPage * 7);
   return weekDates({ only: manifest.weekDays }, date);
 }
 
@@ -204,45 +205,39 @@ const AttendanceComponent = ({ weekPage, student, withDate }) => {
 
   const PopupModal = () => {
     return (
-      <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        avoidKeyboard
-      >
-        <Modal.Content maxWidth="400px">
-          <Modal.CloseButton />
-          <Modal.Header>{t("HOW_YOU_WANT_TO_MARK")}?</Modal.Header>
-          <Modal.Body>
+      <>
+        <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
+          <Actionsheet.Content>
+            <Box w="100%" h={60} px={4} justifyContent="center">
+              <Text
+                fontSize="16"
+                color="gray.500"
+                _dark={{
+                  color: "gray.300",
+                }}
+              >
+                {t("MARK_ATTENDANCE")}
+              </Text>
+            </Box>
             {status.map((item) => {
               return (
-                <Pressable
-                  key={item}
-                  onPress={(e) => markAttendance({ attendance: item })}
-                >
-                  <Box
-                    rounded="full"
-                    borderColor="coolGray.200"
-                    borderWidth="1"
-                    mb={1}
+                <Actionsheet.Item key={item} p={1}>
+                  <Pressable
+                    onPress={(e) => markAttendance({ attendance: item })}
                   >
-                    <HStack alignItems="center">
+                    <HStack alignItems="center" space={2}>
                       <GetIcon status={item} _box={{ p: 2 }} />
                       <Text color="coolGray.800" bold fontSize="lg">
                         {t(item)}
                       </Text>
                     </HStack>
-                  </Box>
-                </Pressable>
+                  </Pressable>
+                </Actionsheet.Item>
               );
             })}
-            <Pressable onPress={(e) => setShowModal(false)}>
-              <Box
-                rounded="full"
-                borderColor="coolGray.200"
-                borderWidth="1"
-                mb={1}
-              >
-                <HStack alignItems="center">
+            <Actionsheet.Item p={1}>
+              <Pressable onPress={(e) => setShowModal(false)}>
+                <HStack alignItems="center" space={2}>
                   <IconButton
                     size="md"
                     py="2"
@@ -253,11 +248,11 @@ const AttendanceComponent = ({ weekPage, student, withDate }) => {
                     {t("Unmarked")}
                   </Text>
                 </HStack>
-              </Box>
-            </Pressable>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal>
+              </Pressable>
+            </Actionsheet.Item>
+          </Actionsheet.Content>
+        </Actionsheet>
+      </>
     );
   };
 
@@ -331,22 +326,16 @@ const AttendanceComponent = ({ weekPage, student, withDate }) => {
                         : ""
                     }
                   >
-                    {day.getDate()}
+                    <VStack alignItems={"center"}>
+                      <Text>{moment(day).format("DD")}</Text>
+                      <Text>{moment(day).format("ddd")}</Text>
+                    </VStack>
                   </Text>
                 ) : (
                   <></>
                 )}
                 <TouchableHighlight
                   onPress={(event) => {
-                    if (formatDate(day) === formatDate(todayDate)) {
-                      markAttendance({
-                        date: dateValue,
-                        attendance: attendanceType,
-                        id: student.id,
-                      });
-                    }
-                  }}
-                  onLongPress={(event) => {
                     if (formatDate(day) === formatDate(todayDate)) {
                       setAttendanceObject({
                         date: dateValue,

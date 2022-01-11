@@ -17,6 +17,9 @@ import {
   ArrowForwardIos,
   AppRegistration,
   MenuBook,
+  CameraAlt,
+  ArrowDropDown,
+  ArrowDropUp,
 } from "@mui/icons-material";
 
 function IconButton({ icon, ...props }) {
@@ -76,6 +79,15 @@ export default function IconByName(props) {
       break;
     case "MenuBook":
       icon = <IconButton {...props} icon={<MenuBook />} />;
+      break;
+    case "CameraAlt":
+      icon = <IconButton {...props} icon={<CameraAlt />} />;
+      break;
+    case "ArrowDropDown":
+      icon = <IconButton {...props} icon={<ArrowDropDown />} />;
+      break;
+    case "ArrowDropUp":
+      icon = <IconButton {...props} icon={<ArrowDropUp />} />;
       break;
     default:
       icon = <IconButton {...props} icon={<Home />} />;

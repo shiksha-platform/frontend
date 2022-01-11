@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { HStack, Text, Button, Stack, Box, IconButton } from "native-base";
+import { Text, Button, Box } from "native-base";
 import Menu from "../../../components/Menu";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import Header from "../../../components/Header";
 import { useTranslation } from "react-i18next";
-import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
-import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
+import DayWiesBar from "../../../components/CalendarBar";
 
 // Start editing here, save and see your changes.
 export default function App() {
   const [classes, setClasses] = useState([]);
   const { t } = useTranslation();
   const authId = sessionStorage.getItem("id");
+  const [datePage, setDatePage] = useState(0);
 
   useEffect(() => {
     let ignore = false;
@@ -65,38 +65,18 @@ export default function App() {
           </Button>
         }
       />
-      <Stack space={1}>
-        <Box backgroundColor="gray.100" p="1">
-          <HStack justifyContent="space-between" alignItems="center">
-            <HStack space="4" alignItems="center">
-              <IconButton
-                onPress={(current) => {}}
-                size="sm"
-                color="primary.500"
-                icon={<ArrowCircleLeftOutlinedIcon />}
-              />
-            </HStack>
-            <HStack space="4" alignItems="center">
-              <Text color="primary.500" bold={true}>
-                {t("TODAYS")}
-              </Text>
-            </HStack>
-            <HStack space="2">
-              <IconButton
-                onPress={(current) => {}}
-                size="sm"
-                color={"primary.500"}
-                icon={<ArrowCircleRightOutlinedIcon />}
-              />
-            </HStack>
-          </HStack>
-          <Box backgroundColor="gray.100" p={1}>
-            <Menu items={timeTables} routeDynamics="true" bg={"white"} />
-          </Box>
+      <Box backgroundColor="gray.100" p="1">
+        <DayWiesBar
+          _box={{ bg: "gray.100", p: 0 }}
+          activeColor="primary.500"
+          {...{ page: datePage, setPage: setDatePage }}
+        />
+        <Box backgroundColor="gray.100" p={1}>
+          <Menu items={timeTables} routeDynamics="true" bg={"white"} />
         </Box>
-      </Stack>
-      <Box backgroundColor="gray.100" p={3}>
-        <Box alignItems="center" p={2}>
+      </Box>
+      <Box backgroundColor="gray.100" px={2} pb={2}>
+        <Box alignItems="center" pb={2}>
           <Text color="primary.500" bold={true}>
             {t("YOUR_CLASSES")}
           </Text>

@@ -14,6 +14,7 @@
   "MY_STUDENTS": "मेरे छात्र",
   "STUDENTS": "छात्र",
   "ATTENDANCE_SHEET": "उपस्थिति पत्रक",
+  "CLASS_ATTENDANCE": "कक्षा में उपस्थिति",
   "TODAYS_CLASSES": "आज की कक्षाएं",
   "SHOW_SUBJECT_WISE": "विषयवार दिखाएं",
   "NOW": "अभी",
@@ -50,5 +51,19 @@
   "COURSE_MATERIAL": "पाठ्यक्रम सामग्री",
   "MY_NOTES": "मेरी टिप्पणियाँ",
   "YESTERDAY": "बीता हुआ कल",
-  "TOMORROW": "कल"
+  "TOMORROW": "कल",
+  "SHOW_ALL_STUDENTS": "सभी छात्रों को दिखाएं",
+  "CLASS_DETAILS": "कक्षा विवरण",
+  "CONTACTS_TEACHERS": "संपर्क (शिक्षक)",
+  "AWARDS_AND_RECOGNITION": "पुरस्कार और मान्यता",
+  "STUDENT_COMPETENCIES": "छात्र दक्षता",
+  "GRADE": "ग्रेड",
+  "GOOD": "अच्छा",
+  "DONE": "बंद करे",
+  "LEARNING": "सीखना",
+  "RESULTS": "परिणाम",
+  "COMPETENCY": "योग्यता",
+  "AWARDS": "पुरस्कार",
+  "NOTES_FEEDBACK_ON_STUDENT": "छात्र पर नोट्स/प्रतिक्रिया",
+  "NOTES": "टिप्पणियाँ"
 }

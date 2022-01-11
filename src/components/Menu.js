@@ -99,34 +99,38 @@ export default function Menu({
               _dark={{
                 borderColor: "gray.600",
               }}
-              borderLeftWidth={item.activeMenu ? "5" : ""}
-              borderLeftColor={item.activeMenu ? "primary.500" : ""}
+              borderLeftWidth={"5"}
+              borderLeftColor={
+                item.activeMenu
+                  ? "primary.500"
+                  : _boxMenu?.bg
+                  ? _boxMenu?.bg
+                  : bg
+              }
               borderColor={"coolGray.200"}
               {..._boxMenu}
             >
-              <VStack space="6" my="2" mx="1">
-                <PressableNew px="5" py="1" item={item}>
-                  <HStack space={3}>
-                    <HStack
-                      space={item.leftText || item.icon ? "7" : ""}
-                      alignItems="center"
-                    >
-                      {item.leftText ? (
-                        <Text color="gray.700" fontWeight="500">
-                          {item.leftText}
-                        </Text>
-                      ) : item.icon ? (
-                        <Icon name={item.icon} p="0" {..._icon} />
-                      ) : (
-                        <></>
-                      )}
+              <PressableNew px="5" py="3" item={item}>
+                <HStack space={3}>
+                  <HStack
+                    space={item.leftText || item.icon ? "7" : ""}
+                    alignItems="center"
+                  >
+                    {item.leftText ? (
                       <Text color="gray.700" fontWeight="500">
-                        {t(item.title)}
+                        {item.leftText}
                       </Text>
-                    </HStack>
+                    ) : item.icon ? (
+                      <Icon name={item.icon} p="0" {..._icon} />
+                    ) : (
+                      <></>
+                    )}
+                    <Text color="gray.700" fontWeight="500">
+                      {t(item.title)}
+                    </Text>
                   </HStack>
-                </PressableNew>
-              </VStack>
+                </HStack>
+              </PressableNew>
             </Box>
           )}
           keyExtractor={(item, index) => (item.id ? item.id : index)}

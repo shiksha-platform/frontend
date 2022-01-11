@@ -14,6 +14,7 @@
   "MY_STUDENTS": "My Students",
   "STUDENTS": "Students",
   "ATTENDANCE_SHEET": "Attendance Sheet",
+  "CLASS_ATTENDANCE": "Class Attendance",
   "TODAYS_CLASSES": "Today's classes",
   "SHOW_SUBJECT_WISE": "Show subject wise",
   "NOW": "Now",
@@ -50,5 +51,19 @@
   "COURSE_MATERIAL": "Course material",
   "MY_NOTES": "My notes",
   "YESTERDAY": "Yesterday",
-  "TOMORROW": "Tomorrow"
+  "TOMORROW": "Tomorrow",
+  "SHOW_ALL_STUDENTS": "Show all students",
+  "CLASS_DETAILS": "Class details",
+  "CONTACTS_TEACHERS": "Contacts (Teachers)",
+  "AWARDS_AND_RECOGNITION": "awards and recognition",
+  "STUDENT_COMPETENCIES": "student competencies",
+  "GRADE": "Grade",
+  "GOOD": "Good",
+  "DONE": "Done",
+  "LEARNING": "Learning",
+  "RESULTS": "Results",
+  "COMPETENCY": "Competency",
+  "AWARDS": "Awards",
+  "NOTES_FEEDBACK_ON_STUDENT": "Notes/Feedback on student",
+  "NOTES": "Notes"
 }

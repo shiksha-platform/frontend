@@ -6,31 +6,15 @@ import * as classServiceRegistry from "../../services/classServiceRegistry";
 import Header from "../../../components/Header";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import moment from "moment";
+import DayWiesBar from "../../../components/CalendarBar";
 
 // Start editing here, save and see your changes.
 export default function App() {
   const { t } = useTranslation();
-  const todayDate = new Date();
-  const [date, setDate] = useState();
   const [datePage, setDatePage] = useState(0);
   const [classObject, setClassObject] = useState({});
   const { classId } = useParams();
   const [activeColor, setActiveColor] = useState("primary.500");
-
-  const formatDate = (date, type) => {
-    if (type === "Today") {
-      return (
-        moment(date).format("Do MMM, ddd, HH:MM") + " (" + t("TODAY") + ")"
-      );
-    } else if (type === "Tomorrow") {
-      return moment(date).format("Do MMM, ddd") + " (" + t("TOMORROW") + ")";
-    } else if (type === "Yesterday") {
-      return moment(date).format("Do MMM, ddd") + " (" + t("YESTERDAY") + ")";
-    } else {
-      return moment(date).format("Do MMM, ddd");
-    }
-  };
 
   useEffect(() => {
     let ignore = false;
@@ -45,15 +29,10 @@ export default function App() {
     };
   }, [classId]);
 
-  useEffect(() => {
-    setDate(new Date(todayDate.setDate(todayDate.getDate() + datePage)));
-    setActiveColor(datePage === 0 ? "primary.500" : "coolGray.500");
-  }, [datePage]);
-
   return (
     <>
       <Header
-        icon="Group"
+        icon={datePage < 0 ? "AssignmentTurnedIn" : "Group"}
         heading={"Science"}
         _heading={{ fontSize: "xl" }}
         subHeadingComponent={
@@ -79,40 +58,14 @@ export default function App() {
         }
       />
       <Stack space={1}>
-        <Box bg="white" p="1">
-          <HStack justifyContent="space-between" alignItems="center">
-            <HStack space="4" alignItems="center">
-              <Icon
-                size="sm"
-                color={activeColor}
-                name="ArrowCircleLeftOutlined"
-                onPress={(e) => setDatePage(datePage - 1)}
-              />
-            </HStack>
-            <HStack space="4" alignItems="center">
-              <Text fontSize="md" bold>
-                {formatDate(
-                  date,
-                  datePage === 0
-                    ? "Today"
-                    : datePage === 1
-                    ? "Tomorrow"
-                    : datePage === -1
-                    ? "Yesterday"
-                    : ""
-                )}
-              </Text>
-            </HStack>
-            <HStack space="2">
-              <Icon
-                size="sm"
-                color={activeColor}
-                name="ArrowCircleRightOutlined"
-                onPress={(e) => setDatePage(datePage + 1)}
-              />
-            </HStack>
-          </HStack>
-        </Box>
+        <DayWiesBar
+          {...{
+            activeColor,
+            setActiveColor,
+            page: datePage,
+            setPage: setDatePage,
+          }}
+        />
       </Stack>
       <Menu
         _box={{ p: 5 }}
@@ -134,7 +87,7 @@ export default function App() {
             id: classId,
             keyId: 1,
             title: t("MARK_ATTENDANCE"),
-            icon: "EventNote",
+            icon: datePage < 0 ? "AssignmentTurnedIn" : "EventNote",
             route: "/attendance/:id",
           },
           {
@@ -159,7 +112,6 @@ export default function App() {
         </Text>
         <Menu
           _boxMenu={{ bg: "white", mb: 2 }}
-          routeDynamics={true}
           items={[
             {
               title: t("PREVIOUS_ASSIGNMENTS"),
