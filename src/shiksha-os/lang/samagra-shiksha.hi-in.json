@@ -14,6 +14,8 @@
   "MY_STUDENTS": "मेरे छात्र",
   "STUDENTS": "छात्र",
   "ATTENDANCE_SHEET": "उपस्थिति पत्रक",
+  "ATTENDANCE_REPORTS": "उपस्थिति रिपोर्ट",
+  "ATTENDANCE_NOTIFICATIONS": "उपस्थिति सूचनाएं",
   "CLASS_ATTENDANCE": "कक्षा में उपस्थिति",
   "TODAYS_CLASSES": "आज की कक्षाएं",
   "SHOW_SUBJECT_WISE": "विषयवार दिखाएं",
@@ -65,5 +67,7 @@
   "COMPETENCY": "योग्यता",
   "AWARDS": "पुरस्कार",
   "NOTES_FEEDBACK_ON_STUDENT": "छात्र पर नोट्स/प्रतिक्रिया",
-  "NOTES": "टिप्पणियाँ"
+  "NOTES": "टिप्पणियाँ",
+  "STUDENT_IS_GOOD_NEED": "विद्यार्थी है... अच्छा है... समस्याएँ हैं... विशेष आवश्यकताएँ हैं",
+  "SAVE": "बचाएं"
 }

@@ -16,7 +16,7 @@ export default function Header({
   _icon,
 }) {
   return (
-    <Stack space={1}>
+    <Stack space={1} width={"100%"}>
       <Box p="2" bg="black" {..._box}>
         <HStack justifyContent="space-between" alignItems="center">
           <HStack space="4" alignItems="center">

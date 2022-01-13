@@ -19,6 +19,7 @@ import { TouchableHighlight } from "react-native-web";
 import CircularProgress from "@mui/material/CircularProgress";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import moment from "moment";
+import Card from "./students/Card";
 
 export function weekDaysPageWise(weekPage) {
   let date = new Date();
@@ -101,7 +102,12 @@ export const weekDates = (filter = {}, current = new Date()) => {
   return week;
 };
 
-const AttendanceComponent = ({ weekPage, student, withDate }) => {
+const AttendanceComponent = ({
+  weekPage,
+  student,
+  withDate,
+  hidePopUpButton,
+}) => {
   const { t } = useTranslation();
   const todayDate = new Date();
   const teacherId = sessionStorage.getItem("id");
@@ -203,7 +209,7 @@ const AttendanceComponent = ({ weekPage, student, withDate }) => {
     return icon;
   };
 
-  const PopupModal = () => {
+  const PopupActionSheet = () => {
     return (
       <>
         <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -259,22 +265,14 @@ const AttendanceComponent = ({ weekPage, student, withDate }) => {
   return (
     <>
       <Box borderColor="coolGray.300" borderBottomWidth={1} pb="1">
-        <VStack>
-          <HStack justifyContent="space-between" alignItems="center">
-            <Text color="coolGray.800" bold fontSize="lg">
-              {student.fullName}
-            </Text>
-            <ArrowDropDownIcon fontSize="large" />
-          </HStack>
-          <HStack space={1}>
-            <Text color="coolGray.500">
-              {t("ROLL_NUMBER") + " : " + student.admissionNo}
-            </Text>
-            <Text color="coolGray.500">
-              {t("FATHERS_NAME") + " : " + student.fathersName}
-            </Text>
-          </HStack>
-        </VStack>
+        <Card
+          item={student}
+          img="fasle"
+          _textTitle={{ color: "coolGray.800", bold: true, fontSize: "lg" }}
+          _arrow={{ _icon: { fontSize: "large" } }}
+          type="attendance"
+          hidePopUpButton={hidePopUpButton}
+        />
       </Box>
       <HStack justifyContent="space-between" alignItems="center">
         {weekDays.map((day, subIndex) => {
@@ -359,7 +357,7 @@ const AttendanceComponent = ({ weekPage, student, withDate }) => {
           );
         })}
       </HStack>
-      <PopupModal />
+      <PopupActionSheet />
     </>
   );
 };

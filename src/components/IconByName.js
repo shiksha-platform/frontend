@@ -20,6 +20,7 @@ import {
   CameraAlt,
   ArrowDropDown,
   ArrowDropUp,
+  Edit,
 } from "@mui/icons-material";
 
 function IconButton({ icon, ...props }) {
@@ -88,6 +89,9 @@ export default function IconByName(props) {
       break;
     case "ArrowDropUp":
       icon = <IconButton {...props} icon={<ArrowDropUp />} />;
+      break;
+    case "Edit":
+      icon = <IconButton {...props} icon={<Edit />} />;
       break;
     default:
       icon = <IconButton {...props} icon={<Home />} />;

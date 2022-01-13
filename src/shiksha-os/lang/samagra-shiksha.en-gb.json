@@ -14,6 +14,8 @@
   "MY_STUDENTS": "My Students",
   "STUDENTS": "Students",
   "ATTENDANCE_SHEET": "Attendance Sheet",
+  "ATTENDANCE_REPORTS": "Attendance reports",
+  "ATTENDANCE_NOTIFICATIONS": "Attendance notifications",
   "CLASS_ATTENDANCE": "Class Attendance",
   "TODAYS_CLASSES": "Today's classes",
   "SHOW_SUBJECT_WISE": "Show subject wise",
@@ -65,5 +67,7 @@
   "COMPETENCY": "Competency",
   "AWARDS": "Awards",
   "NOTES_FEEDBACK_ON_STUDENT": "Notes/Feedback on student",
-  "NOTES": "Notes"
+  "NOTES": "Notes",
+  "STUDENT_IS_GOOD_NEED": "Student is... good at... has issues... has special needs",
+  "SAVE": "Save"
 }

@@ -68,7 +68,7 @@ export default function App() {
         />
       </Stack>
       <Menu
-        _box={{ p: 5 }}
+        _box={{ p: 3 }}
         _icon={{
           color: activeColor,
           _icon: {
@@ -90,18 +90,18 @@ export default function App() {
             icon: datePage < 0 ? "AssignmentTurnedIn" : "EventNote",
             route: "/attendance/:id",
           },
-          {
-            keyId: 2,
-            id: classId,
-            title: t("LESSON_PLAN"),
-            icon: "AppRegistration",
-          },
-          {
-            keyId: 3,
-            id: classId,
-            title: t("CLASS_TEST"),
-            icon: "MenuBook",
-          },
+          // {
+          //   keyId: 2,
+          //   id: classId,
+          //   title: t("LESSON_PLAN"),
+          //   icon: "AppRegistration",
+          // },
+          // {
+          //   keyId: 3,
+          //   id: classId,
+          //   title: t("CLASS_TEST"),
+          //   icon: "MenuBook",
+          // },
         ]}
         type={"veritical"}
       />
@@ -114,16 +114,10 @@ export default function App() {
           _boxMenu={{ bg: "white", mb: 2 }}
           items={[
             {
-              title: t("PREVIOUS_ASSIGNMENTS"),
+              title: t("ATTENDANCE_REPORTS"),
             },
             {
-              title: t("LESSON_PLAN"),
-            },
-            {
-              title: t("COURSE_MATERIAL"),
-            },
-            {
-              title: t("MY_NOTES"),
+              title: t("ATTENDANCE_NOTIFICATIONS"),
             },
           ]}
         />

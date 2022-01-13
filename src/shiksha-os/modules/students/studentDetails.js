@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Text, Button, Stack, Box } from "native-base";
+import { Text, Button, Stack, Box, Link, VStack, HStack } from "native-base";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
 import { useParams } from "react-router-dom";
 import AttendanceComponent from "../../../components/weekDays";
 import Menu from "../../../components/Menu";
+import Icon from "../../../components/IconByName";
 
 // Start editing here, save and see your changes.
 export default function App() {
@@ -27,19 +28,29 @@ export default function App() {
     <>
       <Header
         icon="Group"
-        heading={studentObject?.fullName ?? ""}
+        heading={
+          (studentObject?.firstName ? studentObject?.firstName : "") +
+          " " +
+          (studentObject?.lastName ? studentObject?.lastName : "")
+        }
         subHeading=""
       />
       <Stack p="4" space={2}>
         <Stack>
-          <Box borderColor="gray.500">
-            <Text fontSize="md" color="primary.500" bold={true}>
-              {t("DETAILS")}
-            </Text>
-          </Box>
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <Box borderColor="gray.500">
+              <Text fontSize="md" color="primary.500" bold={true}>
+                {t("DETAILS")}
+              </Text>
+            </Box>
+            <Link href={"/students/" + studentObject.id + "/edit"}>
+              <Icon size="sm" color="gray.900" name="Edit" />
+            </Link>
+          </HStack>
           <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
             <Text>
               <Text bold>{t("ADDRESS")} </Text>
+              {studentObject.address}
             </Text>
             <Text>
               <Text bold>{t("FATHERS_NAME")} </Text>
@@ -71,23 +82,30 @@ export default function App() {
             </Text>
           </Box>
           <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
-            {studentObject && studentObject?.id ? (
-              <AttendanceComponent
-                weekPage={0}
-                student={studentObject}
-                withDate={true}
-              />
-            ) : (
-              <></>
-            )}
-            <Button
-              variant="ghost"
-              borderRadius="50"
-              colorScheme="default"
-              background="gray.200"
-            >
-              {t("FULL_CLASS_ATTENDANCE")}
-            </Button>
+            <VStack space={2}>
+              {studentObject && studentObject?.id ? (
+                <AttendanceComponent
+                  weekPage={0}
+                  student={studentObject}
+                  withDate={true}
+                  hidePopUpButton={true}
+                />
+              ) : (
+                <></>
+              )}
+              <Box alignItems={"center"}>
+                <Link href={"/attendance/" + studentObject.currentClassID}>
+                  <Button
+                    variant="ghost"
+                    borderRadius="50"
+                    colorScheme="default"
+                    background="gray.200"
+                  >
+                    {t("FULL_CLASS_ATTENDANCE")}
+                  </Button>
+                </Link>
+              </Box>
+            </VStack>
           </Box>
         </Stack>
 

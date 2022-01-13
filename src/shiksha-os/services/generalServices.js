@@ -8,6 +8,8 @@ export async function post(url, body, headers = {}) {
   return await axios.post(url, body, headers);
 }
 
-export async function update(url, body) {}
+export async function update(url, body, headers = {}) {
+  return await axios.put(url, body, headers);
+}
 
 export async function distory(url, body) {}
