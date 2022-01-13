@@ -50,7 +50,7 @@ export default function App() {
                 alignItems="center"
               >
                 <Icon size="sm" name="Group" />
-                {classObject?.title ?? ""}
+                <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
                 <Icon size="sm" name="ArrowForwardIos" />
               </HStack>
             </Box>

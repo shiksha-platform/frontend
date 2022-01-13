@@ -3,7 +3,7 @@ import { Box, HStack, Text } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Icon from "./IconByName";
-import { weekDaysPageWise } from "./weekDays";
+import { weekDaysPageWise } from "./attendance/AttendanceComponent";
 
 const FormatDate = ({ date, type }) => {
   const { t } = useTranslation();

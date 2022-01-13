@@ -92,14 +92,16 @@ export default function Card({
               </VStack>
               <Stack py={2} alignItems={"center"}>
                 <Link href={"/students/" + item.id}>
-                  <Button
-                    variant="ghost"
-                    borderRadius="50"
-                    colorScheme="default"
-                    background="gray.200"
+                  <Box
+                    rounded="full"
+                    borderColor="coolGray.200"
+                    borderWidth="1"
+                    bg="coolGray.200"
+                    px={6}
+                    py={2}
                   >
                     {t("SEE_MORE")}
-                  </Button>
+                  </Box>
                 </Link>
               </Stack>
             </Stack>

@@ -26,6 +26,7 @@ export default function App() {
     "fathersName",
     "phoneNumber",
     "email",
+    "gender",
   ];
   const parameter = {
     firstName: { placeholder: "First name", required: true },

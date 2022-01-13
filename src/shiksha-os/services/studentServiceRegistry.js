@@ -15,6 +15,7 @@ const interfaceData = {
   email: "email",
   osOwner: "osOwner",
   address: "address",
+  gender: "gender",
 };
 
 export const getAll = async (

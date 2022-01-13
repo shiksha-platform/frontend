@@ -12,14 +12,15 @@ import {
   Pressable,
   Actionsheet,
 } from "native-base";
-import * as attendanceServiceRegistry from "../services/attendanceServiceRegistry";
-import manifest from "../modules/attendance/manifest.json";
+import * as attendanceServiceRegistry from "../../services/attendanceServiceRegistry";
+import manifest from "../../modules/attendance/manifest.json";
 import { useTranslation } from "react-i18next";
 import { TouchableHighlight } from "react-native-web";
 import CircularProgress from "@mui/material/CircularProgress";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import moment from "moment";
-import Card from "./students/Card";
+import Card from "../students/Card";
+import { CircleOutlined } from "@mui/icons-material";
 
 export function weekDaysPageWise(weekPage) {
   let date = new Date();
@@ -102,11 +103,62 @@ export const weekDates = (filter = {}, current = new Date()) => {
   return week;
 };
 
+export const GetAttendance = async (filters) => {
+  return await attendanceServiceRegistry.getAll({
+    filters: filters,
+  });
+};
+
+export const GetIcon = ({ status, _box, color }) => {
+  let icon = <></>;
+  switch (status) {
+    case "Present":
+      icon = (
+        <Box py="2" {..._box} color={color ? color : "green.600"}>
+          <CheckCircleIcon fontSize="large" />
+        </Box>
+      );
+      break;
+    case "Absent":
+      icon = (
+        <Box py="2" {..._box} color={color ? color : "danger.600"}>
+          <HdrAutoIcon fontSize="large" />
+        </Box>
+      );
+      break;
+    case "Late":
+      icon = (
+        <Box py="2" {..._box} color={color ? color : "yellow.600"}>
+          <WatchLaterIcon fontSize="large" />
+        </Box>
+      );
+      break;
+    case "Today":
+      icon = (
+        <Box py="2" {..._box} color={color ? color : "gray.400"}>
+          <CircleOutlined fontSize="large" />
+        </Box>
+      );
+      break;
+    default:
+      icon = (
+        <Box py="2" {..._box} color={color ? color : "gray.400"}>
+          <CircleIcon fontSize="large" />
+        </Box>
+      );
+      break;
+  }
+  return icon;
+};
+
 const AttendanceComponent = ({
   weekPage,
   student,
   withDate,
+  attendanceProp,
   hidePopUpButton,
+  withApigetAttendance,
+  getAttendance,
 }) => {
   const { t } = useTranslation();
   const todayDate = new Date();
@@ -118,26 +170,27 @@ const AttendanceComponent = ({
   const [loding, setLoding] = useState({});
   const status = manifest?.status ? manifest?.status : [];
 
-  useEffect(() => {
+  useEffect(async () => {
     setWeekDays(weekDaysPageWise(weekPage));
-    getAttendance();
-  }, [weekPage]);
-
-  const getAttendance = async () => {
-    setAttendance(
-      await attendanceServiceRegistry.getAll({
-        filters: {
+    if (withApigetAttendance) {
+      setAttendance(
+        await GetAttendance({
+          studentId: {
+            eq: student.id,
+          },
           classId: {
             eq: student.currentClassID,
           },
           teacherId: {
             eq: teacherId,
           },
-        },
-      })
-    );
+        })
+      );
+    } else if (attendanceProp) {
+      setAttendance(attendanceProp);
+    }
     setLoding({});
-  };
+  }, [weekPage, attendanceProp]);
 
   const formatDate = (date) => {
     var d = new Date(date),
@@ -156,57 +209,53 @@ const AttendanceComponent = ({
       [(data.date ? data.date : attendanceObject.date) +
       (data.id ? data.id : attendanceObject.id)]: true,
     });
-    attendanceServiceRegistry
-      .create({
-        studentId: data.id ? data.id : attendanceObject.id,
-        date: data.date ? data.date : attendanceObject.date,
-        attendance: data.attendance
-          ? data.attendance
-          : attendanceObject.attendance,
-        attendanceNote: "Test",
-        classId: student.currentClassID,
-        subjectId: "History",
-        teacherId: teacherId,
-      })
-      .then((e) => {
-        setTimeout(getAttendance, 900);
-      });
-    setShowModal(false);
-  };
-
-  const GetIcon = ({ status, _box, color }) => {
-    let icon = <></>;
-    switch (status) {
-      case "Present":
-        icon = (
-          <Box py="2" {..._box} color={color ? color : "green.600"}>
-            <CheckCircleIcon fontSize="large" />
-          </Box>
-        );
-        break;
-      case "Absent":
-        icon = (
-          <Box py="2" {..._box} color={color ? color : "danger.600"}>
-            <HdrAutoIcon fontSize="large" />
-          </Box>
-        );
-        break;
-      case "Late":
-        icon = (
-          <Box py="2" {..._box} color={color ? color : "yellow.600"}>
-            <WatchLaterIcon fontSize="large" />
-          </Box>
-        );
-        break;
-      default:
-        icon = (
-          <Box py="2" {..._box} color={color ? color : "gray.400"}>
-            <CircleIcon fontSize="large" />
-          </Box>
-        );
-        break;
+    if (attendanceObject.attendanceId) {
+      attendanceServiceRegistry
+        .update(
+          {
+            id: attendanceObject.attendanceId,
+            attendance: data.attendance
+              ? data.attendance
+              : attendanceObject.attendance,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+            },
+          }
+        )
+        .then((e) => {
+          if (getAttendance) {
+            setTimeout(getAttendance, 900);
+          }
+        });
+    } else {
+      attendanceServiceRegistry
+        .create(
+          {
+            studentId: data.id ? data.id : attendanceObject.id,
+            date: data.date ? data.date : attendanceObject.date,
+            attendance: data.attendance
+              ? data.attendance
+              : attendanceObject.attendance,
+            attendanceNote: "Test",
+            classId: student.currentClassID,
+            subjectId: "History",
+            teacherId: teacherId,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+            },
+          }
+        )
+        .then((e) => {
+          if (getAttendance) {
+            setTimeout(getAttendance, 900);
+          }
+        });
     }
-    return icon;
+    setShowModal(false);
   };
 
   const PopupActionSheet = () => {
@@ -301,6 +350,8 @@ const AttendanceComponent = ({
           ) {
             attendanceIcon = <GetIcon status={attendanceItem?.attendance} />;
             attendanceType = "Present";
+          } else if (formatDate(day) === formatDate(todayDate)) {
+            attendanceIcon = <GetIcon status="Today" />;
           }
           if (day > todayDate) {
             attendanceIcon = <GetIcon color="gray.100" />;
@@ -336,6 +387,9 @@ const AttendanceComponent = ({
                   onPress={(event) => {
                     if (formatDate(day) === formatDate(todayDate)) {
                       setAttendanceObject({
+                        attendanceId: attendanceItem.id
+                          ? attendanceItem.id
+                          : null,
                         date: dateValue,
                         attendance: attendanceType,
                         id: student.id,

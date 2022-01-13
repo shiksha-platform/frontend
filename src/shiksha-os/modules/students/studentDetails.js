@@ -4,7 +4,7 @@ import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
 import { useParams } from "react-router-dom";
-import AttendanceComponent from "../../../components/weekDays";
+import AttendanceComponent from "../../../components/attendance/AttendanceComponent";
 import Menu from "../../../components/Menu";
 import Icon from "../../../components/IconByName";
 

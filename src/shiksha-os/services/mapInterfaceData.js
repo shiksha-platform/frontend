@@ -36,7 +36,7 @@ export default function interfaceData(
           if (element[key1]) {
             data[value1] = element[key1];
           }
-        }
+        } else if (element[key1]) data[value1] = element[key1];
       } else data[value1] = element[key1];
     }
   }

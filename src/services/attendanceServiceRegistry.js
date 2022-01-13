@@ -37,15 +37,43 @@ export const getAll = async (
   }
 };
 
-export const create = async (parameters) => {
+export const create = async (parameters, headers = {}) => {
   const result = await generalServices.post(
     manifest.api_url + "Attendance",
-    parameters
+    parameters,
+    {
+      headers: headers?.headers ? headers?.headers : {},
+    }
   );
   if (result.data) {
     return true;
     // return result.data.map((e) => mapInterfaceData(e, interfaceData));
   } else {
-    return [];
+    return false;
+  }
+};
+
+export const update = async (data = {}, headers = {}) => {
+  let newInterfaceData = interfaceData;
+  if (headers?.removeParameter || headers?.onlyParameter) {
+    newInterfaceData = {
+      ...interfaceData,
+      removeParameter: headers?.removeParameter ? headers?.removeParameter : [],
+      onlyParameter: headers?.onlyParameter ? headers?.onlyParameter : [],
+    };
+  }
+  let newData = mapInterfaceData(data, newInterfaceData, true);
+
+  const result = await generalServices.update(
+    manifest.api_url + "Attendance/" + data.id,
+    newData,
+    {
+      headers: headers?.headers ? headers?.headers : {},
+    }
+  );
+  if (result.data) {
+    return result;
+  } else {
+    return {};
   }
 };

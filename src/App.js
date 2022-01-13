@@ -77,7 +77,7 @@ export default function App() {
         <Route
           path="/students/class/:classId"
           element={
-            <SubApp title={t("MY_STUDENTS")}>
+            <SubApp title={t("MY_CLASSES")}>
               <Students />
             </SubApp>
           }
@@ -101,7 +101,7 @@ export default function App() {
         <Route
           path="/attendance/:classId"
           element={
-            <SubApp title={t("ATTENDANCE_SHEET")}>
+            <SubApp title={t("ATTENDANCE_REGISTER")}>
               <Attendance />
             </SubApp>
           }

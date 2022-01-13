@@ -21,6 +21,8 @@
   "SHOW_SUBJECT_WISE": "Show subject wise",
   "NOW": "Now",
   "MARK_ATTENDANCE": "Mark Attendance",
+  "MARK_ALL_PRESENT": "Mark all present",
+  "ATTENDANCE_SUMMARY": "Attendance summary",
   "STUDENTS_LIST": "Students List",
   "SHARE": "Share",
   "GIRLS": "Girls",
@@ -40,6 +42,7 @@
   "SEE_MORE": "See more",
   "CLASS": "Class",
   "CLASS_TEST": "Class test",
+  "ATTENDANCE": "Attendance",
   "WEEK_ATTENDANCE": "Week attendance",
   "FULL_CLASS_ATTENDANCE": "Full class attendance",
   "THE_CLASSES_YOU_TAKE": "View all classes you take",
@@ -69,5 +72,8 @@
   "NOTES_FEEDBACK_ON_STUDENT": "Notes/Feedback on student",
   "NOTES": "Notes",
   "STUDENT_IS_GOOD_NEED": "Student is... good at... has issues... has special needs",
-  "SAVE": "Save"
+  "SAVE": "Save",
+  "ATTENDANCE_REGISTER": "Attendance register",
+  "SEE_FULL_REPORT": "See full report",
+  "TOTAL": "Total"
 }
