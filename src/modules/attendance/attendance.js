@@ -35,14 +35,22 @@ export default function App() {
   const [weekPage, setWeekPage] = useState(0);
   const [allAttendanceStatus, setAllAttendanceStatus] = useState({});
   const [students, setStudents] = useState([]);
+  const [searchStudents, setSearchStudents] = useState([]);
   const [classObject, setClassObject] = useState({});
   const { classId } = useParams();
   const [loding, setLoding] = useState(false);
   const teacherId = sessionStorage.getItem("id");
   const [attendance, setAttendance] = useState([]);
-  const [canMarkAll, setCanMarkAll] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const status = manifest?.status ? manifest?.status : [];
+  const [search, setSearch] = useState();
+
+  useEffect(() => {
+    const filterStudent = students.filter((e) =>
+      e.fullName.toLowerCase().match(search.toLowerCase())
+    );
+    setSearchStudents(filterStudent);
+  }, [search]);
 
   useEffect(() => {
     let ignore = false;
@@ -55,6 +63,7 @@ export default function App() {
         },
       });
       setStudents(studentData);
+      setSearchStudents(studentData);
       await getAttendance();
       if (!ignore)
         setClassObject(await classServiceRegistry.getOne({ id: classId }));
@@ -76,9 +85,20 @@ export default function App() {
     });
 
     setAttendance(attendanceData);
-    setCanMarkAll(
-      attendanceData.filter((e) => e.date === moment().format("Y-MM-DD"))
-    );
+  };
+
+  const getStudentsAttendance = (e) => {
+    return students
+      .map((item) => {
+        return attendance
+          .slice()
+          .reverse()
+          .find(
+            (e) =>
+              e.date === moment().format("Y-MM-DD") && e.studentId === item.id
+          );
+      })
+      .filter((e) => e);
   };
 
   if (!classObject && !classObject?.className) {
@@ -101,16 +121,51 @@ export default function App() {
     setLoding(true);
     if (typeof students === "object") {
       let ctr = 0;
+      let attendanceAll = getStudentsAttendance();
+
       students.forEach((item, index) => {
-        const result = attendanceServiceRegistry.create({
-          studentId: item.id,
-          date: moment().format("Y-MM-DD"),
-          attendance: "Present",
-          attendanceNote: "Test",
-          classId: item.currentClassID,
-          subjectId: "History",
-          teacherId: teacherId,
-        });
+        let attendanceObject = attendanceAll.find(
+          (e) => item.id === e.studentId
+        );
+        let result = null;
+        if (attendanceObject?.id) {
+          if (attendanceObject.attendance !== "Present") {
+            result = attendanceServiceRegistry
+              .update(
+                {
+                  id: attendanceObject.id,
+                  attendance: "Present",
+                },
+                {
+                  headers: {
+                    Authorization: "Bearer " + sessionStorage.getItem("token"),
+                  },
+                }
+              )
+              .then((e) => {
+                if (getAttendance) {
+                  setTimeout(getAttendance, 900);
+                }
+              });
+          }
+        } else {
+          result = attendanceServiceRegistry.create(
+            {
+              studentId: item.id,
+              date: moment().format("Y-MM-DD"),
+              attendance: "Present",
+              attendanceNote: "Test",
+              classId: item.currentClassID,
+              subjectId: "History",
+              teacherId: teacherId,
+            },
+            {
+              headers: {
+                Authorization: "Bearer " + sessionStorage.getItem("token"),
+              },
+            }
+          );
+        }
 
         setTimeout(async (e) => {
           if (result) {
@@ -136,17 +191,7 @@ export default function App() {
   };
 
   const countReport = ({ gender, attendanceType, type }) => {
-    let attendanceAll = students
-      .map((item) => {
-        return attendance
-          .slice()
-          .reverse()
-          .find(
-            (e) =>
-              e.date === moment().format("Y-MM-DD") && e.studentId === item.id
-          );
-      })
-      .filter((e) => e);
+    let attendanceAll = getStudentsAttendance();
 
     let studentIds = students.map((e) => e.id);
     if (gender && [t("BOYS"), t("GIRLS")].includes(gender)) {
@@ -229,6 +274,7 @@ export default function App() {
         <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
           <Actionsheet.Content bg="coolGray.500">
             <Header
+              isDisabledAppBar={true}
               _box={{ bg: "coolGray.500", py: 0 }}
               icon="AssignmentTurnedIn"
               heading={t("ATTENDANCE")}
@@ -266,7 +312,7 @@ export default function App() {
               </HStack>
             </Box>
             <Box p={4}>
-              <Stack space={2}>
+              <Stack space={3}>
                 <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
                   <FlatList
                     data={["heade", t("BOYS"), t("GIRLS"), t("TOTAL")]}
@@ -347,6 +393,21 @@ export default function App() {
                     keyExtractor={(item, index) => index}
                   />
                 </Box>
+                <VStack>
+                  <Box
+                    borderWidth={1}
+                    p="2"
+                    borderColor="gray.500"
+                    bg="gray.50"
+                  >
+                    <Text>
+                      <Text>100% {t("THIS_WEEK")}:</Text>
+                      {students.map((e) => (
+                        <Text pr={1}>{e.fullName}</Text>
+                      ))}
+                    </Text>
+                  </Box>
+                </VStack>
                 <VStack space={4} width={"100%"} alignItems={"center"}>
                   <Link href={"/classes/" + classId}>
                     <Button
@@ -381,6 +442,9 @@ export default function App() {
   return (
     <>
       <Header
+        title={t("ATTENDANCE_REGISTER")}
+        isEnableSearchBtn={true}
+        setSearch={setSearch}
         icon="AssignmentTurnedIn"
         heading={t("ATTENDANCE")}
         _heading={{ fontSize: "xl" }}
@@ -419,7 +483,7 @@ export default function App() {
       </Stack>
       <Box bg="gray.100" p="2">
         <FlatList
-          data={students}
+          data={searchStudents}
           renderItem={({ item, index }) => (
             <Box
               bg={weekPage < 0 ? "green.100" : "white"}
@@ -448,23 +512,21 @@ export default function App() {
       </Box>
       <Stack>
         <Box p="2" bg="coolGray.400">
-          <VStack space={2} alignItems={"center"}>
-            <Text>{t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}</Text>
+          <VStack space={3} alignItems={"center"}>
+            <Text textAlign={"center"}>
+              {t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
+            </Text>
             <HStack alignItems={"center"} space={4}>
-              {canMarkAll.length < 1 ? (
-                <Button
-                  variant="ghost"
-                  borderRadius="50"
-                  colorScheme="default"
-                  background="coolGray.200"
-                  px={4}
-                  onPress={markAllAttendance}
-                >
-                  {t("MARK_ALL_PRESENT")}
-                </Button>
-              ) : (
-                <></>
-              )}
+              <Button
+                variant="ghost"
+                borderRadius="50"
+                colorScheme="default"
+                background="coolGray.200"
+                px={4}
+                onPress={markAllAttendance}
+              >
+                {t("MARK_ALL_PRESENT")}
+              </Button>
               <Button
                 borderRadius="50"
                 colorScheme="default"
@@ -475,6 +537,7 @@ export default function App() {
                 {t("DONE")}
               </Button>
             </HStack>
+            <></>
           </VStack>
         </Box>
       </Stack>

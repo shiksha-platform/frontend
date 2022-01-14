@@ -12,6 +12,7 @@ import { useTranslation, initReactI18next } from "react-i18next";
 import init from "./shiksha-os/lang/init";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./shiksha-os/Login";
+import { useState } from "react";
 i18n.use(initReactI18next).init(init);
 
 function NotFound() {
@@ -37,7 +38,7 @@ export default function App() {
           <Route
             path="*"
             element={
-              <SubApp title={t("MY_SCHOOL_APP")}>
+              <SubApp>
                 <Login />
               </SubApp>
             }
@@ -53,7 +54,7 @@ export default function App() {
         <Route
           path="/"
           element={
-            <SubApp title={t("MY_SCHOOL_APP")}>
+            <SubApp>
               <Home />
             </SubApp>
           }
@@ -61,7 +62,7 @@ export default function App() {
         <Route
           path="/classes"
           element={
-            <SubApp title={t("MY_CLASSES")}>
+            <SubApp>
               <Classes />
             </SubApp>
           }
@@ -69,7 +70,7 @@ export default function App() {
         <Route
           path="/classes/:classId"
           element={
-            <SubApp title={t("MY_CLASSES")}>
+            <SubApp>
               <ClassDetails />
             </SubApp>
           }
@@ -77,7 +78,7 @@ export default function App() {
         <Route
           path="/students/class/:classId"
           element={
-            <SubApp title={t("MY_CLASSES")}>
+            <SubApp>
               <Students />
             </SubApp>
           }
@@ -85,7 +86,7 @@ export default function App() {
         <Route
           path="/students/:studentId"
           element={
-            <SubApp title={t("STUDENTS_DETAIL")}>
+            <SubApp>
               <StudentDetails />
             </SubApp>
           }
@@ -93,7 +94,7 @@ export default function App() {
         <Route
           path="/students/:studentId/edit"
           element={
-            <SubApp title={t("STUDENTS_DETAIL")}>
+            <SubApp>
               <StudentEdit />
             </SubApp>
           }
@@ -101,7 +102,7 @@ export default function App() {
         <Route
           path="/attendance/:classId"
           element={
-            <SubApp title={t("ATTENDANCE_REGISTER")}>
+            <SubApp>
               <Attendance />
             </SubApp>
           }
@@ -112,11 +113,6 @@ export default function App() {
   );
 }
 
-export function SubApp({ children, title }) {
-  return (
-    <NativeBaseProvider>
-      <AppBar title={title} />
-      {children}
-    </NativeBaseProvider>
-  );
+export function SubApp({ children }) {
+  return <NativeBaseProvider>{children}</NativeBaseProvider>;
 }

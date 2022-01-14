@@ -43,7 +43,21 @@ export default function App() {
       type: parameter[e]?.type ? parameter[e].type : "text",
       value: studentObject[e] ? studentObject[e] : "",
       onChange: (item) => {
-        setStudentObject({ ...studentObject, [e]: item.target.value });
+        if (e === "firstName") {
+          setStudentObject({
+            ...studentObject,
+            [e]: item.target.value,
+            fullName: item.target.value + " " + studentObject.lastName,
+          });
+        } else if (e === "lastName") {
+          setStudentObject({
+            ...studentObject,
+            [e]: item.target.value,
+            fullName: studentObject.firstName + " " + item.target.value,
+          });
+        } else {
+          setStudentObject({ ...studentObject, [e]: item.target.value });
+        }
       },
     };
   });
@@ -61,7 +75,7 @@ export default function App() {
   const handalSubmit = async (e) => {
     let result = await studentServiceRegistry.update(studentObject, {
       headers: { Authorization: "Bearer " + sessionStorage.getItem("token") },
-      onlyParameter: onlyParameter,
+      onlyParameter: [...onlyParameter, "fullName"],
     });
     if (result.data) {
       toast.show({
@@ -84,12 +98,9 @@ export default function App() {
   return (
     <>
       <Header
+        title={t("STUDENTS_DETAIL")}
         icon="Group"
-        heading={
-          (studentObject?.firstName ? studentObject?.firstName : "") +
-          " " +
-          (studentObject?.lastName ? studentObject?.lastName : "")
-        }
+        heading={studentObject?.fullName ? studentObject?.fullName : ""}
         button={
           <Button
             variant="ghost"

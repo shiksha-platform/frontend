@@ -32,24 +32,52 @@ export default function App() {
   }, [authId]);
 
   const timeTables = [
-    { id: "1", leftText: "08:30", title: "Class V, Sec B, Maths" },
-    { id: "2", leftText: "09:30", title: "Class V, Sec C, Maths" },
-    { id: "3", leftText: "10:30", title: "Free" },
-    { id: "4", leftText: "11:30", title: "Free" },
+    {
+      id: "1",
+      leftText: "08:30",
+      title: "Class V, Sec B, Maths",
+      _boxMenu: { bg: "coolGray.200" },
+    },
+    {
+      id: "2",
+      leftText: "09:30",
+      title: "Class V, Sec C, Maths",
+      _boxMenu: { bg: "coolGray.200" },
+    },
+    {
+      id: "3",
+      leftText: "10:30",
+      title: "Special dance Mid group",
+      rightIcon: "MoreVert",
+      _boxMenu: { bg: "coolGray.200" },
+    },
+    {
+      id: "4",
+      leftText: "11:30",
+      title: "Free",
+      rightIcon: "MoreVert",
+      _boxMenu: { bg: "coolGray.200" },
+    },
     {
       id: "5",
       leftText: "12:30",
       title: "Class VI, Sec A, Science",
       activeMenu: true,
     },
-    { id: "6", leftText: "01:30", title: "Substitution" },
-    { id: "7", leftText: "02:30", title: "Free" },
+    {
+      id: "6",
+      leftText: "01:30",
+      title: "Substitution",
+      rightIcon: "MoreVert",
+    },
+    { id: "7", leftText: "02:30", title: "Free", rightIcon: "MoreVert" },
     { id: "8", leftText: "03:30", title: "Class VI, Sec A, Maths" },
   ];
 
   return (
     <>
       <Header
+        title={t("MY_CLASSES")}
         icon="Group"
         subHeading={t("THE_CLASSES_YOU_TAKE")}
         button={

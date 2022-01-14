@@ -21,6 +21,10 @@ import {
   ArrowDropDown,
   ArrowDropUp,
   Edit,
+  KeyboardBackspace,
+  Search,
+  Close,
+  Class,
 } from "@mui/icons-material";
 
 function IconButton({ icon, ...props }) {
@@ -92,6 +96,18 @@ export default function IconByName(props) {
       break;
     case "Edit":
       icon = <IconButton {...props} icon={<Edit />} />;
+      break;
+    case "KeyboardBackspace":
+      icon = <IconButton {...props} icon={<KeyboardBackspace />} />;
+      break;
+    case "Search":
+      icon = <IconButton {...props} icon={<Search />} />;
+      break;
+    case "Close":
+      icon = <IconButton {...props} icon={<Close />} />;
+      break;
+    case "Class":
+      icon = <IconButton {...props} icon={<Class />} />;
       break;
     default:
       icon = <IconButton {...props} icon={<Home />} />;

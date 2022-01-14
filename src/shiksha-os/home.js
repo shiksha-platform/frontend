@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Box } from "native-base";
+import { Text, Box, Stack, VStack, HStack, Button } from "native-base";
 import manifest from "./manifest";
 import Menu from "../components/Menu";
 import Header from "../components/Header";
@@ -14,6 +14,9 @@ export default function Home() {
   return (
     <>
       <Header
+        title={t("MY_SCHOOL_APP")}
+        isEnableHamburgerMenuButton={true}
+        isEnableLanguageMenu={true}
         icon="InsertEmoticon"
         heading={t("GOOD_MORNING") + ", " + firstName}
         subHeading={t("THIS_IS_HOW_YOUR_DAY_LOOKS")}
@@ -23,44 +26,48 @@ export default function Home() {
         _subHeading={{ color: "black" }}
       />
       <Box backgroundColor="white" p={3}>
-        <Text color="green.700" bold={true}>
-          {t("TODAY")}
-        </Text>
-        {/* <Stack>
-          <VStack>
-            <Text>{t("YOU_HAVE_3_CLASSES")}</Text>
-            <Text>{t("STUDENT_PROFILE_IN_COMPLETE")}</Text>
-            <HStack space={2}>
-              <Text>{t("NEW_ACTIVITY_ADDED_TO_SCHOOL")}</Text>
-              <Button
-                variant="outline"
-                colorScheme="default"
-                background={"#fff"}
-                size="container"
-                px={1}
-              >
-                {t("TIME_TABLE")}
-              </Button>
-            </HStack>
-          </VStack>
-        </Stack> */}
-      </Box>
-      <Box backgroundColor="lightBlue.100" m={3} p={3}>
-        <Text color="green.700" bold={true}>
-          {t("THIS_WEEK")}
-        </Text>
-        {/* <HStack space={2}>
-          <Text>{t("2_SCHOOL_ACTIVITIES_1_OFFICIAL_VISIT")}</Text>
+        <HStack justifyContent={"space-between"}>
+          <Text color="green.700" bold={true}>
+            {t("TODAY")}
+          </Text>
           <Button
-            variant="outline"
+            rounded={50}
             colorScheme="default"
-            background={"#fff"}
+            bg={"coolGray.700"}
+            color={"coolGray.100"}
             size="container"
-            px={1}
+            px={3}
           >
             {t("TIME_TABLE")}
           </Button>
-        </HStack> */}
+        </HStack>
+        <Stack>
+          <VStack>
+            <Text>{t("YOU_HAVE_3_CLASSES")}</Text>
+            <Text>{t("STUDENT_PROFILE_IN_COMPLETE")}</Text>
+            <Text>{t("NEW_ACTIVITY_ADDED_TO_SCHOOL")}</Text>
+          </VStack>
+        </Stack>
+      </Box>
+      <Box backgroundColor="lightBlue.100" m={3} p={3}>
+        <HStack justifyContent={"space-between"}>
+          <Text color="green.700" bold={true}>
+            {t("THIS_WEEK")}
+          </Text>
+          <Button
+            rounded={50}
+            colorScheme="default"
+            bg={"coolGray.700"}
+            color={"coolGray.100"}
+            size="container"
+            px={3}
+          >
+            {t("CALENDAR")}
+          </Button>
+        </HStack>
+        <HStack space={2}>
+          <Text>{t("2_SCHOOL_ACTIVITIES_1_OFFICIAL_VISIT")}</Text>
+        </HStack>
       </Box>
       <Box backgroundColor="blue.300" p="3">
         <Menu bg="white" items={menus} />

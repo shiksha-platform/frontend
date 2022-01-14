@@ -20,6 +20,7 @@ import { useParams } from "react-router-dom";
 import Icon from "../../../components/IconByName";
 import Menu from "../../../components/Menu";
 import Card from "../../../components/students/Card";
+import Header from "../../../components/Header";
 
 // Start editing here, save and see your changes.
 export default function App() {
@@ -53,16 +54,18 @@ export default function App() {
   return (
     <>
       <Box>
+        <Header isDisabledHeader={true} title={t("MY_CLASSES")} />
+
         <Box>
           <AspectRatio w="100%" ratio={16 / 9}>
             <Image
               source={{
-                uri: "https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg",
+                uri: "https://images.freeimages.com/images/large-previews/51b/school-children-in-india-1438445.jpg",
               }}
               alt="image"
             />
           </AspectRatio>
-          <Box position="absolute" top="2" left="2">
+          <Box position="absolute" top="2" right="2">
             <Icon
               color="white"
               name={"CameraAlt"}
@@ -119,7 +122,7 @@ export default function App() {
             {
               id: classId,
               keyId: 1,
-              title: t("MARK_ATTENDANCE"),
+              title: t("ATTENDANCE"),
               icon: "AssignmentTurnedIn",
               route: "/attendance/:id",
             },
@@ -153,18 +156,7 @@ export default function App() {
                 />
               </HStack>
             </Box>
-            <PresenceTransition
-              visible={studentCollaps}
-              initial={{
-                scaleY: 0,
-              }}
-              animate={{
-                scaleY: 1,
-                transition: {
-                  duration: 250,
-                },
-              }}
-            >
+            <PresenceTransition visible={studentCollaps}>
               <VStack space={2}>
                 <Box borderWidth={1} borderColor="gray.500" bg="gray.50">
                   <FlatList
@@ -218,111 +210,121 @@ export default function App() {
                 />
               </HStack>
             </Box>
-            <PresenceTransition
-              visible={classCollaps}
-              initial={{
-                scaleY: 0,
-              }}
-              animate={{
-                scaleY: 1,
-                transition: {
-                  duration: 250,
-                },
-              }}
-            >
-              <Stack>
-                <Box borderColor="gray.500" bg="gray.50">
-                  <Text fontSize="md" color="primary.500" bold={true}>
-                    {t("SUMMARY")}
-                  </Text>
-                </Box>
-                <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
-                  <HStack space={3}>
-                    <Text>
-                      <Text bold>{t("STUDENTS")}:</Text> {students.length}
+            <PresenceTransition visible={classCollaps}>
+              <Stack space={2}>
+                <Stack>
+                  <Box borderColor="gray.500" bg="gray.50">
+                    <Text fontSize="md" color="primary.500" bold={true}>
+                      {t("SUMMARY")}
                     </Text>
-                    <Text>
-                      <Text bold>{t("GIRLS")}:</Text>
-                    </Text>
-                    <Text>
-                      <Text bold>{t("BOYS")}:</Text>
-                    </Text>
-                  </HStack>
-
-                  <Text>
-                    <Text bold>{t("AGE_GROUP")}:</Text>
-                  </Text>
-                  <Text>
-                    <Text bold>{t("CLASS_TEACHER")}:</Text> {fullName}
-                  </Text>
-                </Box>
-              </Stack>
-
-              <Stack>
-                <Box borderColor="gray.500" bg="gray.50">
-                  <Text fontSize="md" color="primary.500" bold={true}>
-                    {t("CLASS_ATTENDANCE")}
-                  </Text>
-                </Box>
-                <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
-                  <HStack
-                    space={3}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
+                  </Box>
+                  <Box
+                    borderWidth={1}
+                    p="2"
+                    borderColor="gray.500"
+                    bg="gray.50"
                   >
+                    <HStack space={3}>
+                      <Text>
+                        <Text bold>{t("STUDENTS")}:</Text> {students.length}
+                      </Text>
+                      <Text>
+                        <Text bold>{t("GIRLS")}:</Text>
+                      </Text>
+                      <Text>
+                        <Text bold>{t("BOYS")}:</Text>
+                      </Text>
+                    </HStack>
+
                     <Text>
-                      <Text bold>{t("GRADE")}:</Text> {t("GOOD")}
+                      <Text bold>{t("AGE_GROUP")}:</Text>
                     </Text>
-                    <Button
-                      variant="ghost"
-                      borderRadius="50"
-                      colorScheme="default"
-                      background="gray.200"
+                    <Text>
+                      <Text bold>{t("CLASS_TEACHER")}:</Text> {fullName}
+                    </Text>
+                  </Box>
+                </Stack>
+
+                <Stack>
+                  <Box borderColor="gray.500" bg="gray.50">
+                    <Text fontSize="md" color="primary.500" bold={true}>
+                      {t("CLASS_ATTENDANCE")}
+                    </Text>
+                  </Box>
+                  <Box
+                    borderWidth={1}
+                    p="2"
+                    borderColor="gray.500"
+                    bg="gray.50"
+                  >
+                    <HStack
+                      space={3}
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
                     >
-                      {t("MARK_ATTENDANCE")}
-                    </Button>
-                  </HStack>
-                </Box>
-              </Stack>
+                      <Text>
+                        <Text bold>{t("GRADE")}:</Text> {t("GOOD")}
+                      </Text>
+                      <Link href={"/attendance/" + classId}>
+                        <Box
+                          rounded="full"
+                          borderColor="coolGray.200"
+                          borderWidth="1"
+                          bg="coolGray.200"
+                          px={6}
+                          py={2}
+                        >
+                          {t("ATTENDANCE_REGISTER")}
+                        </Box>
+                      </Link>
+                    </HStack>
+                  </Box>
+                </Stack>
 
-              <Stack>
-                <Box borderColor="gray.500" bg="gray.50">
-                  <Text fontSize="md" color="primary.500" bold={true}>
-                    {t("CONTACTS_TEACHERS")}
-                  </Text>
-                </Box>
-                <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
-                  <VStack>
-                    <Text>
-                      <Text bold>{t("MATHS")}:</Text>
-                      {fullName}
+                <Stack>
+                  <Box borderColor="gray.500" bg="gray.50">
+                    <Text fontSize="md" color="primary.500" bold={true}>
+                      {t("CONTACTS_TEACHERS")}
                     </Text>
-                    <Text>
-                      <Text bold>{t("ENGLISH")}:</Text>
-                      {fullName}
-                    </Text>
-                    <Text>
-                      <Text bold>{t("SCIENCE")}:</Text>
-                      {fullName}
-                    </Text>
-                  </VStack>
-                </Box>
-              </Stack>
+                  </Box>
+                  <Box
+                    borderWidth={1}
+                    p="2"
+                    borderColor="gray.500"
+                    bg="gray.50"
+                  >
+                    <VStack>
+                      <Text>
+                        <Text bold>{t("MATHS")}:</Text>
+                        {fullName}
+                      </Text>
+                      <Text>
+                        <Text bold>{t("ENGLISH")}:</Text>
+                        {fullName}
+                      </Text>
+                      <Text>
+                        <Text bold>{t("SCIENCE")}:</Text>
+                        {fullName}
+                      </Text>
+                    </VStack>
+                  </Box>
+                </Stack>
 
-              <Stack>
-                <Box borderColor="gray.500" bg="gray.50">
-                  <Text fontSize="md" color="primary.500" bold={true}>
-                    {t("AWARDS_AND_RECOGNITION")}
-                  </Text>
-                </Box>
-              </Stack>
+                <Stack>
+                  <Box borderColor="gray.500" bg="gray.50">
+                    <Text fontSize="md" color="primary.500" bold={true}>
+                      {t("AWARDS_AND_RECOGNITION")}
+                    </Text>
+                  </Box>
+                </Stack>
 
-              <Stack>
-                <Box borderColor="gray.500" bg="gray.50">
-                  <Text fontSize="md" color="primary.500" bold={true}>
-                    {t("STUDENT_COMPETENCIES")}
-                  </Text>
-                </Box>
+                <Stack>
+                  <Box borderColor="gray.500" bg="gray.50">
+                    <Text fontSize="md" color="primary.500" bold={true}>
+                      {t("STUDENT_COMPETENCIES")}
+                    </Text>
+                  </Box>
+                </Stack>
               </Stack>
             </PresenceTransition>
           </Stack>

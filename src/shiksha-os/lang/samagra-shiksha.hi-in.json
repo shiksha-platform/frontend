@@ -3,7 +3,7 @@
   "YOU_HAVE_3_CLASSES": "आपके पास 3 वर्ग हैं",
   "STUDENT_PROFILE_IN_COMPLETE": "छात्र प्रोफाइल शिकायत में",
   "GOOD_MORNING": "शुभ प्रभात",
-  "THIS_IS_HOW_YOUR_DAY_LOOKS": "इस तरह दिखता है आपका दिन...",
+  "THIS_IS_HOW_YOUR_DAY_LOOKS": "इस तरह आपका दिन दिखता है!",
   "NEW_ACTIVITY_ADDED_TO_SCHOOL": "स्कूल में नई 1 गतिविधि जोड़ी गई",
   "TIME_TABLE": "समय सारणी",
   "THIS_WEEK": "इस सप्ताह",
@@ -75,5 +75,8 @@
   "SAVE": "बचाएं",
   "ATTENDANCE_REGISTER": "उपस्थिति लेखा",
   "SEE_FULL_REPORT": "देखें पूरी रिपोर्ट",
-  "TOTAL": "कुल"
+  "TOTAL": "कुल",
+  "SEARCH": "खोज",
+  "CALENDAR": "पंचांग",
+  "NOT_ENTERD": "प्रवेश नहीं"
 }

@@ -314,10 +314,12 @@ const AttendanceComponent = ({
   return (
     <>
       <Box borderColor="coolGray.300" borderBottomWidth={1} pb="1">
+        <Text fontSize={"lg"}>{t("WEEK_ATTENDANCE")}</Text>
         <Card
           item={student}
           img="fasle"
-          _textTitle={{ color: "coolGray.800", bold: true, fontSize: "lg" }}
+          _textTitle={{ display: "none" }}
+          _textSubTitle={{ display: "none" }}
           _arrow={{ _icon: { fontSize: "large" } }}
           type="attendance"
           hidePopUpButton={hidePopUpButton}
@@ -387,7 +389,7 @@ const AttendanceComponent = ({
                   onPress={(event) => {
                     if (formatDate(day) === formatDate(todayDate)) {
                       setAttendanceObject({
-                        attendanceId: attendanceItem.id
+                        attendanceId: attendanceItem?.id
                           ? attendanceItem.id
                           : null,
                         date: dateValue,

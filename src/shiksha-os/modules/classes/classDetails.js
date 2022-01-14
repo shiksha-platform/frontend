@@ -32,9 +32,10 @@ export default function App() {
   return (
     <>
       <Header
+        title={t("MY_CLASSES")}
         icon={datePage < 0 ? "AssignmentTurnedIn" : "Group"}
-        heading={"Science"}
-        _heading={{ fontSize: "xl" }}
+        // heading={"Science"}
+        // _heading={{ fontSize: "sm" }}
         subHeadingComponent={
           <Link href={"/students/class/" + classId}>
             <Box
@@ -86,7 +87,7 @@ export default function App() {
           {
             id: classId,
             keyId: 1,
-            title: t("MARK_ATTENDANCE"),
+            title: t("ATTENDANCE"),
             icon: datePage < 0 ? "AssignmentTurnedIn" : "EventNote",
             route: "/attendance/:id",
           },

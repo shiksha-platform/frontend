@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Text, Button, Stack, Box, Link, VStack, HStack } from "native-base";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
+import * as classServiceRegistry from "../../services/classServiceRegistry";
 import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
 import { useParams } from "react-router-dom";
@@ -12,6 +13,7 @@ import Icon from "../../../components/IconByName";
 export default function App() {
   const { t } = useTranslation();
   const [studentObject, setStudentObject] = useState({});
+  const [classObject, setClassObject] = useState({});
   const { studentId } = useParams();
 
   useEffect(() => {
@@ -19,7 +21,14 @@ export default function App() {
 
     const getData = async () => {
       let student = await studentServiceRegistry.getOne({ id: studentId });
-      if (!ignore) setStudentObject(student);
+
+      let classObj = await classServiceRegistry.getOne({
+        id: student.currentClassID,
+      });
+      if (!ignore) {
+        setStudentObject({ ...student, className: classObj.className });
+        setClassObject(classObj);
+      }
     };
     getData();
   }, [studentId]);
@@ -27,11 +36,14 @@ export default function App() {
   return (
     <>
       <Header
+        title={t("STUDENTS_DETAIL")}
         icon="Group"
         heading={
-          (studentObject?.firstName ? studentObject?.firstName : "") +
-          " " +
-          (studentObject?.lastName ? studentObject?.lastName : "")
+          studentObject?.fullName ? (
+            studentObject?.fullName
+          ) : (
+            <Text italic>{t("NOT_ENTERD")}</Text>
+          )
         }
         subHeading=""
       />
@@ -50,19 +62,37 @@ export default function App() {
           <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
             <Text>
               <Text bold>{t("ADDRESS")} </Text>
-              {studentObject.address}
+              {studentObject.address ? (
+                studentObject.address
+              ) : (
+                <Text italic>{t("NOT_ENTERD")}</Text>
+              )}
             </Text>
             <Text>
               <Text bold>{t("FATHERS_NAME")} </Text>
-              {studentObject.fathersName}
+              {studentObject.fathersName ? (
+                studentObject.fathersName
+              ) : (
+                <Text italic>{t("NOT_ENTERD")}</Text>
+              )}
             </Text>
             <Text>
               <Text bold>{t("ADMISSION_NO")} </Text>
-              {studentObject.admissionNo}
+              {studentObject.admissionNo ? (
+                studentObject.admissionNo
+              ) : (
+                <Text italic>{t("NOT_ENTERD")}</Text>
+              )}
             </Text>
             <Text>
               <Text bold>{t("STUDYING_IN")} </Text>
-              {studentObject.currentClassID}
+              {studentObject.className ? (
+                studentObject.className
+              ) : studentObject.currentClassID ? (
+                studentObject.currentClassID
+              ) : (
+                <Text italic>{t("NOT_ENTERD")}</Text>
+              )}
             </Text>
             <Button
               variant="ghost"
@@ -78,7 +108,7 @@ export default function App() {
         <Stack>
           <Box borderColor="gray.500">
             <Text fontSize="md" color="primary.500" bold={true}>
-              {t("CLASS")}
+              {t("CLASS")} {classObject.className}
             </Text>
           </Box>
           <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
@@ -89,6 +119,7 @@ export default function App() {
                   student={studentObject}
                   withDate={true}
                   hidePopUpButton={true}
+                  withApigetAttendance={true}
                 />
               ) : (
                 <></>

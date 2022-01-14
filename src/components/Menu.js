@@ -103,15 +103,22 @@ export default function Menu({
               borderLeftColor={
                 item.activeMenu
                   ? "primary.500"
+                  : item?._boxMenu?.bg
+                  ? item._boxMenu.bg
                   : _boxMenu?.bg
                   ? _boxMenu?.bg
                   : bg
               }
               borderColor={"coolGray.200"}
               {..._boxMenu}
+              {...item._boxMenu}
             >
               <PressableNew px="5" py="3" item={item}>
-                <HStack space={3}>
+                <HStack
+                  space={3}
+                  justifyContent={"space-between"}
+                  width={"100%"}
+                >
                   <HStack
                     space={item.leftText || item.icon ? "7" : ""}
                     alignItems="center"
@@ -129,6 +136,11 @@ export default function Menu({
                       {t(item.title)}
                     </Text>
                   </HStack>
+                  <Icon
+                    name={item.rightIcon ? item.rightIcon : "ArrowForwardIos"}
+                    p="0"
+                    {..._icon}
+                  />
                 </HStack>
               </PressableNew>
             </Box>
