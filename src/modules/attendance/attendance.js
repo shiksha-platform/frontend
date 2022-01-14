@@ -163,10 +163,20 @@ export default function App() {
         .map((e) => e.id);
     }
     if (type === "Total" && gender === t("TOTAL")) {
-      return attendanceAll.filter((e) => e.attendance === attendanceType)
-        .length;
-    } else if (type === "Total") {
       return studentIds.length;
+    } else if (type === "Total" && [t("BOYS"), t("GIRLS")].includes(gender)) {
+      let studentIds1 = studentIds.filter(
+        (e) =>
+          !attendanceAll
+            .filter((e) => studentIds.includes(e?.studentId))
+            .map((e) => e.studentId)
+            .includes(e)
+      );
+
+      return (
+        attendanceAll.filter((e) => studentIds.includes(e?.studentId)).length +
+        studentIds1.length
+      );
     } else if (type === "Unmarked") {
       let studentIds1 = attendanceAll.filter((e) =>
         studentIds.includes(e.studentId)
