@@ -147,6 +147,8 @@ export default function App() {
                   setTimeout(getAttendance, 900);
                 }
               });
+          } else {
+            result = "alreadyPresent";
           }
         } else {
           result = attendanceServiceRegistry.create(
@@ -168,10 +170,15 @@ export default function App() {
         }
 
         setTimeout(async (e) => {
-          if (result) {
+          if (result && result == "alreadyPresent") {
             setAllAttendanceStatus({
               ...allAttendanceStatus,
-              succes: parseInt(index + 1) + " succes",
+              success: parseInt(index + 1) + " Already Present",
+            });
+          } else if (result) {
+            setAllAttendanceStatus({
+              ...allAttendanceStatus,
+              success: parseInt(index + 1) + " success",
             });
           } else {
             setAllAttendanceStatus({
@@ -251,7 +258,7 @@ export default function App() {
         >
           <VStack space={2} alignItems={"center"}>
             <Text>
-              {allAttendanceStatus.succes ? allAttendanceStatus.succes : ""}
+              {allAttendanceStatus.success ? allAttendanceStatus.success : ""}
             </Text>
             <Text>
               {allAttendanceStatus.fail ? allAttendanceStatus.fail : ""}
@@ -401,12 +408,10 @@ export default function App() {
                     bg="gray.50"
                   >
                     <Text>
-                      <Text>100% {t("THIS_WEEK")}:</Text>
-                      {students.map((e, index) => (
-                        <Text key={index} pr={1}>
-                          {e.fullName}
-                        </Text>
-                      ))}
+                      <Text>100% {t("THIS_WEEK")}: </Text>
+                      <Text pr={1}>
+                        {students.map((e) => e.fullName).join(", ")}
+                      </Text>
                     </Text>
                   </Box>
                 </VStack>

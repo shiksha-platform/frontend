@@ -25,49 +25,53 @@ export default function Home() {
         _heading={{ color: "black" }}
         _subHeading={{ color: "black" }}
       />
-      <Box backgroundColor="white" p={3}>
-        <HStack justifyContent={"space-between"}>
-          <Text color="green.700" bold={true}>
-            {t("TODAY")}
-          </Text>
-          <Button
-            rounded={50}
-            colorScheme="default"
-            bg={"coolGray.700"}
-            color={"coolGray.100"}
-            size="container"
-            px={3}
-          >
-            {t("TIME_TABLE")}
-          </Button>
-        </HStack>
-        <Stack>
+      <Box backgroundColor="lightBlue.100" m={3} p={3}>
+        <Stack space={3}>
           <VStack>
-            <Text>{t("YOU_HAVE_3_CLASSES")}</Text>
-            <Text>{t("STUDENT_PROFILE_IN_COMPLETE")}</Text>
-            <Text>{t("NEW_ACTIVITY_ADDED_TO_SCHOOL")}</Text>
+            <HStack justifyContent={"space-between"}>
+              <Text color="green.700" bold={true}>
+                {t("TODAY")}
+              </Text>
+              <Button
+                rounded={50}
+                colorScheme="default"
+                bg={"coolGray.700"}
+                color={"coolGray.100"}
+                size="container"
+                px={3}
+              >
+                {t("TIME_TABLE")}
+              </Button>
+            </HStack>
+            <Stack>
+              <VStack>
+                <Text>{t("YOU_HAVE_3_CLASSES")}</Text>
+                <Text>{t("STUDENT_PROFILE_IN_COMPLETE")}</Text>
+                <Text>{t("NEW_ACTIVITY_ADDED_TO_SCHOOL")}</Text>
+              </VStack>
+            </Stack>
+          </VStack>
+          <VStack>
+            <HStack justifyContent={"space-between"}>
+              <Text color="green.700" bold={true}>
+                {t("THIS_WEEK")}
+              </Text>
+              <Button
+                rounded={50}
+                colorScheme="default"
+                bg={"coolGray.700"}
+                color={"coolGray.100"}
+                size="container"
+                px={3}
+              >
+                {t("CALENDAR")}
+              </Button>
+            </HStack>
+            <HStack space={2}>
+              <Text>{t("2_SCHOOL_ACTIVITIES_1_OFFICIAL_VISIT")}</Text>
+            </HStack>
           </VStack>
         </Stack>
-      </Box>
-      <Box backgroundColor="lightBlue.100" m={3} p={3}>
-        <HStack justifyContent={"space-between"}>
-          <Text color="green.700" bold={true}>
-            {t("THIS_WEEK")}
-          </Text>
-          <Button
-            rounded={50}
-            colorScheme="default"
-            bg={"coolGray.700"}
-            color={"coolGray.100"}
-            size="container"
-            px={3}
-          >
-            {t("CALENDAR")}
-          </Button>
-        </HStack>
-        <HStack space={2}>
-          <Text>{t("2_SCHOOL_ACTIVITIES_1_OFFICIAL_VISIT")}</Text>
-        </HStack>
       </Box>
       <Box backgroundColor="blue.300" p="3">
         <Menu bg="white" items={menus} />

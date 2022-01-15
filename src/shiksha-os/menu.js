@@ -94,8 +94,9 @@ export default function AppBar({
             <></>
           )}
           <Link to="/">
-            <Icon size="sm" color="white" name="MoreVert" />
+            <Icon size="sm" color="white" name="Home" />
           </Link>
+          <Icon size="sm" color="white" name="MoreVert" />
           {isEnableLanguageMenu ? (
             <Select
               selectedValue={localStorage.getItem("lang")}
