@@ -22,6 +22,7 @@ export default function Card({
   type,
   href,
   hidePopUpButton,
+  textTitle,
   _textTitle,
   _textSubTitle,
   _arrow,
@@ -175,7 +176,9 @@ export default function Card({
                 bold
                 {..._textTitle}
               >
-                {item?.fullName ? (
+                {textTitle ? (
+                  textTitle
+                ) : item?.fullName ? (
                   item?.fullName
                 ) : (
                   <Text italic>{t("NOT_ENTERD")}</Text>

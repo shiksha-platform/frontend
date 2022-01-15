@@ -402,8 +402,10 @@ export default function App() {
                   >
                     <Text>
                       <Text>100% {t("THIS_WEEK")}:</Text>
-                      {students.map((e) => (
-                        <Text pr={1}>{e.fullName}</Text>
+                      {students.map((e, index) => (
+                        <Text key={index} pr={1}>
+                          {e.fullName}
+                        </Text>
                       ))}
                     </Text>
                   </Box>

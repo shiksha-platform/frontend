@@ -159,6 +159,7 @@ const AttendanceComponent = ({
   hidePopUpButton,
   withApigetAttendance,
   getAttendance,
+  _card,
 }) => {
   const { t } = useTranslation();
   const todayDate = new Date();
@@ -314,15 +315,13 @@ const AttendanceComponent = ({
   return (
     <>
       <Box borderColor="coolGray.300" borderBottomWidth={1} pb="1">
-        <Text fontSize={"lg"}>{t("WEEK_ATTENDANCE")}</Text>
         <Card
           item={student}
           img="fasle"
-          _textTitle={{ display: "none" }}
-          _textSubTitle={{ display: "none" }}
           _arrow={{ _icon: { fontSize: "large" } }}
           type="attendance"
           hidePopUpButton={hidePopUpButton}
+          {..._card}
         />
       </Box>
       <HStack justifyContent="space-between" alignItems="center">

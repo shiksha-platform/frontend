@@ -120,6 +120,12 @@ export default function App() {
                   withDate={true}
                   hidePopUpButton={true}
                   withApigetAttendance={true}
+                  _card={{
+                    textTitle: (
+                      <Text fontSize={"lg"}>{t("WEEK_ATTENDANCE")}</Text>
+                    ),
+                    _textSubTitle: { display: "none" },
+                  }}
                 />
               ) : (
                 <></>
