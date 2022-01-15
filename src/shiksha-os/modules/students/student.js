@@ -226,21 +226,23 @@ export default function App() {
                   >
                     <HStack space={3}>
                       <Text>
-                        <Text bold>{t("STUDENTS")}:</Text> {students.length}
+                        <Text bold>{t("STUDENTS")}: </Text> {students.length}
                       </Text>
                       <Text>
-                        <Text bold>{t("GIRLS")}:</Text>
+                        <Text bold>{t("GIRLS")}: </Text>
+                        {students.filter((e) => e.gender === "Female").length}
                       </Text>
                       <Text>
-                        <Text bold>{t("BOYS")}:</Text>
+                        <Text bold>{t("BOYS")}: </Text>
+                        {students.filter((e) => e.gender === "Male").length}
                       </Text>
                     </HStack>
 
                     <Text>
-                      <Text bold>{t("AGE_GROUP")}:</Text>
+                      <Text bold>{t("AGE_GROUP")}: </Text>
                     </Text>
                     <Text>
-                      <Text bold>{t("CLASS_TEACHER")}:</Text> {fullName}
+                      <Text bold>{t("CLASS_TEACHER")}: </Text> {fullName}
                     </Text>
                   </Box>
                 </Stack>
@@ -295,15 +297,15 @@ export default function App() {
                   >
                     <VStack>
                       <Text>
-                        <Text bold>{t("MATHS")}:</Text>
+                        <Text bold>{t("MATHS")}: </Text>
                         {fullName}
                       </Text>
                       <Text>
-                        <Text bold>{t("ENGLISH")}:</Text>
+                        <Text bold>{t("ENGLISH")}: </Text>
                         {fullName}
                       </Text>
                       <Text>
-                        <Text bold>{t("SCIENCE")}:</Text>
+                        <Text bold>{t("SCIENCE")}: </Text>
                         {fullName}
                       </Text>
                     </VStack>

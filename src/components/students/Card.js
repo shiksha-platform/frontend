@@ -140,7 +140,6 @@ export default function Card({
       id: e.currentClassID,
     });
     item.className = classObj.className;
-    console.log({ item });
     setOpen(true);
   };
 
