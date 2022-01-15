@@ -191,7 +191,7 @@ const AttendanceComponent = ({
       setAttendance(attendanceProp);
     }
     setLoding({});
-  }, [weekPage, attendanceProp]);
+  }, [weekPage, attendanceProp, withApigetAttendance && !showModal]);
 
   const formatDate = (date) => {
     var d = new Date(date),
@@ -229,6 +229,7 @@ const AttendanceComponent = ({
           if (getAttendance) {
             setTimeout(getAttendance, 900);
           }
+          setShowModal(false);
         });
     } else {
       attendanceServiceRegistry
@@ -254,9 +255,9 @@ const AttendanceComponent = ({
           if (getAttendance) {
             setTimeout(getAttendance, 900);
           }
+          setShowModal(false);
         });
     }
-    setShowModal(false);
   };
 
   const PopupActionSheet = () => {
