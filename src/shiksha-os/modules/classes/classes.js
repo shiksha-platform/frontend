@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Text, Button, Box } from "native-base";
+import { Text, Button, Box, HStack, VStack, Stack } from "native-base";
 import Menu from "../../../components/Menu";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import Header from "../../../components/Header";
 import { useTranslation } from "react-i18next";
 import DayWiesBar from "../../../components/CalendarBar";
+import { Link } from "react-router-dom";
 
 // Start editing here, save and see your changes.
 export default function App() {
@@ -103,28 +104,35 @@ export default function App() {
           <Menu items={timeTables} routeDynamics="true" bg={"white"} />
         </Box>
       </Box>
-      <Box backgroundColor="gray.100" px={2} pb={2}>
-        <Box alignItems="center" pb={2}>
-          <Text color="primary.500" bold={true}>
-            {t("YOUR_CLASSES")}
-          </Text>
-        </Box>
-        <Menu items={classes} routeDynamics="true" bg={"white"} />
+      <Box backgroundColor="gray.100" px={2} pb={4}>
+        <VStack space={2}>
+          <Box alignItems="center">
+            <Text color="primary.500" bold={true}>
+              {t("YOUR_CLASSES")}
+            </Text>
+          </Box>
+          <Stack>
+            <Menu items={classes} routeDynamics="true" bg={"white"} />
+          </Stack>
+          <HStack space={2} justifyContent={"center"}>
+            <Link
+              to={"/classes/attendance/group"}
+              style={{ textDecoration: "none" }}
+            >
+              <Box
+                rounded="full"
+                borderColor="coolGray.200"
+                borderWidth="1"
+                bg="white"
+                px={4}
+                py={2}
+              >
+                {t("MARK_ATTENDANCE")}
+              </Box>
+            </Link>
+          </HStack>
+        </VStack>
       </Box>
-      {/* <Box>
-        <HStack space={2} justifyContent={"right"}>
-          <Button
-            variant="outline"
-            colorScheme="default"
-            background={"#fff"}
-            size="container"
-            px={1}
-            m="3"
-          >
-            {t("SHOW_SUBJECT_WISE")}
-          </Button>
-        </HStack>
-      </Box> */}
     </>
   );
 }

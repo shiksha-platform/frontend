@@ -22,6 +22,7 @@ export default function Header({
   setSearch,
   isDisabledHeader,
   isDisabledAppBar,
+  fullRightComponent,
 }) {
   return (
     <Stack width={"100%"}>
@@ -37,42 +38,46 @@ export default function Header({
         <></>
       )}
       {!isDisabledHeader ? (
-        <Box p="2" bg="black" {..._box}>
-          <HStack justifyContent="space-between" alignItems="center">
-            <HStack space="4" alignItems="center">
-              {iconComponent ? (
-                iconComponent
-              ) : (
-                <Icon
-                  p="0"
-                  name={icon}
-                  color="white"
-                  {..._icon}
-                  _icon={{
-                    style: { fontSize: "45px" },
-                  }}
-                />
-              )}
-              <VStack>
-                {headingComponent ? (
-                  headingComponent
+        !fullRightComponent ? (
+          <Box p="2" bg="black" {..._box}>
+            <HStack justifyContent="space-between" alignItems="center">
+              <HStack space="4" alignItems="center">
+                {iconComponent ? (
+                  iconComponent
                 ) : (
-                  <Text color="coolGray.100" bold fontSize="md" {..._heading}>
-                    {heading}
-                  </Text>
+                  <Icon
+                    p="0"
+                    name={icon}
+                    color="white"
+                    {..._icon}
+                    _icon={{
+                      style: { fontSize: "45px" },
+                    }}
+                  />
                 )}
-                {subHeadingComponent ? (
-                  subHeadingComponent
-                ) : (
-                  <Text color="coolGray.50" fontSize="xs" {..._subHeading}>
-                    {subHeading}
-                  </Text>
-                )}
-              </VStack>
+                <VStack>
+                  {headingComponent ? (
+                    headingComponent
+                  ) : (
+                    <Text color="coolGray.100" bold fontSize="md" {..._heading}>
+                      {heading}
+                    </Text>
+                  )}
+                  {subHeadingComponent ? (
+                    subHeadingComponent
+                  ) : (
+                    <Text color="coolGray.50" fontSize="xs" {..._subHeading}>
+                      {subHeading}
+                    </Text>
+                  )}
+                </VStack>
+              </HStack>
+              {button}
             </HStack>
-            {button}
-          </HStack>
-        </Box>
+          </Box>
+        ) : (
+          fullRightComponent
+        )
       ) : (
         <></>
       )}

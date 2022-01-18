@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HdrAutoIcon from "@mui/icons-material/HdrAuto";
 import CircleIcon from "@mui/icons-material/Circle";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import {
   IconButton,
   VStack,
@@ -22,14 +21,17 @@ import moment from "moment";
 import Card from "../students/Card";
 import { CircleOutlined } from "@mui/icons-material";
 
-export function weekDaysPageWise(weekPage) {
+export function weekDaysPageWise(weekPage, today) {
   let date = new Date();
   date.setDate(date.getDate() + weekPage * 7);
-  return weekDates({ only: manifest.weekDays }, date);
+  return weekDates({ only: manifest.weekDays, today: today }, date);
 }
 
 export const weekDates = (filter = {}, current = new Date()) => {
-  var week = [];
+  let week = [];
+  if (filter.today) {
+    return [new Date()];
+  }
   function getIntday(data = [], type = "except") {
     let weekName = [
       "Sunday",
@@ -114,35 +116,36 @@ export const GetIcon = ({ status, _box, color }) => {
   switch (status) {
     case "Present":
       icon = (
-        <Box py="2" {..._box} color={color ? color : "green.600"}>
+        <Box {..._box} color={color ? color : "green.600"}>
           <CheckCircleIcon fontSize="large" />
         </Box>
       );
       break;
     case "Absent":
       icon = (
-        <Box py="2" {..._box} color={color ? color : "danger.600"}>
+        <Box {..._box} color={color ? color : "danger.600"}>
           <HdrAutoIcon fontSize="large" />
         </Box>
       );
       break;
     case "Late":
       icon = (
-        <Box py="2" {..._box} color={color ? color : "yellow.600"}>
+        <Box {..._box} color={color ? color : "yellow.600"}>
           <WatchLaterIcon fontSize="large" />
         </Box>
       );
       break;
     case "Today":
+    case "Unmarked":
       icon = (
-        <Box py="2" {..._box} color={color ? color : "gray.400"}>
+        <Box {..._box} color={color ? color : "gray.400"}>
           <CircleOutlined fontSize="large" />
         </Box>
       );
       break;
     default:
       icon = (
-        <Box py="2" {..._box} color={color ? color : "gray.400"}>
+        <Box {..._box} color={color ? color : "gray.400"}>
           <CircleIcon fontSize="large" />
         </Box>
       );
@@ -152,6 +155,7 @@ export const GetIcon = ({ status, _box, color }) => {
 };
 
 const AttendanceComponent = ({
+  today,
   weekPage,
   student,
   withDate,
@@ -172,7 +176,7 @@ const AttendanceComponent = ({
   const status = manifest?.status ? manifest?.status : [];
 
   useEffect(async () => {
-    setWeekDays(weekDaysPageWise(weekPage));
+    setWeekDays(weekDaysPageWise(weekPage, today));
     if (withApigetAttendance) {
       setAttendance(
         await GetAttendance({
@@ -205,19 +209,17 @@ const AttendanceComponent = ({
     return [year, month, day].join("-");
   };
 
-  const markAttendance = async (data) => {
+  const markAttendance = async (dataObject) => {
     setLoding({
-      [(data.date ? data.date : attendanceObject.date) +
-      (data.id ? data.id : attendanceObject.id)]: true,
+      [dataObject.date + dataObject.id]: true,
     });
-    if (attendanceObject.attendanceId) {
+
+    if (dataObject.attendanceId) {
       attendanceServiceRegistry
         .update(
           {
-            id: attendanceObject.attendanceId,
-            attendance: data.attendance
-              ? data.attendance
-              : attendanceObject.attendance,
+            id: dataObject.attendanceId,
+            attendance: dataObject.attendance,
           },
           {
             headers: {
@@ -235,11 +237,9 @@ const AttendanceComponent = ({
       attendanceServiceRegistry
         .create(
           {
-            studentId: data.id ? data.id : attendanceObject.id,
-            date: data.date ? data.date : attendanceObject.date,
-            attendance: data.attendance
-              ? data.attendance
-              : attendanceObject.attendance,
+            studentId: student.id,
+            date: dataObject.date,
+            attendance: dataObject.attendance,
             attendanceNote: "Test",
             classId: student.currentClassID,
             subjectId: "History",
@@ -280,7 +280,16 @@ const AttendanceComponent = ({
               return (
                 <Actionsheet.Item key={item} p={1}>
                   <Pressable
-                    onPress={(e) => markAttendance({ attendance: item })}
+                    onPress={(e) => {
+                      if (attendanceObject.attendance !== item) {
+                        markAttendance({
+                          ...attendanceObject,
+                          attendance: item,
+                        });
+                      } else {
+                        setShowModal(false);
+                      }
+                    }}
                   >
                     <HStack alignItems="center" space={2}>
                       <GetIcon status={item} _box={{ p: 2 }} />
@@ -292,7 +301,7 @@ const AttendanceComponent = ({
                 </Actionsheet.Item>
               );
             })}
-            <Actionsheet.Item p={1}>
+            {/* <Actionsheet.Item p={1}>
               <Pressable onPress={(e) => setShowModal(false)}>
                 <HStack alignItems="center" space={2}>
                   <IconButton
@@ -306,113 +315,154 @@ const AttendanceComponent = ({
                   </Text>
                 </HStack>
               </Pressable>
-            </Actionsheet.Item>
+            </Actionsheet.Item> */}
           </Actionsheet.Content>
         </Actionsheet>
       </>
     );
   };
 
+  const WeekDaysComponent = ({ weekDays, isIconSizeSmall }) => {
+    return weekDays.map((day, subIndex) => {
+      let dateValue = formatDate(day);
+      let attendanceItem = attendance
+        .slice()
+        .reverse()
+        .find((e) => e.date === dateValue && e.studentId === student.id);
+      let attendanceIconProp = !isIconSizeSmall ? { _box: { py: 2 } } : {};
+      let attendanceType = "Present";
+      if (
+        attendanceItem?.attendance &&
+        attendanceItem?.attendance === "Present"
+      ) {
+        attendanceIconProp = {
+          ...attendanceIconProp,
+          status: attendanceItem?.attendance,
+        };
+      } else if (
+        attendanceItem?.attendance &&
+        attendanceItem?.attendance === "Absent"
+      ) {
+        attendanceIconProp = {
+          ...attendanceIconProp,
+          status: attendanceItem?.attendance,
+        };
+      } else if (
+        attendanceItem?.attendance &&
+        attendanceItem?.attendance === "Late"
+      ) {
+        attendanceIconProp = {
+          ...attendanceIconProp,
+          status: attendanceItem?.attendance,
+        };
+      } else if (formatDate(day) === formatDate(todayDate)) {
+        attendanceIconProp = { ...attendanceIconProp, status: "Today" };
+      }
+      if (day > todayDate) {
+        attendanceIconProp = { ...attendanceIconProp, color: "gray.100" };
+      }
+
+      if (manifest.status) {
+        const arr = manifest.status;
+        const i = arr.indexOf(attendanceItem?.attendance);
+        if (i === -1) {
+          attendanceType = arr[0];
+        } else {
+          attendanceType = arr[(i + 1) % arr.length];
+        }
+      }
+
+      return (
+        <div key={subIndex}>
+          <VStack
+            alignItems="center"
+            bgColor={formatDate(day) === formatDate(todayDate) ? "white" : ""}
+          >
+            {withDate ? (
+              <Text
+                key={subIndex}
+                py={!isIconSizeSmall ? 1 : 0}
+                color={
+                  formatDate(day) === formatDate(todayDate) ? "primary.500" : ""
+                }
+              >
+                {!isIconSizeSmall ? (
+                  <VStack alignItems={"center"}>
+                    <Text>{moment(day).format("DD")}</Text>
+                    <Text>{moment(day).format("ddd")}</Text>
+                  </VStack>
+                ) : (
+                  <HStack alignItems={"center"} space={1}>
+                    <Text>{moment(day).format("dd")}</Text>
+                    <Text>{moment(day).format("D")}</Text>
+                  </HStack>
+                )}
+              </Text>
+            ) : (
+              <></>
+            )}
+            <TouchableHighlight
+              onPress={(e) => {
+                markAttendance({
+                  attendanceId: attendanceItem?.id ? attendanceItem.id : null,
+                  date: dateValue,
+                  attendance: attendanceType,
+                  id: student.id,
+                });
+              }}
+              onLongPress={(event) => {
+                if (formatDate(day) === formatDate(todayDate)) {
+                  setAttendanceObject({
+                    attendanceId: attendanceItem?.id ? attendanceItem.id : null,
+                    date: dateValue,
+                    attendance: attendanceItem.attendance,
+                    id: student.id,
+                  });
+                  setShowModal(true);
+                }
+              }}
+            >
+              {loding[dateValue + student.id] ? (
+                <Box py="2" color="primary.500">
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <GetIcon {...attendanceIconProp} />
+              )}
+            </TouchableHighlight>
+          </VStack>
+        </div>
+      );
+    });
+  };
+
   return (
     <>
-      <Box borderColor="coolGray.300" borderBottomWidth={1} pb="1">
+      <Box pb="1">
         <Card
           item={student}
           img="fasle"
           _arrow={{ _icon: { fontSize: "large" } }}
           type="attendance"
           hidePopUpButton={hidePopUpButton}
+          {...(today ? { _textTitle: { fontSize: "xl" } } : {})}
           {..._card}
+          rightComponent={
+            today ? (
+              <WeekDaysComponent weekDays={weekDays} isIconSizeSmall={true} />
+            ) : (
+              false
+            )
+          }
         />
       </Box>
-      <HStack justifyContent="space-between" alignItems="center">
-        {weekDays.map((day, subIndex) => {
-          let dateValue = formatDate(day);
-          let attendanceItem = attendance
-            .slice()
-            .reverse()
-            .find((e) => e.date === dateValue && e.studentId === student.id);
-          let attendanceIcon = <GetIcon />;
-          let attendanceType = "Present";
-          if (
-            typeof attendanceItem?.attendance !== "undefined" &&
-            attendanceItem?.attendance === "Present"
-          ) {
-            attendanceIcon = <GetIcon status={attendanceItem?.attendance} />;
-            attendanceType = "Absent";
-          } else if (
-            typeof attendanceItem?.attendance !== "undefined" &&
-            attendanceItem?.attendance === "Absent"
-          ) {
-            attendanceIcon = <GetIcon status={attendanceItem?.attendance} />;
-            attendanceType = "Present";
-          } else if (
-            typeof attendanceItem?.attendance !== "undefined" &&
-            attendanceItem?.attendance === "Late"
-          ) {
-            attendanceIcon = <GetIcon status={attendanceItem?.attendance} />;
-            attendanceType = "Present";
-          } else if (formatDate(day) === formatDate(todayDate)) {
-            attendanceIcon = <GetIcon status="Today" />;
-          }
-          if (day > todayDate) {
-            attendanceIcon = <GetIcon color="gray.100" />;
-          }
-
-          return (
-            <div key={subIndex}>
-              <VStack
-                alignItems="center"
-                bgColor={
-                  formatDate(day) === formatDate(todayDate) ? "white" : ""
-                }
-              >
-                {withDate ? (
-                  <Text
-                    key={subIndex}
-                    py={1}
-                    color={
-                      formatDate(day) === formatDate(todayDate)
-                        ? "primary.500"
-                        : ""
-                    }
-                  >
-                    <VStack alignItems={"center"}>
-                      <Text>{moment(day).format("DD")}</Text>
-                      <Text>{moment(day).format("ddd")}</Text>
-                    </VStack>
-                  </Text>
-                ) : (
-                  <></>
-                )}
-                <TouchableHighlight
-                  onPress={(event) => {
-                    if (formatDate(day) === formatDate(todayDate)) {
-                      setAttendanceObject({
-                        attendanceId: attendanceItem?.id
-                          ? attendanceItem.id
-                          : null,
-                        date: dateValue,
-                        attendance: attendanceType,
-                        id: student.id,
-                      });
-                      setShowModal(true);
-                    }
-                  }}
-                >
-                  {loding[dateValue + student.id] ? (
-                    <Box py="2" color="primary.500">
-                      <CircularProgress />
-                    </Box>
-                  ) : (
-                    attendanceIcon
-                  )}
-                </TouchableHighlight>
-              </VStack>
-            </div>
-          );
-        })}
-      </HStack>
+      {!today ? (
+        <HStack justifyContent="space-between" alignItems="center">
+          <WeekDaysComponent weekDays={weekDays} />
+        </HStack>
+      ) : (
+        <></>
+      )}
       <PopupActionSheet />
     </>
   );

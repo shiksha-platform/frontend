@@ -9,7 +9,6 @@ import {
   Select,
   CheckIcon,
   Input,
-  Button,
 } from "native-base";
 import manifest from "./manifest";
 import { Link, useNavigate } from "react-router-dom";

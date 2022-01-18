@@ -25,11 +25,11 @@ export default function Home() {
 
   const validate = () => {
     let arr = {};
-    if (credentials.username === undefined || credentials.username === "") {
+    if (credentials.username === "undefined" || credentials.username === "") {
       arr = { ...arr, username: "Username is required" };
     }
 
-    if (credentials.password === undefined || credentials.password === "") {
+    if (credentials.password === "undefined" || credentials.password === "") {
       arr = { ...arr, password: "Password is required" };
     }
 

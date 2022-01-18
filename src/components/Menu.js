@@ -1,17 +1,10 @@
 import React from "react";
 
-import {
-  HStack,
-  Text,
-  Link,
-  VStack,
-  Box,
-  FlatList,
-  Pressable,
-} from "native-base";
+import { HStack, Text, VStack, Box, FlatList, Pressable } from "native-base";
 import Icon from "./IconByName";
 import { generatePath } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 export default function Menu({
   items,
@@ -37,7 +30,8 @@ export default function Menu({
     return item?.route ? (
       <Pressable {...prop}>
         <Link
-          href={
+          style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
+          to={
             routeDynamics
               ? generatePath(item.route, { ...{ id: item.id } })
               : item.route

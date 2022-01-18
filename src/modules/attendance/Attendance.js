@@ -541,7 +541,7 @@ export default function App() {
                 px={6}
                 onPress={(e) => setShowModal(true)}
               >
-                {t("DONE")}
+                {t("SAVE")}
               </Button>
             </HStack>
             <></>

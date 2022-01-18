@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import AttendanceComponent from "../../../components/attendance/AttendanceComponent";
 import Menu from "../../../components/Menu";
 import Icon from "../../../components/IconByName";
+import manifest from "../../../modules/attendance/manifest.json";
 
 // Start editing here, save and see your changes.
 export default function App() {
@@ -113,7 +114,9 @@ export default function App() {
           </Box>
           <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
             <VStack space={2}>
-              {studentObject && studentObject?.id ? (
+              {manifest.showOnStudentProfile &&
+              studentObject &&
+              studentObject?.id ? (
                 <AttendanceComponent
                   weekPage={0}
                   student={studentObject}

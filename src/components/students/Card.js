@@ -21,6 +21,7 @@ export default function Card({
   img,
   type,
   href,
+  rightComponent,
   hidePopUpButton,
   textTitle,
   _textTitle,
@@ -216,7 +217,9 @@ export default function Card({
             </VStack>
           </HStack>
         </PressableNew>
-        {!hidePopUpButton ? (
+        {rightComponent ? (
+          rightComponent
+        ) : !hidePopUpButton ? (
           <Icon
             onPress={(e) => handalOpenPoup(item)}
             size="sm"

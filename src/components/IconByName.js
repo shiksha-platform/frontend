@@ -1,5 +1,9 @@
 import React from "react";
-import { IconButton as IconButtonCustom } from "native-base";
+import {
+  IconButton as IconButtonCustom,
+  Icon as IconCustom,
+  Stack,
+} from "native-base";
 import {
   ArrowCircleLeftOutlined,
   ArrowCircleRightOutlined,
@@ -25,12 +29,20 @@ import {
   Search,
   Close,
   Class,
+  Check,
 } from "@mui/icons-material";
 
-function IconButton({ icon, ...props }) {
-  return (
-    <IconButtonCustom {...props} icon={React.cloneElement(icon, props._icon)} />
-  );
+function IconButton({ icon, isDisabled, ...props }) {
+  if (isDisabled) {
+    return <Stack {...props}>{React.cloneElement(icon, props._icon)}</Stack>;
+  } else {
+    return (
+      <IconButtonCustom
+        {...props}
+        icon={React.cloneElement(icon, props._icon)}
+      />
+    );
+  }
 }
 
 export default function IconByName(props) {
@@ -108,6 +120,9 @@ export default function IconByName(props) {
       break;
     case "Class":
       icon = <IconButton {...props} icon={<Class />} />;
+      break;
+    case "Check":
+      icon = <IconButton {...props} icon={<Check />} />;
       break;
     default:
       icon = <IconButton {...props} icon={<Home />} />;

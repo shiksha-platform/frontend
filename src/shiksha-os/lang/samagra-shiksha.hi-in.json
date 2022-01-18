@@ -78,5 +78,9 @@
   "TOTAL": "कुल",
   "SEARCH": "खोज",
   "CALENDAR": "पंचांग",
-  "NOT_ENTERD": "प्रवेश नहीं"
+  "NOT_ENTERD": "प्रवेश नहीं",
+  "WHAT_ATTENDANCE_MARK": "आप कक्षा/समूह के लिए कितनी उपस्थिति दर्ज करना चाहते हैं",
+  "CLASS_CHOOE_ATTENDANCE": "उपस्थिति दर्ज करने के लिए कृपया कक्षा/समूह चुनें",
+  "SELECT_CLASS": "वर्ग / समूह का चयन करें",
+  "SELECT_SUBJECT": "विषय चुनें"
 }

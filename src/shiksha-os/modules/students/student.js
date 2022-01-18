@@ -126,12 +126,12 @@ export default function App() {
               icon: "AssignmentTurnedIn",
               route: "/attendance/:id",
             },
-            {
-              keyId: 3,
-              id: classId,
-              title: t("CLASS_TEST"),
-              icon: "MenuBook",
-            },
+            // {
+            //   keyId: 3,
+            //   id: classId,
+            //   title: t("CLASS_TEST"),
+            //   icon: "MenuBook",
+            // },
           ]}
           type={"veritical"}
         />

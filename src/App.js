@@ -1,18 +1,18 @@
 import AppBar from "./shiksha-os/menu";
-import { Center, NativeBaseProvider } from "native-base";
+import { Box, Center, NativeBaseProvider } from "native-base";
 import Home from "./shiksha-os/home";
 import Students from "./shiksha-os/modules/students/student";
 import StudentDetails from "./shiksha-os/modules/students/studentDetails";
 import StudentEdit from "./shiksha-os/modules/students/studentEdit";
 import Classes from "./shiksha-os/modules/classes/classes";
 import ClassDetails from "./shiksha-os/modules/classes/classDetails";
-import Attendance from "./modules/attendance/attendance";
+import Attendance from "./modules/attendance/Attendance";
+import ClassAttendance from "./modules/attendance/ClassAttendance";
 import i18n from "i18next";
 import { useTranslation, initReactI18next } from "react-i18next";
 import init from "./shiksha-os/lang/init";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./shiksha-os/Login";
-import { useState } from "react";
 i18n.use(initReactI18next).init(init);
 
 function NotFound() {
@@ -71,7 +71,7 @@ export default function App() {
           path="/classes/:classId"
           element={
             <SubApp>
-              <ClassDetails />
+              <Students />
             </SubApp>
           }
         />
@@ -107,6 +107,14 @@ export default function App() {
             </SubApp>
           }
         />
+        <Route
+          path="/classes/attendance/group"
+          element={
+            <SubApp>
+              <ClassAttendance />
+            </SubApp>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
@@ -114,5 +122,9 @@ export default function App() {
 }
 
 export function SubApp({ children }) {
-  return <NativeBaseProvider>{children}</NativeBaseProvider>;
+  return (
+    <NativeBaseProvider>
+      <Box minH={window.outerHeight}>{children}</Box>
+    </NativeBaseProvider>
+  );
 }
