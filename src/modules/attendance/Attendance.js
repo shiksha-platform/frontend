@@ -44,10 +44,11 @@ export default function App() {
   const [showModal, setShowModal] = useState(false);
   const status = manifest?.status ? manifest?.status : [];
   const [search, setSearch] = useState();
+  const [editState, setEditState] = useState(false);
 
   useEffect(() => {
     const filterStudent = students.filter((e) =>
-      e.fullName.toLowerCase().match(search.toLowerCase())
+      e?.fullName.toLowerCase().match(search?.toLowerCase())
     );
     setSearchStudents(filterStudent);
   }, [search]);
@@ -345,16 +346,24 @@ export default function App() {
                                 />
                               );
                             })}
-                            <GetIcon
-                              status={"Today"}
-                              _box={{ p: 2, minW: "55", maxW: "55" }}
-                            />
+                            {!status.includes("Unmarked") ? (
+                              <GetIcon
+                                status={"Today"}
+                                _box={{ p: 2, minW: "55", maxW: "55" }}
+                              />
+                            ) : (
+                              <></>
+                            )}
                             <Text fontSize="2xl" minW={"55"} maxW={"55"}>
                               {t("TOTAL")}
                             </Text>
                           </HStack>
                         ) : (
-                          <HStack alignItems={"center"} space={2}>
+                          <HStack
+                            alignItems={"center"}
+                            space={2}
+                            width={"252px"}
+                          >
                             {status.map((subItem, index) => {
                               return (
                                 <Text
@@ -419,7 +428,7 @@ export default function App() {
                   <Link href={"/classes/" + classId}>
                     <Button
                       borderRadius="50"
-                      colorScheme="default"
+                      colorScheme="gray"
                       background="coolGray.600"
                       px={6}
                     >
@@ -429,8 +438,9 @@ export default function App() {
                   <Button
                     variant="ghost"
                     borderRadius="50"
-                    colorScheme="default"
+                    colorScheme="gray"
                     background="coolGray.300"
+                    _text={{ color: "coolGray.600" }}
                     px={6}
                     width={"100%"}
                     onPress={(e) => setShowModal(false)}
@@ -448,46 +458,49 @@ export default function App() {
 
   return (
     <>
-      <Header
-        title={t("ATTENDANCE_REGISTER")}
-        isEnableSearchBtn={true}
-        setSearch={setSearch}
-        icon="AssignmentTurnedIn"
-        heading={t("ATTENDANCE")}
-        _heading={{ fontSize: "xl" }}
-        subHeadingComponent={
-          <Link href={"/students/class/" + classId}>
-            <Box
-              rounded="full"
-              borderColor="coolGray.200"
-              borderWidth="1"
-              bg="white"
-              px={1}
-            >
-              <HStack
-                space="4"
-                justifyContent="space-between"
-                alignItems="center"
+      <Box position={"sticky"} top={0} zIndex={"10"} width={"100%"}>
+        <Header
+          title={t("ATTENDANCE_REGISTER")}
+          isEnableSearchBtn={true}
+          setSearch={setSearch}
+          icon="AssignmentTurnedIn"
+          heading={t("ATTENDANCE")}
+          _heading={{ fontSize: "xl" }}
+          subHeadingComponent={
+            <Link href={"/students/class/" + classId}>
+              <Box
+                rounded="full"
+                borderColor="coolGray.200"
+                borderWidth="1"
+                bg="white"
+                px={1}
               >
-                <Icon size="sm" name="Group" />
-                <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
-                <Icon size="sm" name="ArrowForwardIos" />
-              </HStack>
-            </Box>
-          </Link>
-        }
-      />
-      <Stack space={1}>
-        <WeekWiesBar
-          setPage={setWeekPage}
-          page={weekPage}
-          previousDisabled={
-            parseInt(-manifest.attendancePastDays / manifest.weekDays?.length) >
-            parseInt(weekPage - 1)
+                <HStack
+                  space="4"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Icon size="sm" name="Group" />
+                  <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
+                  <Icon size="sm" name="ArrowForwardIos" />
+                </HStack>
+              </Box>
+            </Link>
           }
-          nextDisabled={weekPage >= 0}
         />
-      </Stack>
+        <Stack space={1}>
+          <WeekWiesBar
+            setPage={setWeekPage}
+            page={weekPage}
+            previousDisabled={
+              parseInt(
+                -manifest.attendancePastDays / manifest.weekDays?.length
+              ) > parseInt(weekPage - 1)
+            }
+            nextDisabled={weekPage >= 0}
+          />
+        </Stack>
+      </Box>
       <Box bg="gray.100" p="2">
         <FlatList
           data={searchStudents}
@@ -510,6 +523,7 @@ export default function App() {
                   withApigetAttendance={false}
                   attendanceProp={attendance}
                   getAttendance={getAttendance}
+                  editState={editState}
                 />
               </VStack>
             </Box>
@@ -517,34 +531,48 @@ export default function App() {
           keyExtractor={(item) => item.id}
         />
       </Box>
-      <Stack>
+      <Stack position={"sticky"} bottom={0} width={"100%"}>
         <Box p="2" bg="coolGray.400">
           <VStack space={3} alignItems={"center"}>
             <Text textAlign={"center"}>
               {t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
             </Text>
-            <HStack alignItems={"center"} space={4}>
-              <Button
-                variant="ghost"
-                borderRadius="50"
-                colorScheme="default"
-                background="coolGray.200"
-                px={4}
-                onPress={markAllAttendance}
-              >
-                {t("MARK_ALL_PRESENT")}
-              </Button>
-              <Button
-                borderRadius="50"
-                colorScheme="default"
-                background="coolGray.600"
-                px={6}
-                onPress={(e) => setShowModal(true)}
-              >
-                {t("SAVE")}
-              </Button>
-            </HStack>
-            <></>
+            {editState ? (
+              <HStack alignItems={"center"} space={4}>
+                <Button
+                  variant="ghost"
+                  rounded={"full"}
+                  colorScheme="gray"
+                  background="coolGray.200"
+                  px={4}
+                  onPress={markAllAttendance}
+                >
+                  {t("MARK_ALL_PRESENT")}
+                </Button>
+                <Button
+                  borderRadius="50"
+                  colorScheme="gray"
+                  background="coolGray.600"
+                  px={6}
+                  onPress={(e) => setShowModal(true)}
+                >
+                  {t("SAVE")}
+                </Button>
+              </HStack>
+            ) : (
+              <HStack alignItems={"center"} space={4}>
+                <Button
+                  variant="ghost"
+                  rounded={"full"}
+                  colorScheme="gray"
+                  background="coolGray.200"
+                  px={4}
+                  onPress={(e) => setEditState(true)}
+                >
+                  {t("EDIT")}
+                </Button>
+              </HStack>
+            )}
           </VStack>
         </Box>
       </Stack>

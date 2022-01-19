@@ -164,6 +164,7 @@ const AttendanceComponent = ({
   withApigetAttendance,
   getAttendance,
   _card,
+  editState,
 }) => {
   const { t } = useTranslation();
   const todayDate = new Date();
@@ -322,7 +323,7 @@ const AttendanceComponent = ({
     );
   };
 
-  const WeekDaysComponent = ({ weekDays, isIconSizeSmall }) => {
+  const WeekDaysComponent = ({ weekDays, isIconSizeSmall, editState }) => {
     return weekDays.map((day, subIndex) => {
       let dateValue = formatDate(day);
       let attendanceItem = attendance
@@ -403,19 +404,21 @@ const AttendanceComponent = ({
             )}
             <TouchableHighlight
               onPress={(e) => {
-                markAttendance({
-                  attendanceId: attendanceItem?.id ? attendanceItem.id : null,
-                  date: dateValue,
-                  attendance: attendanceType,
-                  id: student.id,
-                });
+                if (editState) {
+                  markAttendance({
+                    attendanceId: attendanceItem?.id ? attendanceItem.id : null,
+                    date: dateValue,
+                    attendance: attendanceType,
+                    id: student.id,
+                  });
+                }
               }}
               onLongPress={(event) => {
-                if (formatDate(day) === formatDate(todayDate)) {
+                if (editState) {
                   setAttendanceObject({
                     attendanceId: attendanceItem?.id ? attendanceItem.id : null,
                     date: dateValue,
-                    attendance: attendanceItem.attendance,
+                    attendance: attendanceItem?.attendance,
                     id: student.id,
                   });
                   setShowModal(true);
@@ -449,7 +452,11 @@ const AttendanceComponent = ({
           {..._card}
           rightComponent={
             today ? (
-              <WeekDaysComponent weekDays={weekDays} isIconSizeSmall={true} />
+              <WeekDaysComponent
+                weekDays={weekDays}
+                isIconSizeSmall={true}
+                editState={editState}
+              />
             ) : (
               false
             )
@@ -458,7 +465,7 @@ const AttendanceComponent = ({
       </Box>
       {!today ? (
         <HStack justifyContent="space-between" alignItems="center">
-          <WeekDaysComponent weekDays={weekDays} />
+          <WeekDaysComponent weekDays={weekDays} editState={editState} />
         </HStack>
       ) : (
         <></>

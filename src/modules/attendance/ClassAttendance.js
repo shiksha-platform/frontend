@@ -2,14 +2,11 @@ import moment from "moment";
 import {
   Actionsheet,
   Box,
-  Button,
   Center,
   FlatList,
   HStack,
-  Pressable,
   Stack,
   Text,
-  Divider,
   VStack,
 } from "native-base";
 import React, { useEffect, useState } from "react";
@@ -34,8 +31,8 @@ export default function ClassAttendance() {
   ]);
   const [attendanceType, setAttendanceType] = useState();
   const teacherId = sessionStorage.getItem("id");
-  const [showModal, setShowModal] = useState(false);
-  const [showType, setShowType] = useState(false);
+  const [showModal, setShowModal] = useState(true);
+  const [showType, setShowType] = useState(true);
   const [attendance, setAttendance] = useState([]);
 
   useEffect(() => {
@@ -89,7 +86,11 @@ export default function ClassAttendance() {
 
   const PopupActionSheet = () => {
     return (
-      <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
+      <Actionsheet
+        isOpen={showModal}
+        hideDragIndicator
+        _backdrop={{ opacity: "0.9", bg: "gray.500" }}
+      >
         <Actionsheet.Content>
           {!showType ? (
             <Box w="100%" px={4}>
@@ -108,7 +109,11 @@ export default function ClassAttendance() {
                     key={item}
                     onPress={(e) => {
                       setAttendanceType(item);
-                      setShowModal(false);
+                      if (!classObject) {
+                        setShowType(true);
+                      } else {
+                        setShowModal(false);
+                      }
                     }}
                   >
                     {attendanceType === item ? (
@@ -140,7 +145,11 @@ export default function ClassAttendance() {
                     key={item.id}
                     onPress={(e) => {
                       setClassObject(item);
-                      setShowModal(false);
+                      if (!attendanceType) {
+                        setShowType(false);
+                      } else {
+                        setShowModal(false);
+                      }
                     }}
                   >
                     {classObject.className === item.className ? (
@@ -163,117 +172,125 @@ export default function ClassAttendance() {
 
   return (
     <>
-      <PopupActionSheet />
-      <Header
-        title={t("MY_CLASSES")}
-        fullRightComponent={
-          <Stack bg="black" p="2">
-            <HStack justifyContent="space-between">
-              <IconByName
-                p="0"
-                isDisabled={true}
-                name={"Group"}
-                color="white"
-                _icon={{
-                  style: { fontSize: "45px" },
-                }}
-              />
-              <VStack space={1}>
-                <Text fontSize={"lg"} color={"coolGray.100"} bold>
-                  {attendanceType ? attendanceType : t("SELECT_SUBJECT")}
-                </Text>
-                <Box
-                  rounded="full"
-                  borderColor="coolGray.200"
-                  borderWidth="1"
-                  bg="coolGray.100"
-                  px={1}
-                  minW={200}
-                >
-                  <HStack justifyContent="space-between" alignItems="center">
-                    <Icon size="sm" name="Group" isDisabled={true} px={1} />
-                    <Text fontSize={"lg"}>
-                      {classObject?.className
-                        ? classObject?.className
-                        : t("SELECT_CLASS")}
+      {showModal ? (
+        <PopupActionSheet />
+      ) : (
+        <>
+          <Header
+            title={t("MY_CLASSES")}
+            fullRightComponent={
+              <Stack bg="black" p="2">
+                <HStack justifyContent="space-between">
+                  <IconByName
+                    p="0"
+                    isDisabled={true}
+                    name={"Group"}
+                    color="white"
+                    _icon={{
+                      style: { fontSize: "45px" },
+                    }}
+                  />
+                  <VStack space={1}>
+                    <Text fontSize={"lg"} color={"coolGray.100"} bold>
+                      {attendanceType ? attendanceType : t("SELECT_SUBJECT")}
                     </Text>
+                    <Box
+                      rounded="full"
+                      borderColor="coolGray.200"
+                      borderWidth="1"
+                      bg="coolGray.100"
+                      px={1}
+                      minW={200}
+                    >
+                      <HStack
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
+                        <Icon size="sm" name="Group" isDisabled={true} px={1} />
+                        <Text fontSize={"lg"}>
+                          {classObject?.className
+                            ? classObject?.className
+                            : t("SELECT_CLASS")}
+                        </Text>
+                        <Icon
+                          size="sm"
+                          name="ArrowForwardIos"
+                          isDisabled={true}
+                          pl={1}
+                        />
+                      </HStack>
+                    </Box>
+                    <Text fontSize={"xl"} color={"coolGray.50"}>
+                      {moment().format("dddd Do MMM")}
+                    </Text>
+                  </VStack>
+                  <VStack>
                     <Icon
                       size="sm"
-                      name="ArrowForwardIos"
-                      isDisabled={true}
+                      name="Edit"
+                      color={"coolGray.100"}
                       pl={1}
+                      onPress={(e) => {
+                        setShowType(false);
+                        setShowModal(true);
+                      }}
                     />
-                  </HStack>
-                </Box>
-                <Text fontSize={"xl"} color={"coolGray.50"}>
-                  {moment().format("dddd Do MMM")}
-                </Text>
-              </VStack>
-              <VStack>
-                <Icon
-                  size="sm"
-                  name="Edit"
-                  color={"coolGray.100"}
-                  pl={1}
-                  onPress={(e) => {
-                    setShowType(false);
-                    setShowModal(true);
-                  }}
-                />
-                <Icon
-                  size="sm"
-                  name="Edit"
-                  color={"coolGray.50"}
-                  pl={1}
-                  onPress={(e) => {
-                    setShowType(true);
-                    setShowModal(true);
-                  }}
-                />
-              </VStack>
-            </HStack>
-          </Stack>
-        }
-      />
-      {students.length === 0 ? (
-        <Box p={6} minH={300}>
-          <Center flex={1} px="3">
-            <Text bold fontSize={"lg"}>
-              {t("CLASS_CHOOE_ATTENDANCE")}
-            </Text>
-          </Center>
-        </Box>
-      ) : (
-        <Box bg="gray.100" p="2">
-          <FlatList
-            data={students}
-            renderItem={({ item, index }) => (
-              <Box
-                bg={"white"}
-                p="2"
-                mb="2"
-                borderColor="coolGray.300"
-                borderWidth="1"
-                _web={{
-                  shadow: 2,
-                }}
-              >
-                <VStack space="2">
-                  <AttendanceComponent
-                    weekPage={0}
-                    today={true}
-                    student={item}
-                    withDate={1}
-                    withApigetAttendance={false}
-                    attendanceProp={attendance}
-                    getAttendance={getAttendance}
-                  />
-                </VStack>
-              </Box>
-            )}
-            keyExtractor={(item) => item.id}
+                    <Icon
+                      size="sm"
+                      name="Edit"
+                      color={"coolGray.50"}
+                      pl={1}
+                      onPress={(e) => {
+                        setShowType(true);
+                        setShowModal(true);
+                      }}
+                    />
+                  </VStack>
+                </HStack>
+              </Stack>
+            }
           />
-        </Box>
+          {students.length === 0 ? (
+            <Box p={6} minH={300}>
+              <Center flex={1} px="3">
+                <Text bold fontSize={"lg"}>
+                  {t("CLASS_CHOOE_ATTENDANCE")}
+                </Text>
+              </Center>
+            </Box>
+          ) : (
+            <Box bg="gray.100" p="2">
+              <FlatList
+                data={students}
+                renderItem={({ item, index }) => (
+                  <Box
+                    bg={"white"}
+                    p="2"
+                    mb="2"
+                    borderColor="coolGray.300"
+                    borderWidth="1"
+                    _web={{
+                      shadow: 2,
+                    }}
+                  >
+                    <VStack space="2">
+                      <AttendanceComponent
+                        weekPage={0}
+                        today={true}
+                        student={item}
+                        withDate={1}
+                        withApigetAttendance={false}
+                        attendanceProp={attendance}
+                        getAttendance={getAttendance}
+                      />
+                    </VStack>
+                  </Box>
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </Box>
+          )}
+        </>
       )}
     </>
   );
