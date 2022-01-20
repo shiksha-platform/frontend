@@ -2,12 +2,9 @@ import {
   Actionsheet,
   Avatar,
   Box,
-  Button,
   HStack,
-  Link,
   Stack,
   Text,
-  useDisclose,
   VStack,
 } from "native-base";
 import React, { useState } from "react";
@@ -15,6 +12,7 @@ import Icon from "../IconByName";
 import { useTranslation } from "react-i18next";
 import Header from "../Header";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
+import { Link } from "react-router-dom";
 
 export default function Card({
   item,
@@ -59,7 +57,7 @@ export default function Card({
                       {t("DETAILS")}
                     </Text>
                   </Box>
-                  <Link href={"/students/" + item.id + "/edit"}>
+                  <Link to={"/students/" + item.id + "/edit"}>
                     <Icon size="sm" color="gray.900" name="Edit" />
                   </Link>
                 </HStack>
@@ -116,7 +114,10 @@ export default function Card({
                 </Box>
               </VStack>
               <Stack py={2} alignItems={"center"}>
-                <Link href={"/students/" + item.id}>
+                <Link
+                  to={"/students/" + item.id}
+                  style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
+                >
                   <Box
                     rounded="full"
                     borderColor="coolGray.200"
@@ -146,7 +147,12 @@ export default function Card({
 
   const PressableNew = ({ item, children, href, ...prop }) => {
     return href ? (
-      <Link href={href}>{children}</Link>
+      <Link
+        to={href}
+        style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
+      >
+        {children}
+      </Link>
     ) : (
       <Box {...prop}>{children}</Box>
     );

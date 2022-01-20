@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Text, Button, Stack, Box, Link, VStack, HStack } from "native-base";
+import { Text, Button, Stack, Box, VStack, HStack } from "native-base";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import { useTranslation } from "react-i18next";
 import Header from "../../../components/Header";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AttendanceComponent from "../../../components/attendance/AttendanceComponent";
 import Menu from "../../../components/Menu";
 import Icon from "../../../components/IconByName";
@@ -56,7 +56,7 @@ export default function App() {
                 {t("DETAILS")}
               </Text>
             </Box>
-            <Link href={"/students/" + studentObject.id + "/edit"}>
+            <Link to={"/students/" + studentObject.id + "/edit"}>
               <Icon size="sm" color="gray.900" name="Edit" />
             </Link>
           </HStack>
@@ -97,8 +97,8 @@ export default function App() {
             </Text>
             <Button
               variant="ghost"
-              borderRadius="50"
-              colorScheme="default"
+              rounded="full"
+              colorScheme="gray"
               background="gray.200"
             >
               {t("SEE_MORE")}
@@ -134,15 +134,19 @@ export default function App() {
                 <></>
               )}
               <Box alignItems={"center"}>
-                <Link href={"/attendance/" + studentObject.currentClassID}>
-                  <Button
+                <Link
+                  to={"/attendance/" + studentObject.currentClassID}
+                  style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
+                >
+                  <Box
                     variant="ghost"
-                    borderRadius="50"
-                    colorScheme="default"
+                    rounded="full"
                     background="gray.200"
+                    px={6}
+                    py={2}
                   >
                     {t("FULL_CLASS_ATTENDANCE")}
-                  </Button>
+                  </Box>
                 </Link>
               </Box>
             </VStack>

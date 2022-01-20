@@ -9,14 +9,12 @@ import {
   AspectRatio,
   Box,
   FlatList,
-  Avatar,
-  Link,
   PresenceTransition,
 } from "native-base";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Icon from "../../../components/IconByName";
 import Menu from "../../../components/Menu";
 import Card from "../../../components/students/Card";
@@ -39,7 +37,7 @@ export default function App() {
         await studentServiceRegistry.getAll({
           filters: {
             currentClassID: {
-              startsWith: classId,
+              eq: classId,
             },
           },
         })
@@ -95,8 +93,8 @@ export default function App() {
               <Button
                 variant="ghost"
                 borderRadius="50"
-                colorScheme="default"
-                background="gray.100"
+                colorScheme="gray"
+                background={"coolGray.50"}
               >
                 {t("SHARE")}
               </Button>
@@ -181,7 +179,7 @@ export default function App() {
                 <Button
                   variant="ghost"
                   borderRadius="50"
-                  colorScheme="default"
+                  colorScheme="gray"
                   background="gray.200"
                 >
                   {t("SHOW_ALL_STUDENTS")}
@@ -267,7 +265,13 @@ export default function App() {
                       <Text>
                         <Text bold>{t("GRADE")}:</Text> {t("GOOD")}
                       </Text>
-                      <Link href={"/attendance/" + classId}>
+                      <Link
+                        to={"/attendance/" + classId}
+                        style={{
+                          color: "rgb(63, 63, 70)",
+                          textDecoration: "none",
+                        }}
+                      >
                         <Box
                           rounded="full"
                           borderColor="coolGray.200"

@@ -105,7 +105,7 @@ export default function App() {
           <Button
             variant="ghost"
             borderRadius="50"
-            colorScheme="default"
+            colorScheme="gray"
             background="gray.200"
             onPress={handalSubmit}
           >

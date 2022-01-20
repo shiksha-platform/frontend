@@ -6,28 +6,23 @@ import {
   FlatList,
   VStack,
   Center,
-  Link,
   Text,
-  Button,
   Spinner,
   Heading,
-  Actionsheet,
 } from "native-base";
 // import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
 import Header from "../../components/Header";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AttendanceComponent, {
   GetAttendance,
-  GetIcon,
+  MultipalAttendance,
 } from "../../components/attendance/AttendanceComponent";
 import manifest from "./manifest.json";
 import { WeekWiesBar } from "../../components/CalendarBar";
 import Icon from "../../components/IconByName";
-import * as attendanceServiceRegistry from "../../services/attendanceServiceRegistry";
-import moment from "moment";
 
 // Start editing here, save and see your changes.
 export default function App() {
@@ -41,17 +36,15 @@ export default function App() {
   const [loding, setLoding] = useState(false);
   const teacherId = sessionStorage.getItem("id");
   const [attendance, setAttendance] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const status = manifest?.status ? manifest?.status : [];
   const [search, setSearch] = useState();
-  const [editState, setEditState] = useState(false);
+  const [isEditDisabled, setIsEditDisabled] = useState(true);
 
   useEffect(() => {
     const filterStudent = students.filter((e) =>
       e?.fullName.toLowerCase().match(search?.toLowerCase())
     );
     setSearchStudents(filterStudent);
-  }, [search]);
+  }, [search, students]);
 
   useEffect(() => {
     let ignore = false;
@@ -88,20 +81,6 @@ export default function App() {
     setAttendance(attendanceData);
   };
 
-  const getStudentsAttendance = (e) => {
-    return students
-      .map((item) => {
-        return attendance
-          .slice()
-          .reverse()
-          .find(
-            (e) =>
-              e.date === moment().format("Y-MM-DD") && e.studentId === item.id
-          );
-      })
-      .filter((e) => e);
-  };
-
   if (!classObject && !classObject?.className) {
     return (
       <Center flex={1} px="3">
@@ -117,131 +96,6 @@ export default function App() {
       </Center>
     );
   }
-
-  const markAllAttendance = async () => {
-    setLoding(true);
-    if (typeof students === "object") {
-      let ctr = 0;
-      let attendanceAll = getStudentsAttendance();
-
-      students.forEach((item, index) => {
-        let attendanceObject = attendanceAll.find(
-          (e) => item.id === e.studentId
-        );
-        let result = null;
-        if (attendanceObject?.id) {
-          if (attendanceObject.attendance !== "Present") {
-            result = attendanceServiceRegistry
-              .update(
-                {
-                  id: attendanceObject.id,
-                  attendance: "Present",
-                },
-                {
-                  headers: {
-                    Authorization: "Bearer " + sessionStorage.getItem("token"),
-                  },
-                }
-              )
-              .then((e) => {
-                if (getAttendance) {
-                  setTimeout(getAttendance, 900);
-                }
-              });
-          } else {
-            result = "alreadyPresent";
-          }
-        } else {
-          result = attendanceServiceRegistry.create(
-            {
-              studentId: item.id,
-              date: moment().format("Y-MM-DD"),
-              attendance: "Present",
-              attendanceNote: "Test",
-              classId: item.currentClassID,
-              subjectId: "History",
-              teacherId: teacherId,
-            },
-            {
-              headers: {
-                Authorization: "Bearer " + sessionStorage.getItem("token"),
-              },
-            }
-          );
-        }
-
-        setTimeout(async (e) => {
-          if (result && result == "alreadyPresent") {
-            setAllAttendanceStatus({
-              ...allAttendanceStatus,
-              success: parseInt(index + 1) + " Already Present",
-            });
-          } else if (result) {
-            setAllAttendanceStatus({
-              ...allAttendanceStatus,
-              success: parseInt(index + 1) + " success",
-            });
-          } else {
-            setAllAttendanceStatus({
-              ...allAttendanceStatus,
-              fail: parseInt(index + 1) + " fail",
-            });
-          }
-          ctr++;
-          if (ctr === students.length) {
-            setAllAttendanceStatus({});
-            setLoding(false);
-            await getAttendance();
-          }
-        }, index * 900);
-      });
-    }
-  };
-
-  const countReport = ({ gender, attendanceType, type }) => {
-    let attendanceAll = getStudentsAttendance();
-
-    let studentIds = students.map((e) => e.id);
-    if (gender && [t("BOYS"), t("GIRLS")].includes(gender)) {
-      studentIds = students
-        .filter(
-          (e) =>
-            e.gender ===
-            (gender === t("BOYS")
-              ? "Male"
-              : gender === t("GIRLS")
-              ? "Female"
-              : "")
-        )
-        .map((e) => e.id);
-    }
-    if (type === "Total" && gender === t("TOTAL")) {
-      return studentIds.length;
-    } else if (type === "Total" && [t("BOYS"), t("GIRLS")].includes(gender)) {
-      let studentIds1 = studentIds.filter(
-        (e) =>
-          !attendanceAll
-            .filter((e) => studentIds.includes(e?.studentId))
-            .map((e) => e.studentId)
-            .includes(e)
-      );
-
-      return (
-        attendanceAll.filter((e) => studentIds.includes(e?.studentId)).length +
-        studentIds1.length
-      );
-    } else if (type === "Unmarked") {
-      let studentIds1 = attendanceAll.filter((e) =>
-        studentIds.includes(e.studentId)
-      );
-      return Math.abs(studentIds.length - studentIds1.length);
-    } else {
-      return attendanceAll.filter(
-        (e) =>
-          studentIds.includes(e?.studentId) && e.attendance === attendanceType
-      ).length;
-    }
-  };
 
   if (loding) {
     return (
@@ -276,186 +130,6 @@ export default function App() {
     );
   }
 
-  const PopupActionSheet = () => {
-    return (
-      <>
-        <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
-          <Actionsheet.Content bg="coolGray.500">
-            <Header
-              isDisabledAppBar={true}
-              _box={{ bg: "coolGray.500", py: 0 }}
-              icon="AssignmentTurnedIn"
-              heading={t("ATTENDANCE")}
-              _heading={{ fontSize: "xl" }}
-              subHeadingComponent={
-                <Link href={"/students/class/" + classId}>
-                  <Box
-                    rounded="full"
-                    borderColor="coolGray.200"
-                    borderWidth="1"
-                    bg="white"
-                    px={1}
-                  >
-                    <HStack
-                      space="4"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <Icon size="sm" name="Group" />
-                      <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
-                      <Icon size="sm" name="ArrowForwardIos" />
-                    </HStack>
-                  </Box>
-                </Link>
-              }
-            />
-          </Actionsheet.Content>
-          <Box bg="coolGray.100" width={"100%"}>
-            <Box bg="white" p="2">
-              <HStack justifyContent="space-between" alignItems="center">
-                <Text>{t("ATTENDANCE_SUMMARY")}</Text>
-                <Text>
-                  {t("TODAY")}: {moment().format("ddd DD, MMM")}
-                </Text>
-              </HStack>
-            </Box>
-            <Box p={4}>
-              <Stack space={3}>
-                <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
-                  <FlatList
-                    data={["heade", t("BOYS"), t("GIRLS"), t("TOTAL")]}
-                    renderItem={({ item, index }) => (
-                      <HStack
-                        alignItems={"center"}
-                        space={2}
-                        justifyContent={"space-between"}
-                      >
-                        {item === "heade" ? (
-                          <Text></Text>
-                        ) : (
-                          <Text fontSize="2xl">{item}</Text>
-                        )}
-                        {item === "heade" ? (
-                          <HStack alignItems={"center"} space={2}>
-                            {status.map((item, index) => {
-                              return (
-                                <GetIcon
-                                  key={index}
-                                  status={item}
-                                  _box={{ p: 2, minW: "55", maxW: "55" }}
-                                />
-                              );
-                            })}
-                            {!status.includes("Unmarked") ? (
-                              <GetIcon
-                                status={"Today"}
-                                _box={{ p: 2, minW: "55", maxW: "55" }}
-                              />
-                            ) : (
-                              <></>
-                            )}
-                            <Text fontSize="2xl" minW={"55"} maxW={"55"}>
-                              {t("TOTAL")}
-                            </Text>
-                          </HStack>
-                        ) : (
-                          <HStack
-                            alignItems={"center"}
-                            space={2}
-                            width={"252px"}
-                          >
-                            {status.map((subItem, index) => {
-                              return (
-                                <Text
-                                  key={index}
-                                  fontSize="2xl"
-                                  minW={"55"}
-                                  maxW={"55"}
-                                  textAlign={"center"}
-                                >
-                                  {countReport({
-                                    gender: item,
-                                    attendanceType: subItem,
-                                  })}
-                                </Text>
-                              );
-                            })}
-                            <Text
-                              fontSize="2xl"
-                              minW={"55"}
-                              maxW={"55"}
-                              textAlign={"center"}
-                            >
-                              {countReport({
-                                type: "Unmarked",
-                                gender: item,
-                              })}
-                            </Text>
-                            <Text
-                              fontSize="2xl"
-                              minW={"55"}
-                              maxW={"55"}
-                              textAlign={"center"}
-                            >
-                              {countReport({
-                                type: "Total",
-                                gender: item,
-                              })}
-                            </Text>
-                          </HStack>
-                        )}
-                      </HStack>
-                    )}
-                    keyExtractor={(item, index) => index}
-                  />
-                </Box>
-                <VStack>
-                  <Box
-                    borderWidth={1}
-                    p="2"
-                    borderColor="gray.500"
-                    bg="gray.50"
-                  >
-                    <Text>
-                      <Text>100% {t("THIS_WEEK")}: </Text>
-                      <Text pr={1}>
-                        {students.map((e) => e.fullName).join(", ")}
-                      </Text>
-                    </Text>
-                  </Box>
-                </VStack>
-                <VStack space={4} width={"100%"} alignItems={"center"}>
-                  <Link href={"/classes/" + classId}>
-                    <Button
-                      borderRadius="50"
-                      colorScheme="gray"
-                      background="coolGray.600"
-                      px={6}
-                    >
-                      {t("SEE_FULL_REPORT")}
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    borderRadius="50"
-                    colorScheme="gray"
-                    background="coolGray.300"
-                    _text={{ color: "coolGray.600" }}
-                    px={6}
-                    width={"100%"}
-                    onPress={(e) => setShowModal(false)}
-                  >
-                    {t("CLOSE")}
-                  </Button>
-                </VStack>
-              </Stack>
-            </Box>
-          </Box>
-        </Actionsheet>
-      </>
-    );
-  };
-
   return (
     <>
       <Box position={"sticky"} top={0} zIndex={"10"} width={"100%"}>
@@ -467,7 +141,10 @@ export default function App() {
           heading={t("ATTENDANCE")}
           _heading={{ fontSize: "xl" }}
           subHeadingComponent={
-            <Link href={"/students/class/" + classId}>
+            <Link
+              to={"/students/class/" + classId}
+              style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
+            >
               <Box
                 rounded="full"
                 borderColor="coolGray.200"
@@ -498,6 +175,26 @@ export default function App() {
               ) > parseInt(weekPage - 1)
             }
             nextDisabled={weekPage >= 0}
+            leftErrorText={
+              !isEditDisabled
+                ? {
+                    title:
+                      "Please click on save before moving to the previous page.",
+                    status: "error",
+                    placement: "top",
+                  }
+                : false
+            }
+            rightErrorText={
+              !isEditDisabled
+                ? {
+                    title:
+                      "Please click on save before moving to the next page.",
+                    status: "error",
+                    placement: "top",
+                  }
+                : false
+            }
           />
         </Stack>
       </Box>
@@ -523,7 +220,7 @@ export default function App() {
                   withApigetAttendance={false}
                   attendanceProp={attendance}
                   getAttendance={getAttendance}
-                  editState={editState}
+                  isEditDisabled={isEditDisabled}
                 />
               </VStack>
             </Box>
@@ -531,52 +228,20 @@ export default function App() {
           keyExtractor={(item) => item.id}
         />
       </Box>
-      <Stack position={"sticky"} bottom={0} width={"100%"}>
-        <Box p="2" bg="coolGray.400">
-          <VStack space={3} alignItems={"center"}>
-            <Text textAlign={"center"}>
-              {t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
-            </Text>
-            {editState ? (
-              <HStack alignItems={"center"} space={4}>
-                <Button
-                  variant="ghost"
-                  rounded={"full"}
-                  colorScheme="gray"
-                  background="coolGray.200"
-                  px={4}
-                  onPress={markAllAttendance}
-                >
-                  {t("MARK_ALL_PRESENT")}
-                </Button>
-                <Button
-                  borderRadius="50"
-                  colorScheme="gray"
-                  background="coolGray.600"
-                  px={6}
-                  onPress={(e) => setShowModal(true)}
-                >
-                  {t("SAVE")}
-                </Button>
-              </HStack>
-            ) : (
-              <HStack alignItems={"center"} space={4}>
-                <Button
-                  variant="ghost"
-                  rounded={"full"}
-                  colorScheme="gray"
-                  background="coolGray.200"
-                  px={4}
-                  onPress={(e) => setEditState(true)}
-                >
-                  {t("EDIT")}
-                </Button>
-              </HStack>
-            )}
-          </VStack>
-        </Box>
-      </Stack>
-      <PopupActionSheet />
+      <MultipalAttendance
+        {...{
+          students,
+          attendance,
+          getAttendance,
+          setLoding,
+          setAllAttendanceStatus,
+          allAttendanceStatus,
+          classId,
+          classObject,
+          isEditDisabled,
+          setIsEditDisabled,
+        }}
+      />
     </>
   );
 }

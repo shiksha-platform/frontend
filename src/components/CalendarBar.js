@@ -1,5 +1,5 @@
 import moment from "moment";
-import { Box, HStack, Text } from "native-base";
+import { Box, HStack, Text, useToast } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Icon from "./IconByName";
@@ -75,6 +75,8 @@ export function WeekWiesBar({
   _box,
   nextDisabled,
   previousDisabled,
+  rightErrorText,
+  leftErrorText,
 }) {
   const [weekDays, setWeekDays] = useState([]);
 
@@ -95,6 +97,8 @@ export function WeekWiesBar({
         _box,
         nextDisabled,
         previousDisabled,
+        rightErrorText,
+        leftErrorText,
       }}
     >
       <FormatDate date={weekDays} type="Week" />
@@ -109,8 +113,11 @@ const Display = ({
   setPage,
   nextDisabled,
   previousDisabled,
+  rightErrorText,
+  leftErrorText,
   _box,
 }) => {
+  const toast = useToast();
   return (
     <Box bg="white" p="1" {..._box}>
       <HStack justifyContent="space-between" alignItems="center">
@@ -126,12 +133,16 @@ const Display = ({
                 : "gray.400"
             }
             name="ArrowCircleLeftOutlined"
-            onPress={(e) =>
-              typeof previousDisabled === "undefined" ||
-              previousDisabled === false
-                ? setPage(page - 1)
-                : ""
-            }
+            onPress={(e) => {
+              if (leftErrorText) {
+                toast.show(leftErrorText);
+              } else if (
+                typeof previousDisabled === "undefined" ||
+                previousDisabled === false
+              ) {
+                setPage(page - 1);
+              }
+            }}
           />
         </HStack>
         <HStack space="4" alignItems="center">
@@ -150,11 +161,16 @@ const Display = ({
                 : "gray.400"
             }
             name="ArrowCircleRightOutlined"
-            onPress={(e) =>
-              typeof nextDisabled === "undefined" || nextDisabled === false
-                ? setPage(page + 1)
-                : ""
-            }
+            onPress={(e) => {
+              if (rightErrorText) {
+                toast.show(rightErrorText);
+              } else if (
+                typeof nextDisabled === "undefined" ||
+                nextDisabled === false
+              ) {
+                setPage(page + 1);
+              }
+            }}
           />
         </HStack>
       </HStack>

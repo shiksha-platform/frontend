@@ -23,7 +23,7 @@ export const getAll = async (
     limit: 5,
     filters: {
       currentClassID: {
-        startsWith: "1",
+        eq: "1",
       },
     },
   }

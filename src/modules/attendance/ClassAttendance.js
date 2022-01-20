@@ -4,7 +4,9 @@ import {
   Box,
   Center,
   FlatList,
+  Heading,
   HStack,
+  Spinner,
   Stack,
   Text,
   VStack,
@@ -13,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import AttendanceComponent, {
   GetAttendance,
+  MultipalAttendance,
 } from "../../components/attendance/AttendanceComponent";
 import Header from "../../components/Header";
 import IconByName from "../../components/IconByName";
@@ -25,15 +28,15 @@ export default function ClassAttendance() {
   const [calsses, setClasses] = useState([]);
   const [classObject, setClassObject] = useState({});
   const [students, setStudents] = useState([]);
-  const [attendanceTypes, setAttendanceTypes] = useState([
-    "Morning",
-    "Mid day meal",
-  ]);
+  const attendanceTypes = ["Morning", "Mid day meal"];
   const [attendanceType, setAttendanceType] = useState();
   const teacherId = sessionStorage.getItem("id");
   const [showModal, setShowModal] = useState(true);
   const [showType, setShowType] = useState(true);
   const [attendance, setAttendance] = useState([]);
+  const [loding, setLoding] = useState(false);
+  const [allAttendanceStatus, setAllAttendanceStatus] = useState({});
+  const [isEditDisabled, setIsEditDisabled] = useState(true);
 
   useEffect(() => {
     let ignore = false;
@@ -50,22 +53,23 @@ export default function ClassAttendance() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [teacherId]);
 
   useEffect(() => {
     let ignore = false;
     const getData = async () => {
       if (classObject.id) {
-        setStudents(
-          await studentServiceRegistry.getAll({
-            filters: {
-              currentClassID: {
-                startsWith: classObject.id,
-              },
+        let data = await studentServiceRegistry.getAll({
+          filters: {
+            currentClassID: {
+              eq: classObject.id,
             },
-          })
-        );
-        await getAttendance();
+          },
+        });
+        if (!ignore) {
+          setStudents(data);
+          await getAttendance();
+        }
       }
     };
     getData();
@@ -170,86 +174,134 @@ export default function ClassAttendance() {
     );
   };
 
+  if (loding) {
+    return (
+      <Center flex={1} px="3">
+        <Center
+          _text={{
+            color: "white",
+            fontWeight: "bold",
+          }}
+          height={200}
+          width={{
+            base: 200,
+            lg: 400,
+          }}
+        >
+          <VStack space={2} alignItems={"center"}>
+            <Text>
+              {allAttendanceStatus.success ? allAttendanceStatus.success : ""}
+            </Text>
+            <Text>
+              {allAttendanceStatus.fail ? allAttendanceStatus.fail : ""}
+            </Text>
+            <HStack space={2} alignItems="center">
+              <Spinner accessibilityLabel="Loading posts" />
+              <Heading color="primary.500" fontSize="md">
+                Loading
+              </Heading>
+            </HStack>
+          </VStack>
+        </Center>
+      </Center>
+    );
+  }
+
   return (
     <>
       {showModal ? (
         <PopupActionSheet />
       ) : (
         <>
-          <Header
-            title={t("MY_CLASSES")}
-            fullRightComponent={
-              <Stack bg="black" p="2">
-                <HStack justifyContent="space-between">
-                  <IconByName
-                    p="0"
-                    isDisabled={true}
-                    name={"Group"}
-                    color="white"
-                    _icon={{
-                      style: { fontSize: "45px" },
-                    }}
-                  />
-                  <VStack space={1}>
-                    <Text fontSize={"lg"} color={"coolGray.100"} bold>
-                      {attendanceType ? attendanceType : t("SELECT_SUBJECT")}
-                    </Text>
-                    <Box
-                      rounded="full"
-                      borderColor="coolGray.200"
-                      borderWidth="1"
-                      bg="coolGray.100"
-                      px={1}
-                      minW={200}
+          <Box position={"sticky"} top={0} zIndex={"10"} width={"100%"}>
+            <Header
+              title={t("MY_CLASSES")}
+              fullRightComponent={
+                <Stack bg="black" p="2">
+                  <HStack space={4}>
+                    <IconByName
+                      p="0"
+                      isDisabled={true}
+                      name={"Group"}
+                      color="white"
+                      _icon={{
+                        style: { fontSize: "45px" },
+                      }}
+                    />
+                    <HStack
+                      space={3}
+                      justifyContent={"space-between"}
+                      width={"80%"}
                     >
-                      <HStack
-                        justifyContent="space-between"
-                        alignItems="center"
-                      >
-                        <Icon size="sm" name="Group" isDisabled={true} px={1} />
-                        <Text fontSize={"lg"}>
-                          {classObject?.className
-                            ? classObject?.className
-                            : t("SELECT_CLASS")}
+                      <VStack space={1}>
+                        <Text fontSize={"lg"} color={"coolGray.100"} bold>
+                          {attendanceType
+                            ? attendanceType
+                            : t("SELECT_SUBJECT")}
                         </Text>
+                        <Box
+                          rounded="full"
+                          borderColor="coolGray.200"
+                          borderWidth="1"
+                          bg="coolGray.100"
+                          px={1}
+                          minW={200}
+                        >
+                          <HStack
+                            justifyContent="space-between"
+                            alignItems="center"
+                          >
+                            <Icon
+                              size="sm"
+                              name="Group"
+                              isDisabled={true}
+                              px={1}
+                            />
+                            <Text fontSize={"lg"}>
+                              {classObject?.className
+                                ? classObject?.className
+                                : t("SELECT_CLASS")}
+                            </Text>
+                            <Icon
+                              size="sm"
+                              name="ArrowForwardIos"
+                              isDisabled={true}
+                              pl={1}
+                            />
+                          </HStack>
+                        </Box>
+                        <Text fontSize={"xl"} color={"coolGray.50"}>
+                          {moment().format("dddd Do MMM")}
+                        </Text>
+                      </VStack>
+                      <VStack>
                         <Icon
                           size="sm"
-                          name="ArrowForwardIos"
-                          isDisabled={true}
+                          name="Edit"
+                          color={"coolGray.100"}
                           pl={1}
+                          onPress={(e) => {
+                            setShowType(false);
+                            setShowModal(true);
+                          }}
                         />
-                      </HStack>
-                    </Box>
-                    <Text fontSize={"xl"} color={"coolGray.50"}>
-                      {moment().format("dddd Do MMM")}
-                    </Text>
-                  </VStack>
-                  <VStack>
-                    <Icon
-                      size="sm"
-                      name="Edit"
-                      color={"coolGray.100"}
-                      pl={1}
-                      onPress={(e) => {
-                        setShowType(false);
-                        setShowModal(true);
-                      }}
-                    />
-                    <Icon
-                      size="sm"
-                      name="Edit"
-                      color={"coolGray.50"}
-                      pl={1}
-                      onPress={(e) => {
-                        setShowType(true);
-                        setShowModal(true);
-                      }}
-                    />
-                  </VStack>
-                </HStack>
-              </Stack>
-            }
-          />
+                        <Icon
+                          size="sm"
+                          name="Edit"
+                          color={"coolGray.50"}
+                          pl={1}
+                          onPress={(e) => {
+                            setShowType(true);
+                            setShowModal(true);
+                          }}
+                        />
+                      </VStack>
+                    </HStack>
+                  </HStack>
+                </Stack>
+              }
+            />
+          </Box>
           {students.length === 0 ? (
             <Box p={6} minH={300}>
               <Center flex={1} px="3">
@@ -279,6 +331,7 @@ export default function ClassAttendance() {
                         today={true}
                         student={item}
                         withDate={1}
+                        isEditDisabled={isEditDisabled}
                         withApigetAttendance={false}
                         attendanceProp={attendance}
                         getAttendance={getAttendance}
@@ -290,6 +343,19 @@ export default function ClassAttendance() {
               />
             </Box>
           )}
+          <MultipalAttendance
+            {...{
+              students,
+              attendance,
+              getAttendance,
+              setLoding,
+              setAllAttendanceStatus,
+              allAttendanceStatus,
+              classObject,
+              isEditDisabled,
+              setIsEditDisabled,
+            }}
+          />
         </>
       )}
     </>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { HStack, Text, Stack, Box, Link } from "native-base";
+import { HStack, Text, Stack, Box } from "native-base";
 import Menu from "../../../components/Menu";
 import Icon from "../../../components/IconByName";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import Header from "../../../components/Header";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DayWiesBar from "../../../components/CalendarBar";
 
@@ -37,7 +37,10 @@ export default function App() {
         // heading={"Science"}
         // _heading={{ fontSize: "sm" }}
         subHeadingComponent={
-          <Link href={"/students/class/" + classId}>
+          <Link
+            to={"/students/class/" + classId}
+            style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
+          >
             <Box
               rounded="full"
               borderColor="coolGray.200"

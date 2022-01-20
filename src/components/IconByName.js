@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  IconButton as IconButtonCustom,
-  Icon as IconCustom,
-  Stack,
-} from "native-base";
+import { IconButton as IconButtonCustom, Stack } from "native-base";
 import {
   ArrowCircleLeftOutlined,
   ArrowCircleRightOutlined,
@@ -33,15 +29,15 @@ import {
 } from "@mui/icons-material";
 
 function IconButton({ icon, isDisabled, ...props }) {
-  if (isDisabled) {
-    return <Stack {...props}>{React.cloneElement(icon, props._icon)}</Stack>;
-  } else {
+  if (!isDisabled) {
     return (
       <IconButtonCustom
         {...props}
         icon={React.cloneElement(icon, props._icon)}
       />
     );
+  } else {
+    return <Stack {...props}>{React.cloneElement(icon, props._icon)}</Stack>;
   }
 }
 

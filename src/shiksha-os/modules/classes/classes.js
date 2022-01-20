@@ -84,11 +84,12 @@ export default function App() {
         button={
           <Button
             variant="outline"
-            colorScheme="default"
-            background={"#fff"}
+            rounded={"full"}
+            colorScheme="gray"
+            background={"coolGray.50"}
             size="container"
-            px={1}
-            m="3"
+            px={3}
+            mr="3"
           >
             {t("TIME_TABLE")}
           </Button>
