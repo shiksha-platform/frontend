@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton as IconButtonCustom } from "native-base";
+import { IconButton as IconButtonCustom, Stack } from "native-base";
 import {
   ArrowCircleLeftOutlined,
   ArrowCircleRightOutlined,
@@ -17,12 +17,28 @@ import {
   ArrowForwardIos,
   AppRegistration,
   MenuBook,
+  CameraAlt,
+  ArrowDropDown,
+  ArrowDropUp,
+  Edit,
+  KeyboardBackspace,
+  Search,
+  Close,
+  Class,
+  Check,
 } from "@mui/icons-material";
 
-function IconButton({ icon, ...props }) {
-  return (
-    <IconButtonCustom {...props} icon={React.cloneElement(icon, props._icon)} />
-  );
+function IconButton({ icon, isDisabled, ...props }) {
+  if (!isDisabled) {
+    return (
+      <IconButtonCustom
+        {...props}
+        icon={React.cloneElement(icon, props._icon)}
+      />
+    );
+  } else {
+    return <Stack {...props}>{React.cloneElement(icon, props._icon)}</Stack>;
+  }
 }
 
 export default function IconByName(props) {
@@ -76,6 +92,33 @@ export default function IconByName(props) {
       break;
     case "MenuBook":
       icon = <IconButton {...props} icon={<MenuBook />} />;
+      break;
+    case "CameraAlt":
+      icon = <IconButton {...props} icon={<CameraAlt />} />;
+      break;
+    case "ArrowDropDown":
+      icon = <IconButton {...props} icon={<ArrowDropDown />} />;
+      break;
+    case "ArrowDropUp":
+      icon = <IconButton {...props} icon={<ArrowDropUp />} />;
+      break;
+    case "Edit":
+      icon = <IconButton {...props} icon={<Edit />} />;
+      break;
+    case "KeyboardBackspace":
+      icon = <IconButton {...props} icon={<KeyboardBackspace />} />;
+      break;
+    case "Search":
+      icon = <IconButton {...props} icon={<Search />} />;
+      break;
+    case "Close":
+      icon = <IconButton {...props} icon={<Close />} />;
+      break;
+    case "Class":
+      icon = <IconButton {...props} icon={<Class />} />;
+      break;
+    case "Check":
+      icon = <IconButton {...props} icon={<Check />} />;
       break;
     default:
       icon = <IconButton {...props} icon={<Home />} />;

@@ -1,11 +1,13 @@
 import AppBar from "./shiksha-os/menu";
-import { Center, NativeBaseProvider } from "native-base";
+import { Box, Center, NativeBaseProvider } from "native-base";
 import Home from "./shiksha-os/home";
 import Students from "./shiksha-os/modules/students/student";
 import StudentDetails from "./shiksha-os/modules/students/studentDetails";
+import StudentEdit from "./shiksha-os/modules/students/studentEdit";
 import Classes from "./shiksha-os/modules/classes/classes";
 import ClassDetails from "./shiksha-os/modules/classes/classDetails";
-import Attendance from "./modules/attendance/attendance";
+import Attendance from "./modules/attendance/Attendance";
+import ClassAttendance from "./modules/attendance/ClassAttendance";
 import i18n from "i18next";
 import { useTranslation, initReactI18next } from "react-i18next";
 import init from "./shiksha-os/lang/init";
@@ -36,7 +38,7 @@ export default function App() {
           <Route
             path="*"
             element={
-              <SubApp title={t("MY_SCHOOL_APP")}>
+              <SubApp>
                 <Login />
               </SubApp>
             }
@@ -52,7 +54,7 @@ export default function App() {
         <Route
           path="/"
           element={
-            <SubApp title={t("MY_SCHOOL_APP")}>
+            <SubApp>
               <Home />
             </SubApp>
           }
@@ -60,7 +62,7 @@ export default function App() {
         <Route
           path="/classes"
           element={
-            <SubApp title={t("MY_CLASSES")}>
+            <SubApp>
               <Classes />
             </SubApp>
           }
@@ -68,15 +70,15 @@ export default function App() {
         <Route
           path="/classes/:classId"
           element={
-            <SubApp title={t("MY_CLASSES")}>
-              <ClassDetails />
+            <SubApp>
+              <Students />
             </SubApp>
           }
         />
         <Route
           path="/students/class/:classId"
           element={
-            <SubApp title={t("MY_STUDENTS")}>
+            <SubApp>
               <Students />
             </SubApp>
           }
@@ -84,16 +86,32 @@ export default function App() {
         <Route
           path="/students/:studentId"
           element={
-            <SubApp title={t("STUDENTS_DETAIL")}>
+            <SubApp>
               <StudentDetails />
+            </SubApp>
+          }
+        />
+        <Route
+          path="/students/:studentId/edit"
+          element={
+            <SubApp>
+              <StudentEdit />
             </SubApp>
           }
         />
         <Route
           path="/attendance/:classId"
           element={
-            <SubApp title={t("ATTENDANCE_SHEET")}>
+            <SubApp>
               <Attendance />
+            </SubApp>
+          }
+        />
+        <Route
+          path="/classes/attendance/group"
+          element={
+            <SubApp>
+              <ClassAttendance />
             </SubApp>
           }
         />
@@ -103,11 +121,10 @@ export default function App() {
   );
 }
 
-export function SubApp({ children, title }) {
+export function SubApp({ children }) {
   return (
     <NativeBaseProvider>
-      <AppBar title={title} />
-      {children}
+      <Box minH={window.outerHeight}>{children}</Box>
     </NativeBaseProvider>
   );
 }

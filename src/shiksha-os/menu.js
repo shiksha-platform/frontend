@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   HStack,
   Text,
@@ -8,14 +8,25 @@ import {
   Pressable,
   Select,
   CheckIcon,
+  Input,
 } from "native-base";
 import manifest from "./manifest";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Icon from "../components/IconByName";
+import { useTranslation } from "react-i18next";
 
-export default function AppBar(props) {
+export default function AppBar({
+  isEnableHamburgerMenuButton,
+  isEnableLanguageMenu,
+  isEnableSearchBtn,
+  setSearch,
+  ...props
+}) {
+  const { t } = useTranslation();
   const token = sessionStorage.getItem("token");
+  const [searchInput, setSearchInput] = useState(false);
 
+  const navigate = useNavigate();
   const setLang = (e) => {
     if (e === "logout") {
       sessionStorage.setItem("token", "");
@@ -37,34 +48,81 @@ export default function AppBar(props) {
         alignItems="center"
       >
         <HStack space="4" alignItems="center">
-          <Icon size="sm" color="white" name="Menu" />
-          <Text color="white" fontSize="20" fontWeight="bold">
-            {props.title ?? manifest.name}
-          </Text>
+          {isEnableHamburgerMenuButton ? (
+            <Icon size="sm" color="white" name="Menu" />
+          ) : (
+            <Icon
+              size="sm"
+              color="white"
+              name="KeyboardBackspace"
+              onPress={() => navigate(-1)}
+            />
+          )}
+          {searchInput ? (
+            <Input
+              bg={"coolGray.100"}
+              size={"full"}
+              InputRightElement={
+                <Icon
+                  size="sm"
+                  color="coolGray.500"
+                  w="1/8"
+                  name="Close"
+                  pl="0"
+                  onPress={(e) => setSearchInput(false)}
+                />
+              }
+              placeholder="search"
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          ) : (
+            <Text color="white" fontSize="20" fontWeight="bold">
+              {props.title ?? manifest.name}
+            </Text>
+          )}
         </HStack>
-        <HStack space="2">
+        <HStack>
+          {!searchInput && isEnableSearchBtn ? (
+            <Icon
+              size="sm"
+              color="white"
+              name="Search"
+              onPress={(e) => setSearchInput(true)}
+            />
+          ) : (
+            <></>
+          )}
           <Link to="/">
             <Icon size="sm" color="white" name="Home" />
           </Link>
-          <Select
-            selectedValue={localStorage.getItem("lang")}
-            minWidth="75"
-            maxWidth="75"
-            borderWidth="0"
-            accessibilityLabel="Lang"
-            placeholder="Lang"
-            bgColor="white"
-            _selectedItem={{
-              bg: "white",
-              endIcon: <CheckIcon size="5" />,
-            }}
-            onValueChange={(itemValue) => setLang(itemValue)}
-          >
-            {manifest.languages.map((e, index) => (
-              <Select.Item key={index} label={e.title} value={e.code} />
-            ))}
-            {token ? <Select.Item label={"Logout"} value={"logout"} /> : <></>}
-          </Select>
+          <Icon size="sm" color="white" name="MoreVert" />
+          {isEnableLanguageMenu ? (
+            <Select
+              selectedValue={localStorage.getItem("lang")}
+              minWidth="75"
+              maxWidth="75"
+              borderWidth="0"
+              accessibilityLabel="Lang"
+              placeholder="Lang"
+              bgColor="white"
+              _selectedItem={{
+                bg: "white",
+                endIcon: <CheckIcon size="5" />,
+              }}
+              onValueChange={(itemValue) => setLang(itemValue)}
+            >
+              {manifest.languages.map((e, index) => (
+                <Select.Item key={index} label={e.title} value={e.code} />
+              ))}
+              {token ? (
+                <Select.Item label={"Logout"} value={"logout"} />
+              ) : (
+                <></>
+              )}
+            </Select>
+          ) : (
+            <></>
+          )}
         </HStack>
       </HStack>
     </>

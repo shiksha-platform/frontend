@@ -30,7 +30,7 @@
     "main": [
       {
         "title": "MY_CLASSES",
-        "icon": "email",
+        "icon": "Class",
         "module": "Registry",
         "route": "/classes",
         "routeparameters": {}
@@ -46,7 +46,7 @@
   "config": [{}],
   "languages": [
     {
-      "title": "UK English",
+      "title": "English",
       "path": "./samagra-shiksha.en-gb.json",
       "overridePath": "./override-samagra-shiksha.en-gb.json",
       "code": "en"

@@ -33,9 +33,11 @@ export const getAll = async (
 };
 
 export const getOne = async (filters = {}, headers = {}) => {
-  const result = await generalServices.get(manifest.api_url + "Teacher", {
-    headers: headers,
-  });
+  const result = await generalServices
+    .get(manifest.api_url + "Teacher", {
+      headers: headers,
+    })
+    .catch((error) => error);
   if (result.data) {
     return mapInterfaceData(result.data[0], interfaceData);
   } else {

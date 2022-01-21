@@ -1,17 +1,10 @@
 import React from "react";
 
-import {
-  HStack,
-  Text,
-  Link,
-  VStack,
-  Box,
-  FlatList,
-  Pressable,
-} from "native-base";
+import { HStack, Text, VStack, Box, FlatList, Pressable } from "native-base";
 import Icon from "./IconByName";
 import { generatePath } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 export default function Menu({
   items,
@@ -37,7 +30,8 @@ export default function Menu({
     return item?.route ? (
       <Pressable {...prop}>
         <Link
-          href={
+          style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
+          to={
             routeDynamics
               ? generatePath(item.route, { ...{ id: item.id } })
               : item.route
@@ -99,34 +93,50 @@ export default function Menu({
               _dark={{
                 borderColor: "gray.600",
               }}
-              borderLeftWidth={item.activeMenu ? "5" : ""}
-              borderLeftColor={item.activeMenu ? "primary.500" : ""}
+              borderLeftWidth={"5"}
+              borderLeftColor={
+                item.activeMenu
+                  ? "primary.500"
+                  : item?._boxMenu?.bg
+                  ? item._boxMenu.bg
+                  : _boxMenu?.bg
+                  ? _boxMenu?.bg
+                  : bg
+              }
               borderColor={"coolGray.200"}
               {..._boxMenu}
+              {...item._boxMenu}
             >
-              <VStack space="6" my="2" mx="1">
-                <PressableNew px="5" py="1" item={item}>
-                  <HStack space={3}>
-                    <HStack
-                      space={item.leftText || item.icon ? "7" : ""}
-                      alignItems="center"
-                    >
-                      {item.leftText ? (
-                        <Text color="gray.700" fontWeight="500">
-                          {item.leftText}
-                        </Text>
-                      ) : item.icon ? (
-                        <Icon name={item.icon} p="0" {..._icon} />
-                      ) : (
-                        <></>
-                      )}
+              <PressableNew px="5" py="3" item={item}>
+                <HStack
+                  space={3}
+                  justifyContent={"space-between"}
+                  width={"100%"}
+                >
+                  <HStack
+                    space={item.leftText || item.icon ? "7" : ""}
+                    alignItems="center"
+                  >
+                    {item.leftText ? (
                       <Text color="gray.700" fontWeight="500">
-                        {t(item.title)}
+                        {item.leftText}
                       </Text>
-                    </HStack>
+                    ) : item.icon ? (
+                      <Icon name={item.icon} p="0" {..._icon} />
+                    ) : (
+                      <></>
+                    )}
+                    <Text color="gray.700" fontWeight="500">
+                      {t(item.title)}
+                    </Text>
                   </HStack>
-                </PressableNew>
-              </VStack>
+                  <Icon
+                    name={item.rightIcon ? item.rightIcon : "ArrowForwardIos"}
+                    p="0"
+                    {..._icon}
+                  />
+                </HStack>
+              </PressableNew>
             </Box>
           )}
           keyExtractor={(item, index) => (item.id ? item.id : index)}
