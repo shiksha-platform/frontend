@@ -17,7 +17,7 @@ import AttendanceComponent, {
   GetAttendance,
   MultipalAttendance,
 } from "../../components/attendance/AttendanceComponent";
-import Header from "../../components/Header";
+import Layout from "../../layout/Layout";
 import IconByName from "../../components/IconByName";
 import Icon from "../../components/IconByName";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
@@ -212,96 +212,86 @@ export default function ClassAttendance() {
       {showModal ? (
         <PopupActionSheet />
       ) : (
-        <>
-          <Box position={"sticky"} top={0} zIndex={"10"} width={"100%"}>
-            <Header
-              title={t("MY_CLASSES")}
-              fullRightComponent={
-                <Stack bg="black" p="2">
-                  <HStack space={4}>
-                    <IconByName
-                      p="0"
-                      isDisabled={true}
-                      name={"Group"}
-                      color="white"
-                      _icon={{
-                        style: { fontSize: "45px" },
+        <Layout
+          title={t("MY_CLASSES")}
+          fullRightComponent={
+            <Stack bg="black" p="2">
+              <HStack space={4}>
+                <IconByName
+                  p="0"
+                  isDisabled={true}
+                  name={"Group"}
+                  color="white"
+                  _icon={{
+                    style: { fontSize: "45px" },
+                  }}
+                />
+                <HStack
+                  space={3}
+                  justifyContent={"space-between"}
+                  width={"80%"}
+                >
+                  <VStack space={1}>
+                    <Text fontSize={"lg"} color={"coolGray.100"} bold>
+                      {attendanceType ? attendanceType : t("SELECT_SUBJECT")}
+                    </Text>
+                    <Box
+                      rounded="full"
+                      borderColor="coolGray.200"
+                      borderWidth="1"
+                      bg="coolGray.100"
+                      px={1}
+                      minW={200}
+                    >
+                      <HStack
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
+                        <Icon size="sm" name="Group" isDisabled={true} px={1} />
+                        <Text fontSize={"lg"}>
+                          {classObject?.className
+                            ? classObject?.className
+                            : t("SELECT_CLASS")}
+                        </Text>
+                        <Icon
+                          size="sm"
+                          name="ArrowForwardIos"
+                          isDisabled={true}
+                          pl={1}
+                        />
+                      </HStack>
+                    </Box>
+                    <Text fontSize={"xl"} color={"coolGray.50"}>
+                      {moment().format("dddd Do MMM")}
+                    </Text>
+                  </VStack>
+                  <VStack>
+                    <Icon
+                      size="sm"
+                      name="Edit"
+                      color={"coolGray.100"}
+                      pl={1}
+                      onPress={(e) => {
+                        setShowType(false);
+                        setShowModal(true);
                       }}
                     />
-                    <HStack
-                      space={3}
-                      justifyContent={"space-between"}
-                      width={"80%"}
-                    >
-                      <VStack space={1}>
-                        <Text fontSize={"lg"} color={"coolGray.100"} bold>
-                          {attendanceType
-                            ? attendanceType
-                            : t("SELECT_SUBJECT")}
-                        </Text>
-                        <Box
-                          rounded="full"
-                          borderColor="coolGray.200"
-                          borderWidth="1"
-                          bg="coolGray.100"
-                          px={1}
-                          minW={200}
-                        >
-                          <HStack
-                            justifyContent="space-between"
-                            alignItems="center"
-                          >
-                            <Icon
-                              size="sm"
-                              name="Group"
-                              isDisabled={true}
-                              px={1}
-                            />
-                            <Text fontSize={"lg"}>
-                              {classObject?.className
-                                ? classObject?.className
-                                : t("SELECT_CLASS")}
-                            </Text>
-                            <Icon
-                              size="sm"
-                              name="ArrowForwardIos"
-                              isDisabled={true}
-                              pl={1}
-                            />
-                          </HStack>
-                        </Box>
-                        <Text fontSize={"xl"} color={"coolGray.50"}>
-                          {moment().format("dddd Do MMM")}
-                        </Text>
-                      </VStack>
-                      <VStack>
-                        <Icon
-                          size="sm"
-                          name="Edit"
-                          color={"coolGray.100"}
-                          pl={1}
-                          onPress={(e) => {
-                            setShowType(false);
-                            setShowModal(true);
-                          }}
-                        />
-                        <Icon
-                          size="sm"
-                          name="Edit"
-                          color={"coolGray.50"}
-                          pl={1}
-                          onPress={(e) => {
-                            setShowType(true);
-                            setShowModal(true);
-                          }}
-                        />
-                      </VStack>
-                    </HStack>
-                  </HStack>
-                </Stack>
-              }
-            />
-          </Box>
+                    <Icon
+                      size="sm"
+                      name="Edit"
+                      color={"coolGray.50"}
+                      pl={1}
+                      onPress={(e) => {
+                        setShowType(true);
+                        setShowModal(true);
+                      }}
+                    />
+                  </VStack>
+                </HStack>
+              </HStack>
+            </Stack>
+          }
+        >
           {students.length === 0 ? (
             <Box p={6} minH={300}>
               <Center flex={1} px="3">
@@ -356,7 +346,7 @@ export default function ClassAttendance() {
               setIsEditDisabled,
             }}
           />
-        </>
+        </Layout>
       )}
     </>
   );

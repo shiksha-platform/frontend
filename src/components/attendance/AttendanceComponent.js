@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import HdrAutoIcon from "@mui/icons-material/HdrAuto";
-import CircleIcon from "@mui/icons-material/Circle";
+// import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+// import HdrAutoIcon from "@mui/icons-material/HdrAuto";
+// import CircleIcon from "@mui/icons-material/Circle";
 import {
   VStack,
   Text,
@@ -17,12 +17,12 @@ import * as attendanceServiceRegistry from "../../services/attendanceServiceRegi
 import manifest from "../../modules/attendance/manifest.json";
 import { useTranslation } from "react-i18next";
 import { TouchableHighlight } from "react-native-web";
-import CircularProgress from "@mui/material/CircularProgress";
-import WatchLaterIcon from "@mui/icons-material/WatchLater";
+// import CircularProgress from "@mui/material/CircularProgress";
+// import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import moment from "moment";
 import Card from "../students/Card";
-import { CircleOutlined } from "@mui/icons-material";
-import Header from "../Header";
+// import { CircleOutlined } from "@mui/icons-material";
+import Header from "../../layout/Header";
 import { Link } from "react-router-dom";
 import IconByName from "../IconByName";
 
@@ -122,21 +122,21 @@ export const GetIcon = ({ status, _box, color }) => {
     case "Present":
       icon = (
         <Box {..._box} color={color ? color : "green.600"}>
-          <CheckCircleIcon fontSize="large" />
+          {/* <CheckCircleIcon fontSize="large" /> */}
         </Box>
       );
       break;
     case "Absent":
       icon = (
         <Box {..._box} color={color ? color : "danger.600"}>
-          <HdrAutoIcon fontSize="large" />
+          {/* <HdrAutoIcon fontSize="large" /> */}
         </Box>
       );
       break;
     case "Late":
       icon = (
         <Box {..._box} color={color ? color : "yellow.600"}>
-          <WatchLaterIcon fontSize="large" />
+          {/* <WatchLaterIcon fontSize="large" /> */}
         </Box>
       );
       break;
@@ -144,14 +144,14 @@ export const GetIcon = ({ status, _box, color }) => {
     case "Unmarked":
       icon = (
         <Box {..._box} color={color ? color : "gray.400"}>
-          <CircleOutlined fontSize="large" />
+          {/* <CircleOutlined fontSize="large" /> */}
         </Box>
       );
       break;
     default:
       icon = (
         <Box {..._box} color={color ? color : "gray.400"}>
-          <CircleIcon fontSize="large" />
+          {/* <CircleIcon fontSize="large" /> */}
         </Box>
       );
       break;
@@ -835,7 +835,7 @@ const AttendanceComponent = ({
             >
               {loding[dateValue + student.id] ? (
                 <Box py="2" color="primary.500">
-                  <CircularProgress />
+                  {/* <CircularProgress /> */}
                 </Box>
               ) : (
                 <GetIcon {...attendanceIconProp} />

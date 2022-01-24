@@ -11,6 +11,7 @@
   "2_SCHOOL_ACTIVITIES_1_OFFICIAL_VISIT": "2 school activities, 1 official visit",
   "MY_SCHOOL_APP": "My School App",
   "MY_CLASSES": "My Classes",
+  "CLASSES": "Classes",
   "MY_STUDENTS": "My Students",
   "STUDENTS": "Students",
   "ATTENDANCE_SHEET": "Attendance Sheet",
@@ -84,5 +85,10 @@
   "SELECT_CLASS": "Select class / group",
   "SELECT_SUBJECT": "Select subject",
   "EDIT": "Edit",
-  "CLOSE": "Close"
+  "CLOSE": "Close",
+  "HOME": "Home",
+  "SCHOOL": "School",
+  "MATERIALS": "Materials",
+  "CAREER": "Career",
+  "QUICK_CHECK": "Quick Check"
 }

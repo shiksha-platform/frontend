@@ -10,7 +10,7 @@ import {
 import React, { useState } from "react";
 import Icon from "../IconByName";
 import { useTranslation } from "react-i18next";
-import Header from "../Header";
+import Header from "../../layout/Header";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
 import { Link } from "react-router-dom";
 

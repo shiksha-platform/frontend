@@ -30,9 +30,46 @@
     "main": [
       {
         "title": "MY_CLASSES",
-        "icon": "Class",
+        "icon": "users-class",
         "module": "Registry",
         "route": "/classes",
+        "routeparameters": {}
+      }
+    ],
+    "footer": [
+      {
+        "title": "HOME",
+        "icon": "home",
+        "module": "Registry",
+        "route": "/",
+        "routeparameters": {}
+      },
+      {
+        "title": "CLASSES",
+        "icon": "users-class",
+        "module": "Registry",
+        "route": "/classes",
+        "routeparameters": {}
+      },
+      {
+        "title": "SCHOOL",
+        "icon": "school",
+        "module": "Registry",
+        "route": "/",
+        "routeparameters": {}
+      },
+      {
+        "title": "MATERIALS",
+        "icon": "book",
+        "module": "Registry",
+        "route": "/",
+        "routeparameters": {}
+      },
+      {
+        "title": "CAREER",
+        "icon": "user",
+        "module": "Registry",
+        "route": "/",
         "routeparameters": {}
       }
     ]

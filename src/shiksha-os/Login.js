@@ -11,7 +11,7 @@ import {
   IconButton,
   CloseIcon,
 } from "native-base";
-import Header from "../components/Header";
+import Header from "../layout/Header";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import * as teacherServiceRegistry from "../shiksha-os/services/teacherServiceRegistry";
@@ -85,7 +85,7 @@ export default function Home() {
     <>
       <Header
         title={t("MY_SCHOOL_APP")}
-        icon="Login"
+        icon="sign-in-alt"
         heading={t("LOGIN")}
         _box={{ backgroundColor: "lightBlue.100" }}
         _icon={{ color: "black" }}

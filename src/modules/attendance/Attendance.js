@@ -13,7 +13,7 @@ import {
 // import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
-import Header from "../../components/Header";
+import Layout from "../../layout/Layout";
 import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router-dom";
 import AttendanceComponent, {
@@ -131,73 +131,68 @@ export default function App() {
   }
 
   return (
-    <>
-      <Box position={"sticky"} top={0} zIndex={"10"} width={"100%"}>
-        <Header
-          title={t("ATTENDANCE_REGISTER")}
-          isEnableSearchBtn={true}
-          setSearch={setSearch}
-          icon="AssignmentTurnedIn"
-          heading={t("ATTENDANCE")}
-          _heading={{ fontSize: "xl" }}
-          subHeadingComponent={
-            <Link
-              to={"/students/class/" + classId}
-              style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
+    <Layout
+      title={t("ATTENDANCE_REGISTER")}
+      isEnableSearchBtn={true}
+      setSearch={setSearch}
+      icon="AssignmentTurnedIn"
+      heading={t("ATTENDANCE")}
+      _heading={{ fontSize: "xl" }}
+      subHeadingComponent={
+        <Link
+          to={"/students/class/" + classId}
+          style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
+        >
+          <Box
+            rounded="full"
+            borderColor="coolGray.200"
+            borderWidth="1"
+            bg="white"
+            px={1}
+          >
+            <HStack
+              space="4"
+              justifyContent="space-between"
+              alignItems="center"
             >
-              <Box
-                rounded="full"
-                borderColor="coolGray.200"
-                borderWidth="1"
-                bg="white"
-                px={1}
-              >
-                <HStack
-                  space="4"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Icon size="sm" name="Group" />
-                  <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
-                  <Icon size="sm" name="ArrowForwardIos" />
-                </HStack>
-              </Box>
-            </Link>
+              <Icon size="sm" name="Group" />
+              <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
+              <Icon size="sm" name="ArrowForwardIos" />
+            </HStack>
+          </Box>
+        </Link>
+      }
+    >
+      <Stack space={1}>
+        <WeekWiesBar
+          setPage={setWeekPage}
+          page={weekPage}
+          previousDisabled={
+            parseInt(-manifest.attendancePastDays / manifest.weekDays?.length) >
+            parseInt(weekPage - 1)
+          }
+          nextDisabled={weekPage >= 0}
+          leftErrorText={
+            !isEditDisabled
+              ? {
+                  title:
+                    "Please click on save before moving to the previous page.",
+                  status: "error",
+                  placement: "top",
+                }
+              : false
+          }
+          rightErrorText={
+            !isEditDisabled
+              ? {
+                  title: "Please click on save before moving to the next page.",
+                  status: "error",
+                  placement: "top",
+                }
+              : false
           }
         />
-        <Stack space={1}>
-          <WeekWiesBar
-            setPage={setWeekPage}
-            page={weekPage}
-            previousDisabled={
-              parseInt(
-                -manifest.attendancePastDays / manifest.weekDays?.length
-              ) > parseInt(weekPage - 1)
-            }
-            nextDisabled={weekPage >= 0}
-            leftErrorText={
-              !isEditDisabled
-                ? {
-                    title:
-                      "Please click on save before moving to the previous page.",
-                    status: "error",
-                    placement: "top",
-                  }
-                : false
-            }
-            rightErrorText={
-              !isEditDisabled
-                ? {
-                    title:
-                      "Please click on save before moving to the next page.",
-                    status: "error",
-                    placement: "top",
-                  }
-                : false
-            }
-          />
-        </Stack>
-      </Box>
+      </Stack>
       <Box bg="gray.100" p="2">
         <FlatList
           data={searchStudents}
@@ -242,6 +237,6 @@ export default function App() {
           setIsEditDisabled,
         }}
       />
-    </>
+    </Layout>
   );
 }

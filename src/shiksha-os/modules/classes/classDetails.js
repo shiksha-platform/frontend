@@ -1,85 +1,91 @@
 import React, { useEffect, useState } from "react";
-import { HStack, Text, Stack, Box } from "native-base";
-import Menu from "../../../components/Menu";
-import Icon from "../../../components/IconByName";
+import {
+  HStack,
+  Text,
+  VStack,
+  Button,
+  Stack,
+  Box,
+  FlatList,
+  PresenceTransition,
+} from "native-base";
+import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
-import Header from "../../../components/Header";
-import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import DayWiesBar from "../../../components/CalendarBar";
+import { Link, useParams } from "react-router-dom";
+import Menu from "../../../components/Menu";
+import Card from "../../../components/students/Card";
+import Layout from "../../../layout/Layout";
+import IconByName from "../../../components/IconByName";
 
 // Start editing here, save and see your changes.
 export default function App() {
   const { t } = useTranslation();
-  const [datePage, setDatePage] = useState(0);
+  const [students, setStudents] = useState([]);
   const [classObject, setClassObject] = useState({});
   const { classId } = useParams();
-  const [activeColor, setActiveColor] = useState("primary.500");
+  const fullName = sessionStorage.getItem("fullName");
+  const [studentCollaps, setStudentCollaps] = useState(true);
+  const [classCollaps, setClassCollaps] = useState(true);
 
   useEffect(() => {
     let ignore = false;
-
     const getData = async () => {
+      setStudents(
+        await studentServiceRegistry.getAll({
+          filters: {
+            currentClassID: {
+              eq: classId,
+            },
+          },
+        })
+      );
+
       let classObj = await classServiceRegistry.getOne({ id: classId });
       if (!ignore) setClassObject(classObj);
     };
     getData();
-    return () => {
-      ignore = true;
-    };
   }, [classId]);
 
   return (
-    <>
-      <Header
-        title={t("MY_CLASSES")}
-        icon={datePage < 0 ? "AssignmentTurnedIn" : "Group"}
-        // heading={"Science"}
-        // _heading={{ fontSize: "sm" }}
-        subHeadingComponent={
-          <Link
-            to={"/students/class/" + classId}
-            style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
-          >
+    <Layout
+      header={{
+        // isDisabledHeader: true,
+        title: t("MY_CLASSES"),
+        imageUrl:
+          "https://images.freeimages.com/images/large-previews/51b/school-children-in-india-1438445.jpg",
+        fullRightComponent: (
+          <Box minH={"150px"}>
             <Box
-              rounded="full"
-              borderColor="coolGray.200"
-              borderWidth="1"
-              bg="white"
-              px={1}
+              position={"absolute"}
+              style={{ backgroundColor: "rgba(24, 24, 27, 0.4)" }}
+              bottom={0}
+              p={4}
+              width={"100%"}
             >
-              <HStack
-                space="4"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Icon size="sm" name="Group" />
-                <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
-                <Icon size="sm" name="ArrowForwardIos" />
-              </HStack>
+              <VStack>
+                <Text color="gray.100" fontWeight="700" fontSize="md">
+                  {classObject.className}
+                </Text>
+
+                <Text color="gray.100" fontWeight="700" fontSize="2xl">
+                  {t("CLASS_DETAILS")}
+                </Text>
+              </VStack>
             </Box>
-          </Link>
-        }
-      />
-      <Stack space={1}>
-        <DayWiesBar
-          {...{
-            activeColor,
-            setActiveColor,
-            page: datePage,
-            setPage: setDatePage,
-          }}
-        />
-      </Stack>
+          </Box>
+        ),
+      }}
+    >
       <Menu
-        _box={{ p: 3 }}
+        _box={{ p: 4 }}
         _icon={{
-          color: activeColor,
+          color: "primary.500",
           _icon: {
             style: {
               fontSize: "35px",
               border: "2px solid",
-              borderColor: activeColor,
+              borderColor: "primary.500",
               borderRadius: "50%",
               padding: "20px",
             },
@@ -91,15 +97,9 @@ export default function App() {
             id: classId,
             keyId: 1,
             title: t("ATTENDANCE"),
-            icon: datePage < 0 ? "AssignmentTurnedIn" : "EventNote",
+            icon: "clipboard-check",
             route: "/attendance/:id",
           },
-          // {
-          //   keyId: 2,
-          //   id: classId,
-          //   title: t("LESSON_PLAN"),
-          //   icon: "AppRegistration",
-          // },
           // {
           //   keyId: 3,
           //   id: classId,
@@ -109,23 +109,193 @@ export default function App() {
         ]}
         type={"veritical"}
       />
+      <Stack px={4} space={3}>
+        <Stack space={2}>
+          <Box
+            borderWidth={1}
+            borderColor="gray.500"
+            bg="gray.500"
+            px={2}
+            py={1}
+          >
+            <HStack alignItems={"center"} justifyContent={"space-between"}>
+              <Text color="gray.100" bold={true} fontSize="md">
+                {t("STUDENTS")}
+              </Text>
+              <IconByName
+                size="sm"
+                color="gray.100"
+                name={!studentCollaps ? "ArrowDropDown" : "ArrowDropUp"}
+                onPress={() => setStudentCollaps(!studentCollaps)}
+              />
+            </HStack>
+          </Box>
+          <PresenceTransition visible={studentCollaps}>
+            <VStack space={2}>
+              <Box borderWidth={1} borderColor="gray.500" bg="gray.50">
+                <FlatList
+                  data={students}
+                  renderItem={({ item }) => (
+                    <Box
+                      borderBottomWidth="1"
+                      _dark={{
+                        borderColor: "gray.600",
+                      }}
+                      borderColor="coolGray.200"
+                      pl="4"
+                      pr="5"
+                      py="2"
+                    >
+                      <Card item={item} href={"/students/" + item.id} />
+                    </Box>
+                  )}
+                  keyExtractor={(item) => item.id}
+                />
+              </Box>
+              <Button
+                variant="ghost"
+                borderRadius="50"
+                colorScheme="gray"
+                background="gray.200"
+              >
+                {t("SHOW_ALL_STUDENTS")}
+              </Button>
+            </VStack>
+          </PresenceTransition>
+        </Stack>
 
-      <Box bg="coolGray.200" p="5">
-        <Text color={activeColor} bold={true} pb="1">
-          {classObject?.title ?? ""}
-        </Text>
-        <Menu
-          _boxMenu={{ bg: "white", mb: 2 }}
-          items={[
-            {
-              title: t("ATTENDANCE_REPORTS"),
-            },
-            {
-              title: t("ATTENDANCE_NOTIFICATIONS"),
-            },
-          ]}
-        />
-      </Box>
-    </>
+        <Stack space={2}>
+          <Box
+            borderWidth={1}
+            borderColor="gray.500"
+            bg="gray.500"
+            px={2}
+            py={1}
+          >
+            <HStack alignItems={"center"} justifyContent={"space-between"}>
+              <Text color="gray.100" bold={true} fontSize="md">
+                {t("CLASS_DETAILS")}
+              </Text>
+              <IconByName
+                size="sm"
+                color="gray.100"
+                name={!classCollaps ? "ArrowDropDown" : "ArrowDropUp"}
+                onPress={() => setClassCollaps(!classCollaps)}
+              />
+            </HStack>
+          </Box>
+          <PresenceTransition visible={classCollaps}>
+            <Stack space={2}>
+              <Stack>
+                <Box borderColor="gray.500" bg="gray.50">
+                  <Text fontSize="md" color="primary.500" bold={true}>
+                    {t("SUMMARY")}
+                  </Text>
+                </Box>
+                <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
+                  <HStack space={3}>
+                    <Text>
+                      <Text bold>{t("STUDENTS")}: </Text> {students.length}
+                    </Text>
+                    <Text>
+                      <Text bold>{t("GIRLS")}: </Text>
+                      {students.filter((e) => e.gender === "Female").length}
+                    </Text>
+                    <Text>
+                      <Text bold>{t("BOYS")}: </Text>
+                      {students.filter((e) => e.gender === "Male").length}
+                    </Text>
+                  </HStack>
+
+                  <Text>
+                    <Text bold>{t("AGE_GROUP")}: </Text>
+                  </Text>
+                  <Text>
+                    <Text bold>{t("CLASS_TEACHER")}: </Text> {fullName}
+                  </Text>
+                </Box>
+              </Stack>
+
+              <Stack>
+                <Box borderColor="gray.500" bg="gray.50">
+                  <Text fontSize="md" color="primary.500" bold={true}>
+                    {t("CLASS_ATTENDANCE")}
+                  </Text>
+                </Box>
+                <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
+                  <HStack
+                    space={3}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                  >
+                    <Text>
+                      <Text bold>{t("GRADE")}:</Text> {t("GOOD")}
+                    </Text>
+                    <Link
+                      to={"/attendance/" + classId}
+                      style={{
+                        color: "rgb(63, 63, 70)",
+                        textDecoration: "none",
+                      }}
+                    >
+                      <Box
+                        rounded="full"
+                        borderColor="coolGray.200"
+                        borderWidth="1"
+                        bg="coolGray.200"
+                        px={6}
+                        py={2}
+                      >
+                        {t("ATTENDANCE_REGISTER")}
+                      </Box>
+                    </Link>
+                  </HStack>
+                </Box>
+              </Stack>
+
+              <Stack>
+                <Box borderColor="gray.500" bg="gray.50">
+                  <Text fontSize="md" color="primary.500" bold={true}>
+                    {t("CONTACTS_TEACHERS")}
+                  </Text>
+                </Box>
+                <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
+                  <VStack>
+                    <Text>
+                      <Text bold>{t("MATHS")}: </Text>
+                      {fullName}
+                    </Text>
+                    <Text>
+                      <Text bold>{t("ENGLISH")}: </Text>
+                      {fullName}
+                    </Text>
+                    <Text>
+                      <Text bold>{t("SCIENCE")}: </Text>
+                      {fullName}
+                    </Text>
+                  </VStack>
+                </Box>
+              </Stack>
+
+              <Stack>
+                <Box borderColor="gray.500" bg="gray.50">
+                  <Text fontSize="md" color="primary.500" bold={true}>
+                    {t("AWARDS_AND_RECOGNITION")}
+                  </Text>
+                </Box>
+              </Stack>
+
+              <Stack>
+                <Box borderColor="gray.500" bg="gray.50">
+                  <Text fontSize="md" color="primary.500" bold={true}>
+                    {t("STUDENT_COMPETENCIES")}
+                  </Text>
+                </Box>
+              </Stack>
+            </Stack>
+          </PresenceTransition>
+        </Stack>
+      </Stack>
+    </Layout>
   );
 }

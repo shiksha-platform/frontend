@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Text, Button, Box, HStack, VStack, Stack } from "native-base";
 import Menu from "../../../components/Menu";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
-import Header from "../../../components/Header";
+import Layout from "../../../layout/Layout";
 import { useTranslation } from "react-i18next";
 import DayWiesBar from "../../../components/CalendarBar";
 import { Link } from "react-router-dom";
@@ -76,12 +76,12 @@ export default function App() {
   ];
 
   return (
-    <>
-      <Header
-        title={t("MY_CLASSES")}
-        icon="Group"
-        subHeading={t("THE_CLASSES_YOU_TAKE")}
-        button={
+    <Layout
+      header={{
+        title: t("MY_CLASSES"),
+        icon: "Group",
+        subHeading: t("THE_CLASSES_YOU_TAKE"),
+        button: (
           <Button
             variant="outline"
             rounded={"full"}
@@ -93,8 +93,9 @@ export default function App() {
           >
             {t("TIME_TABLE")}
           </Button>
-        }
-      />
+        ),
+      }}
+    >
       <Box backgroundColor="gray.100" p="1">
         <DayWiesBar
           _box={{ bg: "gray.100", p: 0 }}
@@ -134,6 +135,6 @@ export default function App() {
           </HStack>
         </VStack>
       </Box>
-    </>
+    </Layout>
   );
 }

@@ -3,7 +3,7 @@ import { Text, Button, Stack, Box, VStack, HStack } from "native-base";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import { useTranslation } from "react-i18next";
-import Header from "../../../components/Header";
+import Layout from "../../../layout/Layout";
 import { Link, useParams } from "react-router-dom";
 import AttendanceComponent from "../../../components/attendance/AttendanceComponent";
 import Menu from "../../../components/Menu";
@@ -35,19 +35,18 @@ export default function App() {
   }, [studentId]);
 
   return (
-    <>
-      <Header
-        title={t("STUDENTS_DETAIL")}
-        icon="Group"
-        heading={
-          studentObject?.fullName ? (
-            studentObject?.fullName
-          ) : (
-            <Text italic>{t("NOT_ENTERD")}</Text>
-          )
-        }
-        subHeading=""
-      />
+    <Layout
+      title={t("STUDENTS_DETAIL")}
+      icon="Group"
+      heading={
+        studentObject?.fullName ? (
+          studentObject?.fullName
+        ) : (
+          <Text italic>{t("NOT_ENTERD")}</Text>
+        )
+      }
+      subHeading=""
+    >
       <Stack p="4" space={2}>
         <Stack>
           <HStack alignItems={"center"} justifyContent={"space-between"}>
@@ -190,6 +189,6 @@ export default function App() {
           />
         </Stack>
       </Stack>
-    </>
+    </Layout>
   );
 }

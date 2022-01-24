@@ -10,7 +10,7 @@ import {
 } from "native-base";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import { useTranslation } from "react-i18next";
-import Header from "../../../components/Header";
+import Layout from "../../../layout/Layout";
 import { useParams } from "react-router-dom";
 
 // Start editing here, save and see your changes.
@@ -96,23 +96,22 @@ export default function App() {
   };
 
   return (
-    <>
-      <Header
-        title={t("STUDENTS_DETAIL")}
-        icon="Group"
-        heading={studentObject?.fullName ? studentObject?.fullName : ""}
-        button={
-          <Button
-            variant="ghost"
-            borderRadius="50"
-            colorScheme="gray"
-            background="gray.200"
-            onPress={handalSubmit}
-          >
-            {t("SAVE")}
-          </Button>
-        }
-      />
+    <Layout
+      title={t("STUDENTS_DETAIL")}
+      icon="Group"
+      heading={studentObject?.fullName ? studentObject?.fullName : ""}
+      button={
+        <Button
+          variant="ghost"
+          borderRadius="50"
+          colorScheme="gray"
+          background="gray.200"
+          onPress={handalSubmit}
+        >
+          {t("SAVE")}
+        </Button>
+      }
+    >
       <Stack p="4" space={2}>
         <Stack>
           <Box borderColor="gray.500">
@@ -140,6 +139,6 @@ export default function App() {
           </FormControl>
         </Stack>
       </Stack>
-    </>
+    </Layout>
   );
 }

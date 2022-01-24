@@ -11,6 +11,7 @@
   "2_SCHOOL_ACTIVITIES_1_OFFICIAL_VISIT": "2 स्कूल गतिविधियाँ, 1 आधिकारिक दौरा",
   "MY_SCHOOL_APP": "माई स्कूल ऐप",
   "MY_CLASSES": "मेरी कक्षा",
+  "CLASSES": "कक्षा",
   "MY_STUDENTS": "मेरे छात्र",
   "STUDENTS": "छात्र",
   "ATTENDANCE_SHEET": "उपस्थिति पत्रक",
@@ -84,5 +85,10 @@
   "SELECT_CLASS": "वर्ग / समूह का चयन करें",
   "SELECT_SUBJECT": "विषय चुनें",
   "EDIT": "संपादित करें",
-  "CLOSE": "बंद करे"
+  "CLOSE": "बंद करे",
+  "HOME": "घर",
+  "SCHOOL": "स्कूल",
+  "MATERIALS": "सामग्री",
+  "CAREER": "आजीविका",
+  "QUICK_CHECK": "त्वरित जांच"
 }

@@ -1,11 +1,10 @@
 import AppBar from "./shiksha-os/menu";
 import { Box, Center, NativeBaseProvider } from "native-base";
 import Home from "./shiksha-os/home";
-import Students from "./shiksha-os/modules/students/student";
+import ClassDetails from "./shiksha-os/modules/classes/classDetails";
 import StudentDetails from "./shiksha-os/modules/students/studentDetails";
 import StudentEdit from "./shiksha-os/modules/students/studentEdit";
 import Classes from "./shiksha-os/modules/classes/classes";
-import ClassDetails from "./shiksha-os/modules/classes/classDetails";
 import Attendance from "./modules/attendance/Attendance";
 import ClassAttendance from "./modules/attendance/ClassAttendance";
 import i18n from "i18next";
@@ -71,7 +70,7 @@ export default function App() {
           path="/classes/:classId"
           element={
             <SubApp>
-              <Students />
+              <ClassDetails />
             </SubApp>
           }
         />
@@ -79,7 +78,7 @@ export default function App() {
           path="/students/class/:classId"
           element={
             <SubApp>
-              <Students />
+              <ClassDetails />
             </SubApp>
           }
         />
