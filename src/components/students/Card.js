@@ -166,10 +166,15 @@ export default function Card({
             {typeof img === "undefined" || img === true ? (
               <Avatar
                 size="40px"
-                source={{
-                  uri: item.avatarUrl,
-                }}
-              />
+                bg={item?.avatarUrl ? "" : "amber.500"}
+                {...(item?.avatarUrl
+                  ? { source: { uri: item.avatarUrl } }
+                  : {})}
+              >
+                {item?.avatarUrl
+                  ? ""
+                  : item?.fullName?.toUpperCase().substr(0, 2)}
+              </Avatar>
             ) : (
               <></>
             )}
@@ -196,6 +201,7 @@ export default function Card({
                   color: "warmGray.200",
                 }}
                 {..._textSubTitle}
+                fontSize={"xs"}
               >
                 <HStack space={1}>
                   <Text>
@@ -230,7 +236,7 @@ export default function Card({
             onPress={(e) => handalOpenPoup(item)}
             size="sm"
             color="gray.900"
-            name="ArrowDropDown"
+            name="angle-double-down"
             {..._arrow}
           />
         ) : (

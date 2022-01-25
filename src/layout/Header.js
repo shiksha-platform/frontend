@@ -1,5 +1,5 @@
 import React from "react";
-import { HStack, Text, Stack, Box, VStack, Avatar } from "native-base";
+import { HStack, Text, Stack, Box, VStack, Avatar, Badge } from "native-base";
 import Icon from "../components/IconByName";
 import AppBar from "../shiksha-os/menu";
 
@@ -26,13 +26,14 @@ export default function Header({
   fullRightComponent,
   imageUrl,
 }) {
+  let newAvatar = avatar ? avatar : sessionStorage.getItem("firstName");
   return (
     <Stack
       width={"100%"}
       style={{
         backgroundImage: imageUrl
           ? "url(" + imageUrl + ")"
-          : "url(headerBg.png)",
+          : "url(" + window.location.origin + "/headerBg.png)",
         backgroundColor: "transparent",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
@@ -41,7 +42,6 @@ export default function Header({
     >
       {!isDisabledAppBar ? (
         <AppBar
-          title={title}
           isEnableHamburgerMenuButton={isEnableHamburgerMenuButton}
           isEnableLanguageMenu={isEnableLanguageMenu}
           isEnableSearchBtn={isEnableSearchBtn}
@@ -59,33 +59,24 @@ export default function Header({
                 {subHeadingComponent ? (
                   subHeadingComponent
                 ) : (
-                  <Text color="coolGray.50" fontSize="xs" {..._subHeading}>
+                  <Text fontSize="xs" {..._subHeading}>
                     {subHeading}
                   </Text>
                 )}
                 {headingComponent ? (
                   headingComponent
                 ) : (
-                  <Text color="coolGray.100" bold fontSize="lg" {..._heading}>
-                    {heading}
+                  <Text bold fontSize="lg" {..._heading}>
+                    {title ? title : heading}
                   </Text>
                 )}
               </VStack>
               {iconComponent ? (
                 iconComponent
-              ) : icon ? (
-                <Icon
-                  p="0"
-                  name={icon}
-                  color="white"
-                  {..._icon}
-                  _icon={{
-                    style: { fontSize: "45px" },
-                  }}
-                />
               ) : (
-                <Avatar bg="green.500">
-                  {avatar?.toUpperCase().substr(0, 2)}
+                <Avatar bg="amber.500">
+                  {newAvatar?.toUpperCase().substr(0, 2)}
+                  <Avatar.Badge bg="green.500" top="0" />
                 </Avatar>
               )}
               {button}

@@ -94,7 +94,7 @@ export default function Home() {
                           minH: "50px",
                           right: "-10px",
                           bottom: "-10px",
-                          opacity: "0.2",
+                          opacity: "0.1",
                         }}
                       />
                       <IconByName

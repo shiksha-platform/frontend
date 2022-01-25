@@ -5,6 +5,7 @@ import Icon from "./IconByName";
 import { generatePath } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import IconByName from "./IconByName";
 
 export default function Menu({
   items,
@@ -50,21 +51,31 @@ export default function Menu({
     return (
       <Box bg={bg} {..._box}>
         {newItems.map((subItems, index) => (
-          <HStack key={index} justifyContent="center" space={6}>
+          <HStack key={index} justifyContent="center" space={4}>
             {subItems.map((item) => (
-              <PressableNew key={item.keyId ? item.keyId : item.id} item={item}>
-                <VStack space="4" my="2" mx="1" textAlign="center">
+              <PressableNew
+                key={item.keyId ? item.keyId : item.id}
+                item={item}
+                bg="red.400"
+                rounded={"md"}
+                p="2"
+                minW={item?.boxMinW ? item?.boxMinW : "104px"}
+              >
+                <VStack
+                  space="2"
+                  my="2"
+                  mx="1"
+                  alignItems={"center"}
+                  textAlign="center"
+                >
                   {item.icon ? (
-                    <Icon
+                    <IconByName
                       name={item.icon}
                       p="0"
-                      color="primary.500"
+                      color="white"
                       _icon={{
                         style: {
-                          fontSize: "35px",
-                          border: "2px solid #54b8d4",
-                          borderRadius: "50%",
-                          padding: "20px",
+                          fontSize: "28px",
                         },
                       }}
                       {..._icon}
@@ -72,7 +83,7 @@ export default function Menu({
                   ) : (
                     <></>
                   )}
-                  <Text color="gray.700" fontWeight="500" maxW={20} center>
+                  <Text color="white" maxW={20} lineHeight={14}>
                     {item.title}
                   </Text>
                 </VStack>
@@ -122,7 +133,7 @@ export default function Menu({
                         {item.leftText}
                       </Text>
                     ) : item.icon ? (
-                      <Icon name={item.icon} p="0" {..._icon} />
+                      <IconByName name={item.icon} p="0" {..._icon} />
                     ) : (
                       <></>
                     )}
@@ -130,7 +141,7 @@ export default function Menu({
                       {t(item.title)}
                     </Text>
                   </HStack>
-                  <Icon
+                  <IconByName
                     name={item.rightIcon ? item.rightIcon : "ArrowForwardIos"}
                     p="0"
                     {..._icon}

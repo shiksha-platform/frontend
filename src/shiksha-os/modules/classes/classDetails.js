@@ -8,6 +8,10 @@ import {
   Box,
   FlatList,
   PresenceTransition,
+  Pressable,
+  StatusBar,
+  Center,
+  Progress,
 } from "native-base";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
@@ -17,6 +21,8 @@ import Menu from "../../../components/Menu";
 import Card from "../../../components/students/Card";
 import Layout from "../../../layout/Layout";
 import IconByName from "../../../components/IconByName";
+import { TabView, SceneMap } from "react-native-tab-view";
+import { Animated, Dimensions } from "react-native-web";
 
 // Start editing here, save and see your changes.
 export default function App() {
@@ -25,8 +31,6 @@ export default function App() {
   const [classObject, setClassObject] = useState({});
   const { classId } = useParams();
   const fullName = sessionStorage.getItem("fullName");
-  const [studentCollaps, setStudentCollaps] = useState(true);
-  const [classCollaps, setClassCollaps] = useState(true);
 
   useEffect(() => {
     let ignore = false;
@@ -47,6 +51,100 @@ export default function App() {
     getData();
   }, [classId]);
 
+  const FirstRoute = () => (
+    <Box>
+      <Box
+        borderBottomWidth="1"
+        _dark={{
+          borderColor: "gray.600",
+        }}
+        borderColor="coolGray.200"
+        pr="1"
+        py="4"
+      >
+        <Stack space={2}>
+          <Collapsible header={t("ASSIGNMENTS")} />
+        </Stack>
+      </Box>
+      <Box
+        borderBottomWidth="1"
+        _dark={{
+          borderColor: "gray.600",
+        }}
+        borderColor="coolGray.200"
+        pr="1"
+        py="4"
+      >
+        <Stack space={2}>
+          <Collapsible header={t("LESSON_PLANS")} />
+        </Stack>
+      </Box>
+      <Box pr="1" py="4">
+        <Stack space={2}>
+          <Collapsible header={t("ASSESSMENTS")} />
+        </Stack>
+      </Box>
+    </Box>
+  );
+  const SecondRoute = () => <Center flex={1}>This is Tab {t("MATHS")}</Center>;
+  const ThirdRoute = () => <Center flex={1}>This is Tab {t("ENGLISH")}</Center>;
+  const FourthRoute = () => (
+    <Center flex={1}>This is Tab {t("HISTORY")} </Center>
+  );
+  const FiveRoute = () => (
+    <Center flex={1}>This is Tab {t("GEOGRAPHY")} </Center>
+  );
+
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+    third: ThirdRoute,
+    fourth: FourthRoute,
+    five: FiveRoute,
+  });
+
+  const initialLayout = { width: Dimensions.get("window").width };
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: "first", title: t("SCIENCE") },
+    { key: "second", title: t("MATHS") },
+    { key: "third", title: t("ENGLISH") },
+    { key: "fourth", title: t("HISTORY") },
+    { key: "five", title: t("GEOGRAPHY") },
+  ]);
+
+  const renderTabBar = (props) => {
+    const inputRange = props.navigationState.routes.map((x, i) => i);
+    return (
+      <Box flexDirection="row">
+        {props.navigationState.routes.map((route, i) => {
+          const opacity = props.position.interpolate({
+            inputRange,
+            outputRange: inputRange.map((inputIndex) =>
+              inputIndex === i ? 1 : 0.5
+            ),
+          });
+          const color = index === i ? "#1f2937" : "#a1a1aa";
+          const borderColor = index === i ? "cyan.500" : "coolGray.200";
+
+          return (
+            <Box
+              borderBottomWidth="3"
+              borderColor={borderColor}
+              flex={1}
+              alignItems="center"
+              p="3"
+              cursor="pointer"
+            >
+              <Pressable onPress={() => setIndex(i)}>
+                <Animated.Text style={{ color }}>{route.title}</Animated.Text>
+              </Pressable>
+            </Box>
+          );
+        })}
+      </Box>
+    );
+  };
   return (
     <Layout
       header={{
@@ -60,7 +158,7 @@ export default function App() {
               position={"absolute"}
               style={{ backgroundColor: "rgba(24, 24, 27, 0.4)" }}
               bottom={0}
-              p={4}
+              p={5}
               width={"100%"}
             >
               <VStack>
@@ -77,225 +175,362 @@ export default function App() {
         ),
       }}
     >
-      <Menu
-        _box={{ p: 4 }}
-        _icon={{
-          color: "primary.500",
-          _icon: {
-            style: {
-              fontSize: "35px",
-              border: "2px solid",
-              borderColor: "primary.500",
-              borderRadius: "50%",
-              padding: "20px",
+      <Stack space={1} mb="2" shadow={2}>
+        <Menu
+          _box={{
+            p: 4,
+            position: "relative",
+            bottom: "15px",
+            bg: "primary.50",
+            roundedTop: "20",
+          }}
+          routeDynamics={true}
+          items={[
+            {
+              id: classId,
+              keyId: 1,
+              title: t("TAKE_ATTENDANCE"),
+              icon: "badge-check",
+              route: "/attendance/:id",
+              boxMinW: "200px",
             },
-          },
-        }}
-        routeDynamics={true}
-        items={[
-          {
-            id: classId,
-            keyId: 1,
-            title: t("ATTENDANCE"),
-            icon: "clipboard-check",
-            route: "/attendance/:id",
-          },
-          // {
-          //   keyId: 3,
-          //   id: classId,
-          //   title: t("CLASS_TEST"),
-          //   icon: "MenuBook",
-          // },
-        ]}
-        type={"veritical"}
-      />
-      <Stack px={4} space={3}>
-        <Stack space={2}>
-          <Box
-            borderWidth={1}
-            borderColor="gray.500"
-            bg="gray.500"
-            px={2}
-            py={1}
-          >
-            <HStack alignItems={"center"} justifyContent={"space-between"}>
-              <Text color="gray.100" bold={true} fontSize="md">
-                {t("STUDENTS")}
-              </Text>
-              <IconByName
-                size="sm"
-                color="gray.100"
-                name={!studentCollaps ? "ArrowDropDown" : "ArrowDropUp"}
-                onPress={() => setStudentCollaps(!studentCollaps)}
-              />
-            </HStack>
-          </Box>
-          <PresenceTransition visible={studentCollaps}>
-            <VStack space={2}>
-              <Box borderWidth={1} borderColor="gray.500" bg="gray.50">
-                <FlatList
-                  data={students}
-                  renderItem={({ item }) => (
-                    <Box
-                      borderBottomWidth="1"
-                      _dark={{
-                        borderColor: "gray.600",
-                      }}
-                      borderColor="coolGray.200"
-                      pl="4"
-                      pr="5"
-                      py="2"
-                    >
-                      <Card item={item} href={"/students/" + item.id} />
-                    </Box>
-                  )}
-                  keyExtractor={(item) => item.id}
-                />
-              </Box>
-              <Button
-                variant="ghost"
-                borderRadius="50"
-                colorScheme="gray"
-                background="gray.200"
-              >
-                {t("SHOW_ALL_STUDENTS")}
-              </Button>
-            </VStack>
-          </PresenceTransition>
-        </Stack>
+            // {
+            //   keyId: 3,
+            //   id: classId,
+            //   title: t("CLASS_TEST"),
+            //   icon: "bars",
+            // },
+          ]}
+          type={"veritical"}
+        />
+        <Box bg="white" p={4}>
+          <Stack space={2}>
+            <Collapsible header={t("REPORTS")} />
+          </Stack>
+        </Box>
 
-        <Stack space={2}>
-          <Box
-            borderWidth={1}
-            borderColor="gray.500"
-            bg="gray.500"
-            px={2}
-            py={1}
-          >
-            <HStack alignItems={"center"} justifyContent={"space-between"}>
-              <Text color="gray.100" bold={true} fontSize="md">
-                {t("CLASS_DETAILS")}
-              </Text>
-              <IconByName
-                size="sm"
-                color="gray.100"
-                name={!classCollaps ? "ArrowDropDown" : "ArrowDropUp"}
-                onPress={() => setClassCollaps(!classCollaps)}
-              />
-            </HStack>
-          </Box>
-          <PresenceTransition visible={classCollaps}>
-            <Stack space={2}>
-              <Stack>
-                <Box borderColor="gray.500" bg="gray.50">
-                  <Text fontSize="md" color="primary.500" bold={true}>
-                    {t("SUMMARY")}
-                  </Text>
-                </Box>
-                <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
-                  <HStack space={3}>
-                    <Text>
-                      <Text bold>{t("STUDENTS")}: </Text> {students.length}
-                    </Text>
-                    <Text>
-                      <Text bold>{t("GIRLS")}: </Text>
-                      {students.filter((e) => e.gender === "Female").length}
-                    </Text>
-                    <Text>
-                      <Text bold>{t("BOYS")}: </Text>
-                      {students.filter((e) => e.gender === "Male").length}
-                    </Text>
-                  </HStack>
+        <Box bg="white" p={4}>
+          <Stack space={2}>
+            <Collapsible header={t("SMS_REPORTS")} />
+          </Stack>
+        </Box>
 
-                  <Text>
-                    <Text bold>{t("AGE_GROUP")}: </Text>
-                  </Text>
-                  <Text>
-                    <Text bold>{t("CLASS_TEACHER")}: </Text> {fullName}
-                  </Text>
-                </Box>
-              </Stack>
-
-              <Stack>
-                <Box borderColor="gray.500" bg="gray.50">
-                  <Text fontSize="md" color="primary.500" bold={true}>
-                    {t("CLASS_ATTENDANCE")}
-                  </Text>
-                </Box>
-                <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
-                  <HStack
-                    space={3}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                  >
-                    <Text>
-                      <Text bold>{t("GRADE")}:</Text> {t("GOOD")}
-                    </Text>
-                    <Link
-                      to={"/attendance/" + classId}
-                      style={{
-                        color: "rgb(63, 63, 70)",
-                        textDecoration: "none",
-                      }}
-                    >
-                      <Box
-                        rounded="full"
-                        borderColor="coolGray.200"
-                        borderWidth="1"
-                        bg="coolGray.200"
-                        px={6}
-                        py={2}
-                      >
-                        {t("ATTENDANCE_REGISTER")}
-                      </Box>
-                    </Link>
-                  </HStack>
-                </Box>
-              </Stack>
-
-              <Stack>
-                <Box borderColor="gray.500" bg="gray.50">
-                  <Text fontSize="md" color="primary.500" bold={true}>
-                    {t("CONTACTS_TEACHERS")}
-                  </Text>
-                </Box>
-                <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
+        <Box bg="white" p={4}>
+          <Stack space={2}>
+            <Collapsible
+              defaultCollapse={true}
+              isHeaderBold={false}
+              header={
+                <>
                   <VStack>
-                    <Text>
-                      <Text bold>{t("MATHS")}: </Text>
-                      {fullName}
+                    <Text bold fontSize={"md"}>
+                      {t("STUDENTS")}
                     </Text>
-                    <Text>
-                      <Text bold>{t("ENGLISH")}: </Text>
-                      {fullName}
-                    </Text>
-                    <Text>
-                      <Text bold>{t("SCIENCE")}: </Text>
-                      {fullName}
+                    <Text fontSize={"xs"}>
+                      {t("TOTAL") + ": " + students?.length}
                     </Text>
                   </VStack>
-                </Box>
-              </Stack>
+                </>
+              }
+              body={
+                <VStack space={2} pt="2">
+                  <Box>
+                    <FlatList
+                      data={students}
+                      renderItem={({ item }) => (
+                        <Box
+                          borderBottomWidth="1"
+                          _dark={{
+                            borderColor: "gray.600",
+                          }}
+                          borderColor="coolGray.200"
+                          pr="1"
+                          py="4"
+                        >
+                          <Card item={item} href={"/students/" + item.id} />
+                        </Box>
+                      )}
+                      keyExtractor={(item) => item.id}
+                    />
+                  </Box>
+                  <Button
+                    mt="2"
+                    variant="outline"
+                    borderColor={"red.400"}
+                    _text={{ color: "red.400" }}
+                  >
+                    {t("SHOW_ALL_STUDENTS")}
+                  </Button>
+                </VStack>
+              }
+            />
+          </Stack>
+        </Box>
 
-              <Stack>
-                <Box borderColor="gray.500" bg="gray.50">
-                  <Text fontSize="md" color="primary.500" bold={true}>
-                    {t("AWARDS_AND_RECOGNITION")}
-                  </Text>
-                </Box>
-              </Stack>
+        <Box bg="white" p={4}>
+          <Stack space={2}>
+            <Collapsible
+              defaultCollapse={true}
+              header={t("SUBJECTS")}
+              body={
+                <VStack>
+                  <Box bd={"red"}>
+                    <TabView
+                      navigationState={{ index, routes }}
+                      renderScene={renderScene}
+                      renderTabBar={renderTabBar}
+                      onIndexChange={setIndex}
+                      initialLayout={initialLayout}
+                      style={{ marginTop: StatusBar.currentHeight }}
+                    />
+                  </Box>
+                </VStack>
+              }
+            />
+          </Stack>
+        </Box>
 
-              <Stack>
-                <Box borderColor="gray.500" bg="gray.50">
-                  <Text fontSize="md" color="primary.500" bold={true}>
-                    {t("STUDENT_COMPETENCIES")}
-                  </Text>
-                </Box>
-              </Stack>
-            </Stack>
-          </PresenceTransition>
-        </Stack>
+        <Box bg="white" p={4}>
+          <Stack space={2}>
+            <Collapsible
+              defaultCollapse={true}
+              header={t("CLASS_DETAILS")}
+              body={
+                <Stack space={2}>
+                  <Box bg="white" p={4}>
+                    <Stack space={2}>
+                      <Collapsible
+                        defaultCollapse={true}
+                        header={t("SUMMARY")}
+                        body={
+                          <VStack p="2" space={4}>
+                            <Box bg={"gray.100"} rounded={"md"} p="4">
+                              <VStack space={2}>
+                                <HStack
+                                  justifyContent={"space-between"}
+                                  alignItems="center"
+                                >
+                                  <Text bold>{t("CLASS_TEACHER")}</Text>
+                                  <IconByName name="ellipsis-v" />
+                                </HStack>
+                                <Text>
+                                  {t("CLASS_TEACHER")} {fullName}
+                                </Text>
+                              </VStack>
+                            </Box>
+                            <Box bg={"gray.100"} rounded={"md"} p="4">
+                              <VStack space={2}>
+                                <HStack
+                                  justifyContent={"space-between"}
+                                  alignItems="center"
+                                >
+                                  <Text bold>{t("CLASS_STRENGTH")}</Text>
+                                  <IconByName name="ellipsis-v" />
+                                </HStack>
+                                <HStack space={6} alignItems="center">
+                                  <VStack>
+                                    <HStack alignItems={"center"} space={1}>
+                                      <Box
+                                        bg={"info.500"}
+                                        p="2"
+                                        rounded={"full"}
+                                      />
+                                      <Text bold>{t("GIRLS")}:</Text>
+                                      <Text>
+                                        {
+                                          students.filter(
+                                            (e) => e.gender === "Female"
+                                          ).length
+                                        }
+                                      </Text>
+                                    </HStack>
+                                    <HStack alignItems={"center"} space={1}>
+                                      <Box
+                                        bg={"purple.500"}
+                                        p="2"
+                                        rounded={"full"}
+                                      />
+                                      <Text bold>{t("BOYS")}:</Text>
+                                      <Text>
+                                        {
+                                          students.filter(
+                                            (e) => e.gender === "Male"
+                                          ).length
+                                        }
+                                      </Text>
+                                    </HStack>
+                                    <Text>
+                                      <Text bold>{t("TOTAL")}: </Text>{" "}
+                                      {students.length}
+                                    </Text>
+                                  </VStack>
+                                  <Progress
+                                    value={
+                                      students.filter(
+                                        (e) => e.gender === "Male"
+                                      ).length
+                                    }
+                                    max={students.length}
+                                    size={"20"}
+                                    colorScheme="purple"
+                                    bg="info.400"
+                                  />
+                                </HStack>
+                              </VStack>
+                            </Box>
+
+                            <Box bg={"gray.100"} rounded={"md"} p="4">
+                              <VStack space={2}>
+                                <HStack
+                                  justifyContent={"space-between"}
+                                  alignItems="center"
+                                >
+                                  <Text bold>{t("AGE_GROUP")}</Text>
+                                  <IconByName name="ellipsis-v" />
+                                </HStack>
+                                <Text>
+                                  <Text bold>{t("RANGE")}: </Text>
+                                </Text>
+                              </VStack>
+                            </Box>
+                          </VStack>
+                        }
+                      />
+                    </Stack>
+                  </Box>
+
+                  <Box bg="white" p={4}>
+                    <Stack space={2}>
+                      <Collapsible
+                        defaultCollapse={true}
+                        header={t("CLASS_ATTENDANCE")}
+                        body={
+                          <VStack p="2" space={4}>
+                            <Box bg={"gray.100"} rounded={"md"} p="4">
+                              <VStack space={2}>
+                                <HStack
+                                  justifyContent={"space-between"}
+                                  alignItems="center"
+                                >
+                                  <Text bold>{t("STATUS")}</Text>
+                                  <IconByName name="ellipsis-v" />
+                                </HStack>
+                                <Progress
+                                  value={17}
+                                  max={24}
+                                  my="4"
+                                  size={"2xl"}
+                                  colorScheme="green"
+                                  bg="red.400"
+                                />
+                                <HStack
+                                  justifyContent={"space-between"}
+                                  alignItems="center"
+                                >
+                                  <Text>{t("GRADE") + ": " + t("GOOD")}</Text>
+                                  <Text>{t("TOTAL") + ": " + "24"}</Text>
+                                </HStack>
+                              </VStack>
+                            </Box>
+                            <Box
+                              rounded="xs"
+                              borderWidth="1"
+                              px={6}
+                              py={2}
+                              mt="2"
+                              textAlign={"center"}
+                              borderColor={"red.400"}
+                              _text={{ color: "red.400" }}
+                            >
+                              {t("ATTENDANCE_REGISTER")}
+                            </Box>
+                          </VStack>
+                        }
+                      />
+                    </Stack>
+                  </Box>
+
+                  <Box bg="white" p={4}>
+                    <Stack space={2}>
+                      <Collapsible
+                        defaultCollapse={true}
+                        header={t("CONTACTS_TEACHERS")}
+                        body={
+                          <VStack p="2" space={4}>
+                            <Box bg={"gray.100"} rounded={"md"} p="4">
+                              <VStack space={2}>
+                                <HStack
+                                  justifyContent={"space-between"}
+                                  alignItems="center"
+                                >
+                                  <Text bold>{t("DETAILS")}</Text>
+                                  <IconByName name="ellipsis-v" />
+                                </HStack>
+                                <Text>
+                                  <Text bold>{t("MATHS")}: </Text>
+                                  {fullName}
+                                </Text>
+                                <Text>
+                                  <Text bold>{t("ENGLISH")}: </Text>
+                                  {fullName}
+                                </Text>
+                                <Text>
+                                  <Text bold>{t("SCIENCE")}: </Text>
+                                  {fullName}
+                                </Text>
+                              </VStack>
+                            </Box>
+                          </VStack>
+                        }
+                      />
+                    </Stack>
+                  </Box>
+
+                  <Box bg="white" p={4}>
+                    <Stack space={2}>
+                      <Collapsible header={t("AWARDS_AND_RECOGNITION")} />
+                    </Stack>
+                  </Box>
+
+                  <Box bg="white" p={4}>
+                    <Stack space={2}>
+                      <Collapsible header={t("STUDENT_COMPETENCIES")} />
+                    </Stack>
+                  </Box>
+                </Stack>
+              }
+            />
+          </Stack>
+        </Box>
       </Stack>
     </Layout>
   );
 }
+
+const Collapsible = ({ header, body, defaultCollapse, isHeaderBold }) => {
+  const [collaps, setCollaps] = useState(defaultCollapse);
+
+  return (
+    <>
+      <Pressable onPress={() => setCollaps(!collaps)}>
+        <Box px={2} py={1}>
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <Text
+              bold={typeof isHeaderBold === "undefined" ? true : isHeaderBold}
+              fontSize={typeof isHeaderBold === "undefined" ? "md" : ""}
+            >
+              {header}
+            </Text>
+            <IconByName
+              size="sm"
+              isDisabled={true}
+              color={!collaps ? "coolGray.400" : "coolGray.600"}
+              name={!collaps ? "angle-double-down" : "angle-double-up"}
+            />
+          </HStack>
+        </Box>
+      </Pressable>
+      <PresenceTransition visible={collaps}>{body}</PresenceTransition>
+    </>
+  );
+};

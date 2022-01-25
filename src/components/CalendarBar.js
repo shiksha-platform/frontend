@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Icon from "./IconByName";
 import { weekDaysPageWise } from "./attendance/AttendanceComponent";
+import IconByName from "./IconByName";
 
 const FormatDate = ({ date, type }) => {
   const { t } = useTranslation();
@@ -37,7 +38,7 @@ export default function DayWiesBar({
   useEffect(() => {
     setDate(new Date(todayDate.setDate(todayDate.getDate() + page)));
     if (setActiveColor) {
-      setActiveColor(page === 0 ? "primary.500" : "coolGray.500");
+      setActiveColor(page === 0 ? "red.500" : "coolGray.500");
     }
   }, [page]);
 
@@ -83,7 +84,7 @@ export function WeekWiesBar({
   useEffect(() => {
     setWeekDays(weekDaysPageWise(page));
     if (setActiveColor) {
-      setActiveColor(page === 0 ? "primary.500" : "coolGray.500");
+      setActiveColor(page === 0 ? "red.500" : "coolGray.500");
     }
   }, [page]);
 
@@ -120,19 +121,19 @@ const Display = ({
   const toast = useToast();
   return (
     <Box bg="white" p="1" {..._box}>
-      <HStack justifyContent="space-between" alignItems="center">
+      <HStack justifyContent="space-between" alignItems="center" space={4}>
         <HStack space="4" alignItems="center">
-          <Icon
+          <IconByName
             size="sm"
             color={
               typeof previousDisabled === "undefined" ||
               previousDisabled === false
                 ? activeColor
                   ? activeColor
-                  : "primary.500"
+                  : "red.500"
                 : "gray.400"
             }
-            name="ArrowCircleLeftOutlined"
+            name="chevron-left"
             onPress={(e) => {
               if (leftErrorText) {
                 toast.show(leftErrorText);
@@ -151,16 +152,16 @@ const Display = ({
           </Text>
         </HStack>
         <HStack space="2">
-          <Icon
+          <IconByName
             size="sm"
             color={
               typeof nextDisabled === "undefined" || nextDisabled === false
                 ? activeColor
                   ? activeColor
-                  : "primary.500"
+                  : "red.500"
                 : "gray.400"
             }
-            name="ArrowCircleRightOutlined"
+            name="chevron-right"
             onPress={(e) => {
               if (rightErrorText) {
                 toast.show(rightErrorText);

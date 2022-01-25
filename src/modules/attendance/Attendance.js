@@ -9,6 +9,7 @@ import {
   Text,
   Spinner,
   Heading,
+  Button,
 } from "native-base";
 // import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
@@ -132,93 +133,92 @@ export default function App() {
 
   return (
     <Layout
-      title={t("ATTENDANCE_REGISTER")}
-      isEnableSearchBtn={true}
-      setSearch={setSearch}
-      icon="AssignmentTurnedIn"
-      heading={t("ATTENDANCE")}
-      _heading={{ fontSize: "xl" }}
-      subHeadingComponent={
+      header={{
+        title: t("ATTENDANCE_REGISTER"),
+        isEnableSearchBtn: true,
+        setSearch: setSearch,
+        subHeading: t("ATTENDANCE"),
+      }}
+    >
+      <Box
+        {...{
+          p: 4,
+          position: "relative",
+          bg: "purple.400",
+          roundedTop: "20",
+        }}
+      >
         <Link
           to={"/students/class/" + classId}
           style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
         >
-          <Box
-            rounded="full"
-            borderColor="coolGray.200"
-            borderWidth="1"
-            bg="white"
-            px={1}
-          >
-            <HStack
-              space="4"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Icon size="sm" name="Group" />
+          <HStack space="4" justifyContent="space-between">
+            <VStack>
               <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
-              <Icon size="sm" name="ArrowForwardIos" />
-            </HStack>
-          </Box>
+              <Text fontSize={"sm"}>{t("TOTAL") + " " + students.length}</Text>
+            </VStack>
+            <Icon size="sm" name="angle-double-right" />
+          </HStack>
         </Link>
-      }
-    >
+      </Box>
       <Stack space={1}>
-        <WeekWiesBar
-          setPage={setWeekPage}
-          page={weekPage}
-          previousDisabled={
-            parseInt(-manifest.attendancePastDays / manifest.weekDays?.length) >
-            parseInt(weekPage - 1)
-          }
-          nextDisabled={weekPage >= 0}
-          leftErrorText={
-            !isEditDisabled
-              ? {
-                  title:
-                    "Please click on save before moving to the previous page.",
-                  status: "error",
-                  placement: "top",
-                }
-              : false
-          }
-          rightErrorText={
-            !isEditDisabled
-              ? {
-                  title: "Please click on save before moving to the next page.",
-                  status: "error",
-                  placement: "top",
-                }
-              : false
-          }
-        />
+        <Box bg="white" p="5">
+          <HStack space="4" justifyContent="space-between">
+            <WeekWiesBar
+              setPage={setWeekPage}
+              page={weekPage}
+              previousDisabled={
+                parseInt(
+                  -manifest.attendancePastDays / manifest.weekDays?.length
+                ) > parseInt(weekPage - 1)
+              }
+              nextDisabled={weekPage >= 0}
+              leftErrorText={
+                !isEditDisabled
+                  ? {
+                      title:
+                        "Please click on save before moving to the previous page.",
+                      status: "error",
+                      placement: "top",
+                    }
+                  : false
+              }
+              rightErrorText={
+                !isEditDisabled
+                  ? {
+                      title:
+                        "Please click on save before moving to the next page.",
+                      status: "error",
+                      placement: "top",
+                    }
+                  : false
+              }
+            />
+            <Button
+              variant="outline"
+              borderColor={"red.400"}
+              _text={{ color: "red.400" }}
+              size="sm"
+              onPress={(e) => setIsEditDisabled(false)}
+            >
+              {t("EDIT")}
+            </Button>
+          </HStack>
+        </Box>
       </Stack>
-      <Box bg="gray.100" p="2">
+      <Box bg="white" p="4">
         <FlatList
           data={searchStudents}
           renderItem={({ item, index }) => (
-            <Box
-              bg={weekPage < 0 ? "green.100" : "white"}
-              p="2"
-              mb="2"
-              borderColor="coolGray.300"
-              borderWidth="1"
-              _web={{
-                shadow: 2,
-              }}
-            >
-              <VStack space="2">
-                <AttendanceComponent
-                  weekPage={weekPage}
-                  student={item}
-                  withDate={1}
-                  withApigetAttendance={false}
-                  attendanceProp={attendance}
-                  getAttendance={getAttendance}
-                  isEditDisabled={isEditDisabled}
-                />
-              </VStack>
-            </Box>
+            <AttendanceComponent
+              weekPage={weekPage}
+              student={item}
+              withDate={1}
+              withApigetAttendance={false}
+              attendanceProp={attendance}
+              getAttendance={getAttendance}
+              isEditDisabled={isEditDisabled}
+            />
           )}
           keyExtractor={(item) => item.id}
         />
