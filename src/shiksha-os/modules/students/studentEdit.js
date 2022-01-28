@@ -97,21 +97,20 @@ export default function App() {
 
   return (
     <Layout
-      title={t("STUDENTS_DETAIL")}
-      icon="Group"
-      heading={studentObject?.fullName ? studentObject?.fullName : ""}
-      button={
-        <Button
-          variant="ghost"
-          borderRadius="50"
-          colorScheme="gray"
-          background="gray.200"
-          onPress={handalSubmit}
-        >
-          {t("SAVE")}
-        </Button>
-      }
+      _header={{
+        title: t("STUDENTS_DETAIL"),
+        subHeading: studentObject?.fullName ? studentObject?.fullName : "",
+      }}
     >
+      <Button
+        variant="ghost"
+        borderRadius="50"
+        colorScheme="gray"
+        background="gray.200"
+        onPress={handalSubmit}
+      >
+        {t("SAVE")}
+      </Button>
       <Stack p="4" space={2}>
         <Stack>
           <Box borderColor="gray.500">

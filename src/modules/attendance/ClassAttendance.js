@@ -19,7 +19,6 @@ import AttendanceComponent, {
 } from "../../components/attendance/AttendanceComponent";
 import Layout from "../../layout/Layout";
 import IconByName from "../../components/IconByName";
-import Icon from "../../components/IconByName";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
 import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
 
@@ -247,15 +246,20 @@ export default function ClassAttendance() {
                         justifyContent="space-between"
                         alignItems="center"
                       >
-                        <Icon size="sm" name="Group" isDisabled={true} px={1} />
+                        <IconByName
+                          size="sm"
+                          name="Group"
+                          isDisabled={true}
+                          px={1}
+                        />
                         <Text fontSize={"lg"}>
                           {classObject?.className
                             ? classObject?.className
                             : t("SELECT_CLASS")}
                         </Text>
-                        <Icon
+                        <IconByName
                           size="sm"
-                          name="ArrowForwardIos"
+                          name="angle-right"
                           isDisabled={true}
                           pl={1}
                         />
@@ -266,9 +270,9 @@ export default function ClassAttendance() {
                     </Text>
                   </VStack>
                   <VStack>
-                    <Icon
+                    <IconByName
                       size="sm"
-                      name="Edit"
+                      name="edit"
                       color={"coolGray.100"}
                       pl={1}
                       onPress={(e) => {
@@ -276,9 +280,9 @@ export default function ClassAttendance() {
                         setShowModal(true);
                       }}
                     />
-                    <Icon
+                    <IconByName
                       size="sm"
-                      name="Edit"
+                      name="edit"
                       color={"coolGray.50"}
                       pl={1}
                       onPress={(e) => {

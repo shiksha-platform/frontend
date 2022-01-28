@@ -1,11 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Text, Button, Box, HStack, VStack, Stack } from "native-base";
-import Menu from "../../../components/Menu";
+import {
+  Text,
+  Box,
+  HStack,
+  VStack,
+  Stack,
+  Pressable,
+  StatusBar,
+  FlatList,
+} from "native-base";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import Layout from "../../../layout/Layout";
 import { useTranslation } from "react-i18next";
 import DayWiesBar from "../../../components/CalendarBar";
-import { Link } from "react-router-dom";
+import { generatePath, Link } from "react-router-dom";
+import moment from "moment";
+import { TabView, SceneMap } from "react-native-tab-view";
+import { Animated, Dimensions } from "react-native-web";
+import Widget from "../../../components/Widget";
+import IconByName from "../../../components/IconByName";
 
 // Start editing here, save and see your changes.
 export default function App() {
@@ -35,105 +48,262 @@ export default function App() {
   const timeTables = [
     {
       id: "1",
-      leftText: "08:30",
-      title: "Class V, Sec B, Maths",
-      _boxMenu: { bg: "coolGray.200" },
+      from: "08:30",
+      to: "09:25",
+      title: "Mathematics",
+      subTitle: "Class V, Sec B",
+      _boxMenu: { bg: "red.50", borderWidth: 1, borderColor: "red.100" },
     },
     {
       id: "2",
-      leftText: "09:30",
-      title: "Class V, Sec C, Maths",
-      _boxMenu: { bg: "coolGray.200" },
+      from: "09:30",
+      to: "10:25",
+      title: "Mathematics",
+      subTitle: "Class V, Sec C",
+      _boxMenu: { bg: "red.50", borderWidth: 1, borderColor: "red.100" },
     },
     {
       id: "3",
-      leftText: "10:30",
+      from: "10:30",
+      to: "11:25",
       title: "Special dance Mid group",
-      rightIcon: "MoreVert",
-      _boxMenu: { bg: "coolGray.200" },
+      subTitle: "N/A",
+      rightIcon: "ellipsis-v",
+      _boxMenu: { bg: "red.50", borderWidth: 1, borderColor: "red.100" },
     },
     {
       id: "4",
-      leftText: "11:30",
+      from: "11:30",
+      to: "12:25",
       title: "Free",
-      rightIcon: "MoreVert",
-      _boxMenu: { bg: "coolGray.200" },
+      subTitle: "N/A",
+      rightIcon: "ellipsis-v",
+      _boxMenu: { bg: "red.50", borderWidth: 1, borderColor: "red.100" },
     },
     {
       id: "5",
-      leftText: "12:30",
-      title: "Class VI, Sec A, Science",
+      from: "12:30",
+      to: "01:25",
+      title: "Science",
+      subTitle: "Class VI, Sec A",
       activeMenu: true,
+      _boxMenu: {
+        bg: "emerald.400",
+        borderWidth: 1,
+        borderColor: "green.100",
+      },
+      _text: { color: "white" },
     },
     {
       id: "6",
-      leftText: "01:30",
+      from: "01:30",
+      to: "02:25",
       title: "Substitution",
-      rightIcon: "MoreVert",
+      subTitle: "N/A",
+      rightIcon: "ellipsis-v",
     },
-    { id: "7", leftText: "02:30", title: "Free", rightIcon: "MoreVert" },
-    { id: "8", leftText: "03:30", title: "Class VI, Sec A, Maths" },
+    {
+      id: "7",
+      from: "02:30",
+      to: "03:25",
+      title: "Free",
+      subTitle: "N/A",
+      rightIcon: "ellipsis-v",
+    },
+    {
+      id: "8",
+      from: "03:30",
+      to: "04:25",
+      title: "Mathematics",
+      subTitle: "Class VI, Sec A",
+    },
   ];
+
+  const timeTableRoute = () => (
+    <Stack space={1}>
+      <Box bg="white" pt="30" pb={"25"}>
+        <HStack space="4" justifyContent="space-between">
+          <DayWiesBar
+            _box={{ p: 0 }}
+            {...{ page: datePage, setPage: setDatePage }}
+          />
+          <Stack>
+            <Box
+              variant="rounded"
+              borderWidth={1}
+              py={2}
+              px={4}
+              borderColor={"red.400"}
+              _text={{ color: "red.400" }}
+              rounded={"full"}
+            >
+              {t("TODAY")}
+            </Box>
+          </Stack>
+        </HStack>
+      </Box>
+      <Box bg={"white"}>
+        <FlatList
+          data={timeTables}
+          renderItem={({ item }) => (
+            <HStack space={"7"} mb="3">
+              <VStack space={2}>
+                <Text color="gray.800" fontWeight="500" fontSize="16px">
+                  {item.from}
+                </Text>
+                <Text color="coolGray.400" fontWeight="500">
+                  {item.to}
+                </Text>
+              </VStack>
+              <Box
+                bg={"gray.100"}
+                rounded={"10px"}
+                p="5"
+                flex={"auto"}
+                {...item._boxMenu}
+              >
+                <VStack space={"8px"}>
+                  <HStack justifyContent={"space-between"}>
+                    <Text fontSize="16px" fontWeight="600" {...item._text}>
+                      {item.title}
+                    </Text>
+                    <IconByName
+                      name={
+                        item?.rightIcon ? item?.rightIcon : "angle-double-up"
+                      }
+                      isDisabled
+                      {...item._text}
+                    />
+                  </HStack>
+                  <Text fontSize="12px" fontWeight="500" {...item._text}>
+                    {t(item?.subTitle)}
+                  </Text>
+                </VStack>
+              </Box>
+            </HStack>
+          )}
+          keyExtractor={(item, index) => (item.id ? item.id : index)}
+        />
+      </Box>
+    </Stack>
+  );
+
+  const myClassRoute = () => (
+    <Box pb={4} pt="30">
+      <VStack space={10}>
+        <Widget
+          key={index}
+          data={classes.map((item, index) => {
+            return {
+              title: item.className,
+              subTitle: "Class Teacher",
+              link: generatePath(item.route, { ...{ id: item.id } }),
+              _box: {
+                style: {
+                  background:
+                    index % 2 === 0
+                      ? "linear-gradient(281.03deg, #FC5858 -21.15%, #F8AF5A 100.04%)"
+                      : "linear-gradient(102.88deg, #D7BEE6 -5.88%, #B143F3 116.6%)",
+                },
+              },
+            };
+          })}
+        />
+        <HStack space={2} justifyContent={"center"}>
+          <Link
+            to={"/classes/attendance/group"}
+            style={{
+              textDecoration: "none",
+              flex: "auto",
+              textAlign: "center",
+            }}
+          >
+            <Box
+              rounded="lg"
+              borderColor="red.500"
+              borderWidth="1"
+              _text={{ color: "red.500" }}
+              px={4}
+              py={2}
+              style={{ textTransform: "uppercase" }}
+            >
+              {t("CHOOSE_ANOTHER_CLASS")}
+            </Box>
+          </Link>
+        </HStack>
+      </VStack>
+    </Box>
+  );
+
+  const renderScene = SceneMap({
+    first: myClassRoute,
+    second: timeTableRoute,
+  });
+
+  const initialLayout = { width: Dimensions.get("window").width };
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: "first", title: t("MY_CLASSES") },
+    { key: "second", title: t("TIME_TABLE") },
+  ]);
+
+  const renderTabBar = (props) => {
+    return (
+      <Box flexDirection="row">
+        {props.navigationState.routes.map((route, i) => {
+          return (
+            <Box
+              borderBottomWidth="3"
+              borderColor={index === i ? "red.500" : "coolGray.200"}
+              flex={1}
+              alignItems="center"
+              p="3"
+              cursor="pointer"
+              key={i}
+            >
+              <Pressable onPress={() => setIndex(i)}>
+                <Animated.Text
+                  style={{ color: index === i ? "red" : "#a1a1aa" }}
+                >
+                  {route.title}
+                </Animated.Text>
+              </Pressable>
+            </Box>
+          );
+        })}
+      </Box>
+    );
+  };
 
   return (
     <Layout
-      header={{
+      _header={{
         title: t("MY_CLASSES"),
         icon: "Group",
-        subHeading: t("THE_CLASSES_YOU_TAKE"),
-        button: (
-          <Button
-            variant="outline"
-            rounded={"full"}
-            colorScheme="gray"
-            background={"coolGray.50"}
-            size="container"
-            px={3}
-            mr="3"
-          >
-            {t("TIME_TABLE")}
-          </Button>
-        ),
+        subHeading: moment().format("hh:mm a"),
+        _subHeading: { fontWeight: 500 },
+        avatar: true,
       }}
-    >
-      <Box backgroundColor="gray.100" p="1">
-        <DayWiesBar
-          _box={{ bg: "gray.100", p: 0 }}
-          activeColor="primary.500"
-          {...{ page: datePage, setPage: setDatePage }}
-        />
-        <Box backgroundColor="gray.100" p={1}>
-          <Menu items={timeTables} routeDynamics="true" bg={"white"} />
-        </Box>
-      </Box>
-      <Box backgroundColor="gray.100" px={2} pb={4}>
-        <VStack space={2}>
-          <Box alignItems="center">
-            <Text color="primary.500" bold={true}>
-              {t("YOUR_CLASSES")}
+      subHeader={
+        <HStack space="4" justifyContent="space-between">
+          <VStack>
+            <Text fontSize={"16px"} fontWeight="600">
+              {t("THE_CLASSES_YOU_TAKE")}
             </Text>
-          </Box>
-          <Stack>
-            <Menu items={classes} routeDynamics="true" bg={"white"} />
-          </Stack>
-          <HStack space={2} justifyContent={"center"}>
-            <Link
-              to={"/classes/attendance/group"}
-              style={{ textDecoration: "none" }}
-            >
-              <Box
-                rounded="full"
-                borderColor="coolGray.200"
-                borderWidth="1"
-                bg="white"
-                px={4}
-                py={2}
-              >
-                {t("MARK_ATTENDANCE")}
-              </Box>
-            </Link>
-          </HStack>
-        </VStack>
+          </VStack>
+        </HStack>
+      }
+      _subHeader={{ bg: "lightBlue.200" }}
+    >
+      <Box bg="white" p="5" mb="4" roundedBottom={"xl"} shadow={2}>
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          renderTabBar={renderTabBar}
+          onIndexChange={setIndex}
+          initialLayout={initialLayout}
+          style={{ marginTop: StatusBar.currentHeight }}
+        />
       </Box>
     </Layout>
   );

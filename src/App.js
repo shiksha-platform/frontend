@@ -1,4 +1,3 @@
-import AppBar from "./shiksha-os/menu";
 import { Box, Center, extendTheme, NativeBaseProvider } from "native-base";
 import Home from "./shiksha-os/home";
 import ClassDetails from "./shiksha-os/modules/classes/classDetails";
@@ -37,7 +36,6 @@ function NotFound() {
 }
 
 export default function App() {
-  const { t } = useTranslation();
   const token = sessionStorage.getItem("token");
   if (!token) {
     return (

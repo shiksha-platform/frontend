@@ -19,7 +19,7 @@ export default function AppBar({
   isEnableLanguageMenu,
   isEnableSearchBtn,
   setSearch,
-  imageUrl,
+  color,
   ...props
 }) {
   const [searchInput, setSearchInput] = useState(false);
@@ -45,16 +45,12 @@ export default function AppBar({
       >
         <HStack space="4" alignItems="center">
           {isEnableHamburgerMenuButton ? (
-            <IconByName
-              size="sm"
-              name="bars"
-              color={imageUrl ? "coolGray.200" : ""}
-            />
+            <IconByName size="sm" name="bars" color={color ? color : ""} />
           ) : (
             <IconByName
               size="sm"
               name="chevron-left"
-              color={imageUrl ? "coolGray.200" : ""}
+              color={color ? color : ""}
               onPress={() => navigate(-1)}
             />
           )}
@@ -85,7 +81,7 @@ export default function AppBar({
         <HStack alignItems={"center"}>
           {!searchInput && isEnableSearchBtn ? (
             <IconByName
-              color={imageUrl ? "coolGray.200" : ""}
+              color={color ? color : ""}
               size="sm"
               name="search"
               onPress={(e) => setSearchInput(true)}
@@ -106,7 +102,7 @@ export default function AppBar({
                       size="sm"
                       name="ellipsis-v"
                       isDisabled={true}
-                      color={imageUrl ? "coolGray.200" : ""}
+                      color={color ? color : ""}
                     />
                   </Pressable>
                 );

@@ -32,7 +32,7 @@
   "AGE_GROUP": "आयु वर्ग",
   "CLASS_TEACHER": "कक्षा शिक्षक",
   "SUMMARY": "सारांश",
-  "ROLL_NUMBER": "रोल नंबर",
+  "ROLL_NUMBER": "रोल नं",
   "LOGIN": "लॉग इन करें",
   "USERNAME": "प्रयोक्ता नाम",
   "PASSWORD": "पासवर्ड",
@@ -42,6 +42,7 @@
   "ADMISSION_NO": "प्रवेश संख्या",
   "STUDYING_IN": "इसमें पढ़ाई हो रही है",
   "SEE_MORE": "और देखें",
+  "MORE": "और",
   "CLASS": "कक्षा",
   "CLASS_TEST": "कक्षा परीक्षा",
   "ATTENDANCE": "उपस्थिति",
@@ -105,5 +106,10 @@
   "LESSON_PLANS": "पाठ योजनाएं",
   "ASSESSMENTS": "आकलन",
   "RANGE": "श्रेणी",
-  "STATUS": "स्थिति"
+  "STATUS": "स्थिति",
+  "CATEGORY": "वर्ग",
+  "ABOUT": "के बारे में",
+  "CHOOSE_ANOTHER_CLASS": "दूसरा वर्ग चुनें",
+  "ACADEMIC": "अकादमिक",
+  "PHONE_Number": "फ़ोन नंबर"
 }

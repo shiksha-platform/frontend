@@ -16,7 +16,7 @@ import {
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import { useTranslation } from "react-i18next";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Menu from "../../../components/Menu";
 import Card from "../../../components/students/Card";
 import Layout from "../../../layout/Layout";
@@ -114,16 +114,9 @@ export default function App() {
   ]);
 
   const renderTabBar = (props) => {
-    const inputRange = props.navigationState.routes.map((x, i) => i);
     return (
       <Box flexDirection="row">
         {props.navigationState.routes.map((route, i) => {
-          const opacity = props.position.interpolate({
-            inputRange,
-            outputRange: inputRange.map((inputIndex) =>
-              inputIndex === i ? 1 : 0.5
-            ),
-          });
           const color = index === i ? "#1f2937" : "#a1a1aa";
           const borderColor = index === i ? "cyan.500" : "coolGray.200";
 
@@ -147,11 +140,9 @@ export default function App() {
   };
   return (
     <Layout
-      header={{
-        // isDisabledHeader: true,
+      imageUrl="https://images.freeimages.com/images/large-previews/51b/school-children-in-india-1438445.jpg"
+      _header={{
         title: t("MY_CLASSES"),
-        imageUrl:
-          "https://images.freeimages.com/images/large-previews/51b/school-children-in-india-1438445.jpg",
         fullRightComponent: (
           <Box minH={"150px"}>
             <Box
@@ -174,23 +165,15 @@ export default function App() {
           </Box>
         ),
       }}
-    >
-      <Stack space={1} mb="2" shadow={2}>
+      subHeader={
         <Menu
-          _box={{
-            p: 4,
-            position: "relative",
-            bottom: "15px",
-            bg: "primary.50",
-            roundedTop: "20",
-          }}
           routeDynamics={true}
           items={[
             {
               id: classId,
               keyId: 1,
               title: t("TAKE_ATTENDANCE"),
-              icon: "badge-check",
+              icon: "certificate",
               route: "/attendance/:id",
               boxMinW: "200px",
             },
@@ -203,6 +186,13 @@ export default function App() {
           ]}
           type={"veritical"}
         />
+      }
+      _subHeader={{
+        bottom: "15px",
+        bg: "primary.50",
+      }}
+    >
+      <Stack space={1} mb="2" shadow={2}>
         <Box bg="white" p={4}>
           <Stack space={2}>
             <Collapsible header={t("REPORTS")} />
@@ -428,7 +418,7 @@ export default function App() {
                                   alignItems="center"
                                 >
                                   <Text>{t("GRADE") + ": " + t("GOOD")}</Text>
-                                  <Text>{t("TOTAL") + ": " + "24"}</Text>
+                                  <Text>{t("TOTAL") + ": 24"}</Text>
                                 </HStack>
                               </VStack>
                             </Box>

@@ -11,7 +11,6 @@ import {
   Heading,
   Button,
 } from "native-base";
-// import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
 import Layout from "../../layout/Layout";
@@ -23,7 +22,7 @@ import AttendanceComponent, {
 } from "../../components/attendance/AttendanceComponent";
 import manifest from "./manifest.json";
 import { WeekWiesBar } from "../../components/CalendarBar";
-import Icon from "../../components/IconByName";
+import IconByName from "../../components/IconByName";
 
 // Start editing here, save and see your changes.
 export default function App() {
@@ -133,21 +132,13 @@ export default function App() {
 
   return (
     <Layout
-      header={{
+      _header={{
         title: t("ATTENDANCE_REGISTER"),
         isEnableSearchBtn: true,
         setSearch: setSearch,
         subHeading: t("ATTENDANCE"),
       }}
-    >
-      <Box
-        {...{
-          p: 4,
-          position: "relative",
-          bg: "purple.400",
-          roundedTop: "20",
-        }}
-      >
+      subHeader={
         <Link
           to={"/students/class/" + classId}
           style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
@@ -157,13 +148,14 @@ export default function App() {
               <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
               <Text fontSize={"sm"}>{t("TOTAL") + " " + students.length}</Text>
             </VStack>
-            <Icon size="sm" name="angle-double-right" />
+            <IconByName size="sm" name="angle-double-right" />
           </HStack>
         </Link>
-      </Box>
+      }
+    >
       <Stack space={1}>
-        <Box bg="white" p="5">
-          <HStack space="4" justifyContent="space-between">
+        <Box bg="white" px="5" py="30">
+          <HStack space="4" justifyContent="space-between" alignItems="center">
             <WeekWiesBar
               setPage={setWeekPage}
               page={weekPage}
@@ -195,18 +187,23 @@ export default function App() {
               }
             />
             <Button
-              variant="outline"
-              borderColor={"red.400"}
-              _text={{ color: "red.400" }}
-              size="sm"
-              onPress={(e) => setIsEditDisabled(false)}
+              variant="ghost"
+              colorScheme="red"
+              endIcon={
+                <IconByName
+                  name={isEditDisabled ? "pencil-alt" : "check"}
+                  isDisabled
+                />
+              }
+              _text={{ fontWeight: "400" }}
+              onPress={(e) => setIsEditDisabled(!isEditDisabled)}
             >
-              {t("EDIT")}
+              {isEditDisabled ? t("EDIT") : t("DONE")}
             </Button>
           </HStack>
         </Box>
       </Stack>
-      <Box bg="white" p="4">
+      <Box bg="white" py="10px" px="5">
         <FlatList
           data={searchStudents}
           renderItem={({ item, index }) => (
@@ -214,7 +211,6 @@ export default function App() {
               weekPage={weekPage}
               student={item}
               withDate={1}
-              withApigetAttendance={false}
               attendanceProp={attendance}
               getAttendance={getAttendance}
               isEditDisabled={isEditDisabled}
@@ -224,6 +220,7 @@ export default function App() {
         />
       </Box>
       <MultipalAttendance
+        isWithEditButton={false}
         {...{
           students,
           attendance,

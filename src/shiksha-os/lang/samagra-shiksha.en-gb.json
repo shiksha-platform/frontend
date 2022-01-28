@@ -32,7 +32,7 @@
   "AGE_GROUP": "Age group",
   "CLASS_TEACHER": "Class teacher",
   "SUMMARY": "Summary",
-  "ROLL_NUMBER": "Roll Number",
+  "ROLL_NUMBER": "Roll No",
   "LOGIN": "Login",
   "USERNAME": "Username",
   "PASSWORD": "Password",
@@ -42,6 +42,7 @@
   "ADMISSION_NO": "Admission No",
   "STUDYING_IN": "Studying In",
   "SEE_MORE": "See more",
+  "MORE": "More",
   "CLASS": "Class",
   "CLASS_TEST": "Class test",
   "TAKE_ATTENDANCE": "Take Attendance",
@@ -105,5 +106,10 @@
   "LESSON_PLANS": "Lesson Plans",
   "ASSESSMENTS": "Assessments",
   "RANGE": "Range",
-  "STATUS": "Status"
+  "STATUS": "Status",
+  "CATEGORY": "Category",
+  "ABOUT": "About",
+  "CHOOSE_ANOTHER_CLASS": "Choose another Class",
+  "ACADEMIC": "Academic",
+  "PHONE_Number": "Phone Number"
 }

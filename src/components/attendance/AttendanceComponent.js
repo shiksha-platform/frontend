@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-// import HdrAutoIcon from "@mui/icons-material/HdrAuto";
-// import CircleIcon from "@mui/icons-material/Circle";
 import {
   VStack,
   Text,
@@ -17,13 +14,8 @@ import * as attendanceServiceRegistry from "../../services/attendanceServiceRegi
 import manifest from "../../modules/attendance/manifest.json";
 import { useTranslation } from "react-i18next";
 import { TouchableHighlight } from "react-native-web";
-// import CircularProgress from "@mui/material/CircularProgress";
-// import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import moment from "moment";
 import Card from "../students/Card";
-// import { CircleOutlined } from "@mui/icons-material";
-import Header from "../../layout/Header";
-import { Link } from "react-router-dom";
 import IconByName from "../IconByName";
 
 export function weekDaysPageWise(weekPage, today) {
@@ -116,27 +108,28 @@ export const GetAttendance = async (filters) => {
   });
 };
 
-export const GetIcon = ({ status, _box, color }) => {
+export const GetIcon = ({ status, _box, color, _icon }) => {
   let icon = <></>;
+  let iconProps = { fontSize: "xl", isDisabled: true, ..._icon };
   switch (status) {
     case "Present":
       icon = (
-        <Box {..._box} color={color ? color : "green.600"}>
-          <IconByName name="check-circle" fontSize="3xl" />
+        <Box {..._box} color={color ? color : "green.500"}>
+          <IconByName name="circle" {...iconProps} />
         </Box>
       );
       break;
     case "Absent":
       icon = (
-        <Box {..._box} color={color ? color : "danger.600"}>
-          <IconByName name="users" fontSize="3xl" />
+        <Box {..._box} color={color ? color : "danger.400"}>
+          <IconByName name="circle" {...iconProps} />
         </Box>
       );
       break;
     case "Late":
       icon = (
-        <Box {..._box} color={color ? color : "yellow.600"}>
-          <IconByName name="users" fontSize="3xl" />
+        <Box {..._box} color={color ? color : "yellow.500"}>
+          <IconByName name="circle" {...iconProps} />
         </Box>
       );
       break;
@@ -144,14 +137,14 @@ export const GetIcon = ({ status, _box, color }) => {
     case "Unmarked":
       icon = (
         <Box {..._box} color={color ? color : "gray.400"}>
-          <IconByName name="circle" fontSize="3xl" />
+          <IconByName name="circle" {...iconProps} />
         </Box>
       );
       break;
     default:
       icon = (
-        <Box {..._box} color={color ? color : "gray.400"}>
-          <IconByName name="circle" fontSize="3xl" />
+        <Box {..._box} color={color ? color : "gray.200"}>
+          <IconByName name={status} {...iconProps} />
         </Box>
       );
       break;
@@ -169,6 +162,7 @@ export const MultipalAttendance = ({
   classObject,
   isEditDisabled,
   setIsEditDisabled,
+  isWithEditButton,
 }) => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
@@ -329,233 +323,239 @@ export const MultipalAttendance = ({
 
   const PopupActionSheet = () => {
     return (
-      <>
-        <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
-          <Actionsheet.Content bg="coolGray.500">
-            <Header
-              isDisabledAppBar={true}
-              _box={{ bg: "coolGray.500", py: 0 }}
-              icon="AssignmentTurnedIn"
-              heading={t("ATTENDANCE")}
-              _heading={{ fontSize: "xl" }}
-              subHeadingComponent={
-                <Link
-                  to={"/students/class/" + classObject.id}
-                  style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
-                >
-                  <Box
-                    rounded="full"
+      <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
+        <Actionsheet.Content alignItems={"left"} bg="purple.500">
+          <Stack p={5} pt={2} pb="25px">
+            <Text color={"white"} fontSize="16px" fontWeight={"600"}>
+              {t("ATTENDANCE")}
+            </Text>
+            <Text color={"white"} fontSize="12px" fontWeight={"400"}>
+              {classObject?.title ?? ""}
+            </Text>
+          </Stack>
+        </Actionsheet.Content>
+        <Stack width={"100%"} space="1" bg={"gray.200"}>
+          <Box bg="white" p={5}>
+            <HStack justifyContent="space-between" alignItems="center" pb={5}>
+              <Text fontSize={"16px"} fontWeight={"600"}>
+                {t("ATTENDANCE_SUMMARY")}
+              </Text>
+              <Text fontSize={"14px"}>
+                {t("TODAY") + ": "}
+                <Text fontWeight={"600"}>{moment().format("DD MMM, Y")}</Text>
+              </Text>
+            </HStack>
+            <Box borderWidth={1} borderColor="coolGray.200" rounded={"xl"}>
+              <FlatList
+                data={[t("CATEGORY"), t("BOYS"), t("GIRLS"), t("TOTAL")]}
+                renderItem={({ item, index }) => (
+                  <HStack
+                    alignItems={"center"}
+                    space={2}
+                    justifyContent={"space-around"}
+                    bg={index % 2 === 0 ? "coolGray.50" : "white"}
+                    p={index ? 4 : 5}
+                    borderBottomWidth={1}
                     borderColor="coolGray.200"
-                    borderWidth="1"
-                    bg="white"
-                    px={1}
+                    {...(index === 0
+                      ? { roundedTop: "xl" }
+                      : index === 3
+                      ? { roundedBottom: "xl" }
+                      : {})}
                   >
-                    <HStack
-                      space="4"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <IconByName size="sm" name="Group" />
-                      <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
-                      <IconByName size="sm" name="ArrowForwardIos" />
-                    </HStack>
-                  </Box>
-                </Link>
-              }
-            />
-          </Actionsheet.Content>
-          <Box bg="coolGray.100" width={"100%"}>
-            <Box bg="white" p="2">
-              <HStack justifyContent="space-between" alignItems="center">
-                <Text>{t("ATTENDANCE_SUMMARY")}</Text>
-                <Text>
-                  {t("TODAY")}: {moment().format("ddd DD, MMM")}
-                </Text>
-              </HStack>
-            </Box>
-            <Box p={4}>
-              <Stack space={3}>
-                <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
-                  <FlatList
-                    data={["heade", t("BOYS"), t("GIRLS"), t("TOTAL")]}
-                    renderItem={({ item, index }) => (
-                      <HStack
-                        alignItems={"center"}
-                        space={2}
-                        justifyContent={"space-between"}
-                      >
-                        {item === "heade" ? (
-                          <Text></Text>
+                    <Text fontSize="12px" minW={"55"} maxW={"55"}>
+                      {item}
+                    </Text>
+                    {item === t("CATEGORY") ? (
+                      <>
+                        {status.map((item, index) => {
+                          return (
+                            <GetIcon
+                              key={index}
+                              status={item}
+                              _box={{
+                                p: 0,
+                                minW: "55",
+                                maxW: "55",
+                                alignItems: "center",
+                              }}
+                            />
+                          );
+                        })}
+                        {!status.includes("Unmarked") ? (
+                          <GetIcon
+                            status={"Today"}
+                            _box={{
+                              p: 0,
+                              minW: "55",
+                              maxW: "55",
+                              alignItems: "center",
+                            }}
+                          />
                         ) : (
-                          <Text fontSize="2xl">{item}</Text>
+                          <></>
                         )}
-                        {item === "heade" ? (
-                          <HStack alignItems={"center"} space={2}>
-                            {status.map((item, index) => {
-                              return (
-                                <GetIcon
-                                  key={index}
-                                  status={item}
-                                  _box={{ p: 2, minW: "55", maxW: "55" }}
-                                />
-                              );
-                            })}
-                            {!status.includes("Unmarked") ? (
-                              <GetIcon
-                                status={"Today"}
-                                _box={{ p: 2, minW: "55", maxW: "55" }}
-                              />
-                            ) : (
-                              <></>
-                            )}
-                            <Text fontSize="2xl" minW={"55"} maxW={"55"}>
-                              {t("TOTAL")}
-                            </Text>
-                          </HStack>
-                        ) : (
-                          <HStack
-                            alignItems={"center"}
-                            space={2}
-                            width={"252px"}
-                          >
-                            {status.map((subItem, index) => {
-                              return (
-                                <Text
-                                  key={index}
-                                  fontSize="2xl"
-                                  minW={"55"}
-                                  maxW={"55"}
-                                  textAlign={"center"}
-                                >
-                                  {countReport({
-                                    gender: item,
-                                    attendanceType: subItem,
-                                  })}
-                                </Text>
-                              );
-                            })}
-                            {!status.includes("Unmarked") ? (
-                              <Text
-                                fontSize="2xl"
-                                minW={"55"}
-                                maxW={"55"}
-                                textAlign={"center"}
-                              >
-                                {countReport({
-                                  type: "Unmarked",
-                                  gender: item,
-                                })}
-                              </Text>
-                            ) : (
-                              <></>
-                            )}
+                        <Text
+                          fontSize="12px"
+                          textAlign={"center"}
+                          minW={"55"}
+                          maxW={"55"}
+                        >
+                          {t("TOTAL")}
+                        </Text>
+                      </>
+                    ) : (
+                      <>
+                        {status.map((subItem, index) => {
+                          return (
                             <Text
-                              fontSize="2xl"
+                              key={index}
+                              fontSize="12px"
                               minW={"55"}
                               maxW={"55"}
                               textAlign={"center"}
                             >
                               {countReport({
-                                type: "Total",
                                 gender: item,
+                                attendanceType: subItem,
                               })}
                             </Text>
-                          </HStack>
+                          );
+                        })}
+                        {!status.includes("Unmarked") ? (
+                          <Text
+                            fontSize="12px"
+                            minW={"55"}
+                            maxW={"55"}
+                            textAlign={"center"}
+                          >
+                            {countReport({
+                              type: "Unmarked",
+                              gender: item,
+                            })}
+                          </Text>
+                        ) : (
+                          <></>
                         )}
-                      </HStack>
+                        <Text
+                          fontSize="12px"
+                          minW={"55"}
+                          maxW={"55"}
+                          textAlign={"center"}
+                        >
+                          {countReport({
+                            type: "Total",
+                            gender: item,
+                          })}
+                        </Text>
+                      </>
                     )}
-                    keyExtractor={(item, index) => index}
-                  />
-                </Box>
-                <VStack>
-                  <Box
-                    borderWidth={1}
-                    p="2"
-                    borderColor="gray.500"
-                    bg="gray.50"
-                  >
-                    <Text>
-                      <Text>100% {t("THIS_WEEK")}: </Text>
-                      <Text pr={1}>
-                        {students.map((e) => e.fullName).join(", ")}
-                      </Text>
-                    </Text>
-                  </Box>
-                </VStack>
-                <VStack space={4} width={"100%"} alignItems={"center"}>
-                  <Link
-                    to={"/classes/" + classObject.id}
-                    style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
-                  >
-                    <Box
-                      rounded={"full"}
-                      background="coolGray.600"
-                      px={6}
-                      py={2}
-                    >
-                      <Text color="coolGray.50">{t("SEE_FULL_REPORT")}</Text>
-                    </Box>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    rounded={"full"}
-                    colorScheme="gray"
-                    background="coolGray.300"
-                    px={6}
-                    width={"100%"}
-                    onPress={(e) => setShowModal(false)}
-                  >
-                    {t("CLOSE")}
-                  </Button>
-                </VStack>
-              </Stack>
+                  </HStack>
+                )}
+                keyExtractor={(item, index) => index}
+              />
             </Box>
           </Box>
-        </Actionsheet>
-      </>
+          <Box bg="white" p={5}>
+            <Box bg={"gray.100"} rounded={"md"} p="4">
+              <VStack space={5}>
+                <HStack justifyContent={"space-between"} alignItems="center">
+                  <Text bold>
+                    100% {t("ATTENDANCE") + " " + t("THIS_WEEK")}
+                  </Text>
+                  <IconByName name="ellipsis-v" isDisabled />
+                </HStack>
+                <HStack alignItems="center" justifyContent={"space-around"}>
+                  {students.map((student, index) =>
+                    index < 3 ? (
+                      <Stack key={index}>
+                        <Card
+                          item={student}
+                          hidePopUpButton={true}
+                          type="veritical"
+                        />
+                      </Stack>
+                    ) : (
+                      <div key={index}></div>
+                    )
+                  )}
+                </HStack>
+                <Button colorScheme="red" variant="outline">
+                  {(students?.length > 3 ? "+ " + (students.length - 3) : "") +
+                    " " +
+                    t("MORE")}
+                </Button>
+              </VStack>
+            </Box>
+          </Box>
+          <Box p="2" py="5" bg="white">
+            <VStack space={"15px"} alignItems={"center"}>
+              <Text textAlign={"center"} fontSize="10px">
+                {t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
+              </Text>
+              <HStack alignItems={"center"} space={4}>
+                <Button
+                  variant="outline"
+                  colorScheme="red"
+                  onPress={(e) => setShowModal(false)}
+                >
+                  {t("CLOSE")}
+                </Button>
+                <Button colorScheme="red">{t("SEE_FULL_REPORT")}</Button>
+              </HStack>
+            </VStack>
+          </Box>
+        </Stack>
+      </Actionsheet>
     );
   };
 
   return (
-    <Stack
-      position={"sticky"}
-      bottom={0}
-      width={"100%"}
-      style={{ boxShadow: "rgb(0 0 0 / 22%) 0px -2px 10px" }}
-    >
-      <Box p="2" bg="white">
-        <VStack space={3} alignItems={"center"}>
-          <Text textAlign={"center"} fontSize="xs">
-            {t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
-          </Text>
-          {!isEditDisabled ? (
-            <HStack alignItems={"center"} space={4}>
-              <Button
-                variant="outline"
-                colorScheme="red"
-                onPress={(e) => setShowModal(true)}
-              >
-                {t("SAVE")}
-              </Button>
-              <Button colorScheme="red" onPress={markAllAttendance}>
-                {t("MARK_ALL_PRESENT")}
-              </Button>
-            </HStack>
-          ) : (
-            <HStack alignItems={"center"} space={4}>
-              <Button
-                variant="outline"
-                colorScheme="red"
-                onPress={(e) => setIsEditDisabled(false)}
-              >
-                {t("EDIT")}
-              </Button>
-            </HStack>
-          )}
-        </VStack>
-      </Box>
+    <>
+      {isWithEditButton || !isEditDisabled ? (
+        <Stack
+          position={"sticky"}
+          bottom={0}
+          width={"100%"}
+          style={{ boxShadow: "rgb(0 0 0 / 22%) 0px -2px 10px" }}
+        >
+          <Box p="2" py="5" bg="white">
+            <VStack space={"15px"} alignItems={"center"}>
+              <Text textAlign={"center"} fontSize="10px">
+                {t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
+              </Text>
+              {!isEditDisabled ? (
+                <Button.Group>
+                  <Button
+                    variant="outline"
+                    colorScheme="red"
+                    onPress={(e) => setShowModal(true)}
+                  >
+                    {t("SAVE")}
+                  </Button>
+                  <Button colorScheme="red" onPress={markAllAttendance}>
+                    {t("MARK_ALL_PRESENT")}
+                  </Button>
+                </Button.Group>
+              ) : (
+                <HStack alignItems={"center"} space={4}>
+                  <Button
+                    variant="outline"
+                    colorScheme="red"
+                    onPress={(e) => setIsEditDisabled(false)}
+                  >
+                    {t("EDIT")}
+                  </Button>
+                </HStack>
+              )}
+            </VStack>
+          </Box>
+        </Stack>
+      ) : (
+        <></>
+      )}
       <PopupActionSheet />
-    </Stack>
+    </>
   );
 };
 
@@ -563,10 +563,8 @@ const AttendanceComponent = ({
   today,
   weekPage,
   student,
-  withDate,
   attendanceProp,
   hidePopUpButton,
-  withApigetAttendance,
   getAttendance,
   _card,
   isEditDisabled,
@@ -584,35 +582,13 @@ const AttendanceComponent = ({
   useEffect(() => {
     setWeekDays(weekDaysPageWise(weekPage, today));
     async function getData() {
-      if (withApigetAttendance) {
-        setAttendance(
-          await GetAttendance({
-            studentId: {
-              eq: student.id,
-            },
-            classId: {
-              eq: student.currentClassID,
-            },
-            teacherId: {
-              eq: teacherId,
-            },
-          })
-        );
-      } else if (attendanceProp) {
+      if (attendanceProp) {
         setAttendance(attendanceProp);
       }
       setLoding({});
     }
     getData();
-  }, [
-    weekPage,
-    attendanceProp,
-    withApigetAttendance && !showModal,
-    student.id,
-    student.currentClassID,
-    teacherId,
-    today,
-  ]);
+  }, [weekPage, attendanceProp, today]);
 
   const formatDate = (date) => {
     var d = new Date(date),
@@ -679,59 +655,64 @@ const AttendanceComponent = ({
 
   const PopupActionSheet = () => {
     return (
-      <>
-        <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
-          <Actionsheet.Content>
-            <Box w="100%" h={60} px={4} justifyContent="center">
-              <Text
-                fontSize="16"
-                color="gray.500"
-                _dark={{
-                  color: "gray.300",
+      <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
+        <Actionsheet.Content alignItems={"left"} bg="purple.500">
+          <Stack p={5} pt={2} pb="25px">
+            <Text color={"white"} fontSize="16px" fontWeight={"600"}>
+              {t("MARK_ATTENDANCE")}
+            </Text>
+          </Stack>
+        </Actionsheet.Content>
+        <Box w="100%" p={4} justifyContent="center" bg="white">
+          {status.map((item) => {
+            return (
+              <Pressable
+                key={item}
+                p={3}
+                onPress={(e) => {
+                  if (attendanceObject.attendance !== item) {
+                    markAttendance({
+                      ...attendanceObject,
+                      attendance: item,
+                    });
+                  } else {
+                    setShowModal(false);
+                  }
                 }}
               >
-                {t("MARK_ATTENDANCE")}
-              </Text>
-            </Box>
-            {status.map((item) => {
-              return (
-                <Actionsheet.Item key={item} p={1}>
-                  <Pressable
-                    onPress={(e) => {
-                      if (attendanceObject.attendance !== item) {
-                        markAttendance({
-                          ...attendanceObject,
-                          attendance: item,
-                        });
-                      } else {
-                        setShowModal(false);
-                      }
-                    }}
-                  >
-                    <HStack alignItems="center" space={2}>
-                      <GetIcon status={item} _box={{ p: 2 }} />
-                      <Text color="coolGray.800" bold fontSize="lg">
-                        {t(item)}
-                      </Text>
-                    </HStack>
-                  </Pressable>
-                </Actionsheet.Item>
-              );
-            })}
-          </Actionsheet.Content>
-        </Actionsheet>
-      </>
+                <HStack alignItems="center" space={2}>
+                  <GetIcon status={item} _box={{ p: 2 }} />
+                  <Text color="coolGray.800" bold fontSize="lg">
+                    {t(item)}
+                  </Text>
+                </HStack>
+              </Pressable>
+            );
+          })}
+        </Box>
+      </Actionsheet>
     );
   };
 
-  const WeekDaysComponent = ({ weekDays, isIconSizeSmall, isEditDisabled }) => {
+  const WeekDaysComponent = ({
+    weekDays,
+    isIconSizeSmall,
+    isEditDisabled,
+    isShowDate,
+    isShowAttendance,
+  }) => {
     return weekDays.map((day, subIndex) => {
       let dateValue = formatDate(day);
       let attendanceItem = attendance
         .slice()
         .reverse()
         .find((e) => e.date === dateValue && e.studentId === student.id);
-      let attendanceIconProp = !isIconSizeSmall ? { _box: { py: 2 } } : {};
+      let attendanceIconProp = !isIconSizeSmall
+        ? {
+            _box: { py: 2, minW: "46px", alignItems: "center" },
+            status: "circle",
+          }
+        : {};
       let attendanceType = "Present";
       if (
         attendanceItem?.attendance &&
@@ -775,92 +756,87 @@ const AttendanceComponent = ({
       }
 
       return (
-        <div key={subIndex}>
-          <VStack
-            alignItems="center"
-            // bgColor={formatDate(day) === formatDate(todayDate) ? "white" : ""}
-          >
-            <Box
-              // bg="coolGray.100"
-              p="2"
-              // textAlign="center"
-              // roundedTopLeft={!subIndex ? "10" : "0"}
-              // roundedTopRight={weekDays.length - 1 === subIndex ? "10" : "0"}
+        <VStack
+          key={subIndex}
+          alignItems="center"
+          // bgColor={formatDate(day) === formatDate(todayDate) ? "white" : ""}
+        >
+          {isShowDate ? (
+            <Text
+              key={subIndex}
+              py={!isIconSizeSmall ? 2 : 0}
+              minW={"46px"}
+              textAlign="center"
+              color={
+                day.getDay() === 0
+                  ? "red.500"
+                  : formatDate(day) === formatDate(todayDate)
+                  ? "primary.500"
+                  : ""
+              }
             >
-              {withDate ? (
-                <Text
-                  key={subIndex}
-                  py={!isIconSizeSmall ? 1 : 0}
-                  color={
-                    formatDate(day) === formatDate(todayDate)
-                      ? "primary.500"
-                      : ""
-                  }
-                >
-                  {!isIconSizeSmall ? (
-                    <VStack alignItems={"center"}>
-                      <Text>{moment(day).format("ddd")}</Text>
-                      <Text color={"coolGray.400"}>
-                        {moment(day).format("DD")}
-                      </Text>
-                    </VStack>
-                  ) : (
-                    <HStack alignItems={"center"} space={1}>
-                      <Text>{moment(day).format("dd")}</Text>
-                      <Text>{moment(day).format("D")}</Text>
-                    </HStack>
-                  )}
-                </Text>
+              {!isIconSizeSmall ? (
+                <VStack alignItems={"center"}>
+                  <Text>{moment(day).format("ddd")}</Text>
+                  <Text color={"coolGray.400"}>{moment(day).format("DD")}</Text>
+                </VStack>
               ) : (
-                <></>
+                <HStack alignItems={"center"} space={1}>
+                  <Text>{moment(day).format("dd")}</Text>
+                  <Text>{moment(day).format("D")}</Text>
+                </HStack>
               )}
-            </Box>
-            <Box>
-              <TouchableHighlight
-                onPress={(e) => {
-                  if (!isEditDisabled) {
-                    markAttendance({
-                      attendanceId: attendanceItem?.id
-                        ? attendanceItem.id
-                        : null,
-                      date: dateValue,
-                      attendance: attendanceType,
-                      id: student.id,
-                    });
-                  }
-                }}
-                onLongPress={(event) => {
-                  if (!isEditDisabled) {
-                    setAttendanceObject({
-                      attendanceId: attendanceItem?.id
-                        ? attendanceItem.id
-                        : null,
-                      date: dateValue,
-                      attendance: attendanceItem?.attendance,
-                      id: student.id,
-                    });
-                    setShowModal(true);
-                  }
-                }}
-              >
-                {loding[dateValue + student.id] ? (
-                  <Box py="2" color="primary.500">
-                    {/* <CircularProgress /> */}
-                  </Box>
-                ) : (
-                  <GetIcon {...attendanceIconProp} />
-                )}
-              </TouchableHighlight>
-            </Box>
-          </VStack>
-        </div>
+            </Text>
+          ) : (
+            <></>
+          )}
+          {isShowAttendance ? (
+            <TouchableHighlight
+              onPress={(e) => {
+                if (!isEditDisabled) {
+                  markAttendance({
+                    attendanceId: attendanceItem?.id ? attendanceItem.id : null,
+                    date: dateValue,
+                    attendance: attendanceType,
+                    id: student.id,
+                  });
+                }
+              }}
+              onLongPress={(event) => {
+                if (!isEditDisabled) {
+                  setAttendanceObject({
+                    attendanceId: attendanceItem?.id ? attendanceItem.id : null,
+                    date: dateValue,
+                    attendance: attendanceItem?.attendance,
+                    id: student.id,
+                  });
+                  setShowModal(true);
+                }
+              }}
+            >
+              {loding[dateValue + student.id] ? (
+                <GetIcon
+                  {...attendanceIconProp}
+                  status="circle-notch"
+                  color={"red.500"}
+                  isDisabled
+                  _icon={{ _fontawesome: { spin: true } }}
+                />
+              ) : (
+                <GetIcon {...attendanceIconProp} />
+              )}
+            </TouchableHighlight>
+          ) : (
+            <></>
+          )}
+        </VStack>
       );
     });
   };
 
   return (
-    <Stack space={4}>
-      <Box>
+    <Stack space={"15px"}>
+      <VStack space={"15px"}>
         <Card
           item={student}
           _arrow={{ _icon: { fontSize: "large" } }}
@@ -880,25 +856,33 @@ const AttendanceComponent = ({
             )
           }
         />
-      </Box>
-      {!today ? (
-        <Box
-          borderWidth={1}
-          borderColor={"coolGray.300"}
-          rounded="xl"
-          shadow={2}
-        >
-          <HStack justifyContent="space-around" alignItems="center">
-            <WeekDaysComponent
-              weekDays={weekDays}
-              isEditDisabled={isEditDisabled}
-            />
-          </HStack>
-        </Box>
-      ) : (
-        <></>
-      )}
-      <PopupActionSheet />
+        {!today ? (
+          <Box borderWidth={1} borderColor={"coolGray.200"} rounded="xl">
+            <Box roundedTop="xl" bg={"coolGray.50"}>
+              <HStack justifyContent="space-around" alignItems="center">
+                <WeekDaysComponent
+                  isShowDate={true}
+                  weekDays={weekDays}
+                  isEditDisabled={isEditDisabled}
+                />
+              </HStack>
+            </Box>
+            <Box>
+              <HStack justifyContent="space-around" alignItems="center">
+                <WeekDaysComponent
+                  isShowAttendance={true}
+                  weekDays={weekDays}
+                  isEditDisabled={isEditDisabled}
+                />
+              </HStack>
+            </Box>
+          </Box>
+        ) : (
+          <></>
+        )}
+        <PopupActionSheet />
+      </VStack>
+      <></>
     </Stack>
   );
 };

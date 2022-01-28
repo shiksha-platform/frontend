@@ -142,7 +142,7 @@ export default function Menu({
                     </Text>
                   </HStack>
                   <IconByName
-                    name={item.rightIcon ? item.rightIcon : "ArrowForwardIos"}
+                    name={item.rightIcon ? item.rightIcon : "chevron-right"}
                     p="0"
                     {..._icon}
                   />

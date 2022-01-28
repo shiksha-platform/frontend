@@ -55,7 +55,7 @@ export default function App() {
               >
                 <Icon size="sm" name="Group" />
                 <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
-                <Icon size="sm" name="ArrowForwardIos" />
+                <Icon size="sm" name="angle-right" />
               </HStack>
             </Box>
           </Link>

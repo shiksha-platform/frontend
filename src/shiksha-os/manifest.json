@@ -30,7 +30,7 @@
     "main": [
       {
         "title": "MY_CLASSES",
-        "icon": "users-class",
+        "icon": "users",
         "module": "Registry",
         "route": "/classes",
         "routeparameters": {}
@@ -46,7 +46,7 @@
       },
       {
         "title": "CLASSES",
-        "icon": "users-class",
+        "icon": "users",
         "module": "Registry",
         "route": "/classes",
         "routeparameters": {}

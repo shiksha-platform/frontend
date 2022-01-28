@@ -1,13 +1,11 @@
 import moment from "moment";
-import { Box, HStack, Text, useToast } from "native-base";
+import { Box, HStack, Text, useToast, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Icon from "./IconByName";
 import { weekDaysPageWise } from "./attendance/AttendanceComponent";
 import IconByName from "./IconByName";
 
 const FormatDate = ({ date, type }) => {
-  const { t } = useTranslation();
   if (type === "Week") {
     return (
       moment(date[0]).format("Do MMM") +
@@ -15,13 +13,13 @@ const FormatDate = ({ date, type }) => {
       moment(date[date.length - 1]).format("Do MMM")
     );
   } else if (type === "Today") {
-    return moment(date).format("Do MMM, ddd, HH:MM") + " (" + t("TODAY") + ")";
+    return moment(date).format("Do MMM, ddd, HH:MM");
   } else if (type === "Tomorrow") {
-    return moment(date).format("Do MMM, ddd") + " (" + t("TOMORROW") + ")";
-  } else if (type === "Yesterday") {
-    return moment(date).format("Do MMM, ddd") + " (" + t("YESTERDAY") + ")";
-  } else {
     return moment(date).format("Do MMM, ddd");
+  } else if (type === "Yesterday") {
+    return moment(date).format("Do MMM, ddd");
+  } else {
+    return moment(date).format("D, MMMM Y");
   }
 };
 
@@ -34,6 +32,7 @@ export default function DayWiesBar({
 }) {
   const todayDate = new Date();
   const [date, setDate] = useState();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setDate(new Date(todayDate.setDate(todayDate.getDate() + page)));
@@ -52,18 +51,20 @@ export default function DayWiesBar({
         _box,
       }}
     >
-      <FormatDate
-        date={date}
-        type={
-          page === 0
-            ? "Today"
+      <VStack>
+        <Text fontWeight={600} fontSize="16px">
+          {page === 0
+            ? t("TODAY")
             : page === 1
-            ? "Tomorrow"
+            ? t("TOMORROW")
             : page === -1
-            ? "Yesterday"
-            : ""
-        }
-      />
+            ? t("YESTERDAY")
+            : moment(date).format("dddd")}
+        </Text>
+        <Text fontWeight={300} fontSize="10px">
+          <FormatDate date={date} />
+        </Text>
+      </VStack>
     </Display>
   );
 }

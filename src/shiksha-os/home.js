@@ -1,123 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Text, Box, Stack, VStack, HStack } from "native-base";
-// import manifest from "./manifest";
+import React from "react";
+import { Text, Box, Stack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
-import * as classServiceRegistry from "../shiksha-os/services/classServiceRegistry";
 import Layout from "../layout/Layout";
-import IconByName from "../components/IconByName";
-// import * as studentServiceRegistry from "../shiksha-os/services/studentServiceRegistry";
-// import * as attendanceServiceRegistry from "../services/attendanceServiceRegistry";
+import Widget from "../components/Widget";
 
-// Start editing here, save and see your changes.
 export default function Home() {
-  // const menus = manifest.menus.main;
   const { t } = useTranslation();
   const firstName = sessionStorage.getItem("firstName");
-  // const fullName = sessionStorage.getItem("fullName");
-  const [classes, setClasses] = useState([]);
-  // const [students, setStudents] = useState([]);
-  const authId = sessionStorage.getItem("id");
-  // const [attendance, setAttendance] = useState([]);
-
-  useEffect(() => {
-    let ignore = false;
-    const getData = async () => {
-      if (!ignore) {
-        let resultClasses = await classServiceRegistry.getAll({
-          filters: {
-            teacherId: {
-              eq: authId,
-            },
-          },
-        });
-        setClasses(resultClasses);
-      }
-    };
-    getData();
-  }, [authId]);
-
-  const chunk = (array, chunk) => {
-    return [].concat.apply(
-      [],
-      array.map(function (elem, i) {
-        return i % chunk ? [] : [array.slice(i, i + chunk)];
-      })
-    );
-  };
-
-  const Widget = ({ data, title }) => {
-    const newData = chunk(data ? data : [], 2);
-    const rotate = {
-      bottom: "0px",
-      right: 0,
-      position: "absolute",
-      bottum: "0",
-      style: { transform: "rotateZ(316deg)" },
-    };
-    return (
-      <Stack space={2}>
-        <Text fontSize={"lg"}>{title}</Text>
-        <VStack space={3}>
-          {newData.map((subData, index) => (
-            <HStack key={index} space={3} width={"100%"}>
-              {subData.map((item, subIndex) => (
-                <Box
-                  key={subIndex}
-                  rounded="xl"
-                  shadow={3}
-                  p={4}
-                  width="48%"
-                  overflow={"hidden"}
-                  {...item?._box}
-                >
-                  <Text
-                    {...{
-                      fontSize: "md",
-                      fontWeight: "medium",
-                      color: "coolGray.50",
-                    }}
-                    {...item?._text}
-                  >
-                    <VStack>
-                      <Text bold>{item?.title}</Text>
-                      <Text fontSize={"xs"}>{item?.subTitle}</Text>
-                    </VStack>
-                  </Text>
-                  {item.icon ? (
-                    <>
-                      <Box
-                        {...{
-                          ...rotate,
-                          bg: "coolGray.700",
-                          roundedTop: "20px",
-                          minW: "50px",
-                          minH: "50px",
-                          right: "-10px",
-                          bottom: "-10px",
-                          opacity: "0.1",
-                        }}
-                      />
-                      <IconByName
-                        name={item.icon}
-                        {...{
-                          color: "coolGray.700",
-                          opacity: "0.5",
-                          ...rotate,
-                          ...item?._icon,
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </Box>
-              ))}
-            </HStack>
-          ))}
-        </VStack>
-      </Stack>
-    );
-  };
 
   const widgetData = [
     {
@@ -151,7 +40,7 @@ export default function Home() {
         {
           title: "Classes",
           subTitle: "3 Remaining",
-          icon: "users-class",
+          icon: "users",
           _box: {
             bg: "violet.200",
           },
@@ -180,7 +69,7 @@ export default function Home() {
         {
           title: "Attendance",
           subTitle: "12 Remaining",
-          icon: "backpack",
+          icon: "suitcase-rolling",
           _box: {
             bg: "green.200",
           },
@@ -215,7 +104,7 @@ export default function Home() {
 
   return (
     <Layout
-      header={{
+      _header={{
         title: t("MY_SCHOOL_APP"),
         isEnableHamburgerMenuButton: true,
         isEnableLanguageMenu: true,
