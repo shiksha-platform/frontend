@@ -144,24 +144,7 @@ export default function App() {
             fontSize: "12px",
             color: "coolGray.800",
           }}
-          textSubTitle={
-            <HStack alignItems={"center"}>
-              {classObject?.className ? (
-                classObject?.className
-              ) : (
-                <Text italic>{t("NOT_ENTERD")}</Text>
-              )}
-              <Text color={"coolGray.400"}>{" • "}</Text>
-              <Text>{t("ROLL_NUMBER") + "."} </Text>
-              {studentObject.admissionNo ? (
-                <Text>
-                  {studentObject.admissionNo.toString().padStart(2, "0")}
-                </Text>
-              ) : (
-                <Text italic>{t("NOT_ENTERD")}</Text>
-              )}
-            </HStack>
-          }
+          type="card"
           item={studentObject}
           hidePopUpButton={true}
         />

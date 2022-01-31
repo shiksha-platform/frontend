@@ -122,6 +122,7 @@ export default function App() {
 
           return (
             <Box
+              key={i}
               borderBottomWidth="3"
               borderColor={borderColor}
               flex={1}

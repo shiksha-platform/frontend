@@ -2,6 +2,7 @@ import {
   Actionsheet,
   Avatar,
   Box,
+  Button,
   HStack,
   Stack,
   Text,
@@ -14,6 +15,124 @@ import Header from "../../layout/Header";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
 import { Link } from "react-router-dom";
 import IconByName from "../IconByName";
+
+const SubCard = ({
+  item,
+  type,
+  img,
+  textTitle,
+  textSubTitle,
+  _textTitle,
+  _textSubTitle,
+}) => {
+  const { t } = useTranslation();
+  return type === "veritical" ? (
+    <VStack alignItems={"center"}>
+      {typeof img === "undefined" || img === true ? (
+        <Avatar
+          size="40px"
+          bg={item?.avatarUrl ? "" : "amber.500"}
+          {...(item?.avatarUrl ? { source: { uri: item.avatarUrl } } : {})}
+        >
+          {item?.avatarUrl ? "" : item?.fullName?.toUpperCase().substr(0, 2)}
+        </Avatar>
+      ) : (
+        <></>
+      )}
+      <VStack alignItems={"center"}>
+        <Text fontSize={"12px"} color="coolGray.800" {..._textTitle}>
+          {textTitle ? (
+            textTitle
+          ) : item?.fullName ? (
+            item?.fullName
+          ) : (
+            <Text italic>{t("NOT_ENTERD")}</Text>
+          )}
+        </Text>
+        <Text color="coolGray.400" fontSize={"10px"} {..._textSubTitle}>
+          <HStack space={1}>
+            <Text>{t("ROLL_NUMBER")}:</Text>
+            {item.admissionNo ? (
+              item.admissionNo.toString().padStart(2, "0")
+            ) : (
+              <Text italic>{t("NOT_ENTERD")}</Text>
+            )}
+          </HStack>
+        </Text>
+      </VStack>
+    </VStack>
+  ) : (
+    <HStack space={typeof img === "undefined" || img === true ? 2 : 0}>
+      {typeof img === "undefined" || img === true ? (
+        <Avatar
+          size="40px"
+          bg={item?.avatarUrl ? "" : "amber.500"}
+          {...(item?.avatarUrl ? { source: { uri: item.avatarUrl } } : {})}
+        >
+          {item?.avatarUrl ? "" : item?.fullName?.toUpperCase().substr(0, 2)}
+        </Avatar>
+      ) : (
+        <></>
+      )}
+      <VStack>
+        <Text color="coolGray.800" bold {..._textTitle}>
+          {textTitle ? (
+            textTitle
+          ) : item?.fullName ? (
+            <>
+              {type !== "card" ? (
+                <HStack alignItems={"center"}>
+                  {item.admissionNo ? (
+                    item.admissionNo.toString().padStart(2, "0")
+                  ) : (
+                    <Text italic>{t("NOT_ENTERD")}</Text>
+                  )}
+                  <Text color={"coolGray.300"}>{" • "}</Text>
+                </HStack>
+              ) : (
+                <></>
+              )}
+              {item?.fullName}
+            </>
+          ) : (
+            <Text italic>{t("NOT_ENTERD")}</Text>
+          )}
+        </Text>
+        {type === "card" ? (
+          <HStack alignItems={"center"}>
+            {item?.className ? (
+              item?.className
+            ) : (
+              <Text italic>{t("NOT_ENTERD")}</Text>
+            )}
+            <Text color={"coolGray.400"}>{" • "}</Text>
+            <Text>{t("ROLL_NUMBER") + "."} </Text>
+            {item.admissionNo ? (
+              <Text>{item.admissionNo.toString().padStart(2, "0")}</Text>
+            ) : (
+              <Text italic>{t("NOT_ENTERD")}</Text>
+            )}
+          </HStack>
+        ) : (
+          <Text color="coolGray.400" fontSize={"xs"} {..._textSubTitle}>
+            {textSubTitle ? (
+              textSubTitle
+            ) : (
+              <HStack space={1}>
+                <Text>{t("FATHERS_NAME")}:</Text>
+                {item.fathersName ? (
+                  <Text>{item.fathersName}</Text>
+                ) : (
+                  <Text italic>{t("NOT_ENTERD")}</Text>
+                )}
+              </HStack>
+            )}
+          </Text>
+        )}
+      </VStack>
+    </HStack>
+  );
+};
 
 export default function Card({
   item,
@@ -56,113 +175,17 @@ export default function Card({
     <>
       <HStack justifyContent="space-between" width={"100%"}>
         <PressableNew href={href ? href : null}>
-          {type === "veritical" ? (
-            <VStack alignItems={"center"}>
-              {typeof img === "undefined" || img === true ? (
-                <Avatar
-                  size="40px"
-                  bg={item?.avatarUrl ? "" : "amber.500"}
-                  {...(item?.avatarUrl
-                    ? { source: { uri: item.avatarUrl } }
-                    : {})}
-                >
-                  {item?.avatarUrl
-                    ? ""
-                    : item?.fullName?.toUpperCase().substr(0, 2)}
-                </Avatar>
-              ) : (
-                <></>
-              )}
-              <VStack alignItems={"center"}>
-                <Text fontSize={"12px"} color="coolGray.800" {..._textTitle}>
-                  {textTitle ? (
-                    textTitle
-                  ) : item?.fullName ? (
-                    item?.fullName
-                  ) : (
-                    <Text italic>{t("NOT_ENTERD")}</Text>
-                  )}
-                </Text>
-                <Text color="coolGray.400" fontSize={"10px"} {..._textSubTitle}>
-                  <HStack space={1}>
-                    <Text>{t("ROLL_NUMBER")}:</Text>
-                    {item.admissionNo ? (
-                      item.admissionNo.toString().padStart(2, "0")
-                    ) : (
-                      <Text italic>{t("NOT_ENTERD")}</Text>
-                    )}
-                  </HStack>
-                </Text>
-              </VStack>
-            </VStack>
-          ) : (
-            <HStack space={typeof img === "undefined" || img === true ? 2 : 0}>
-              {typeof img === "undefined" || img === true ? (
-                <Avatar
-                  size="40px"
-                  bg={item?.avatarUrl ? "" : "amber.500"}
-                  {...(item?.avatarUrl
-                    ? { source: { uri: item.avatarUrl } }
-                    : {})}
-                >
-                  {item?.avatarUrl
-                    ? ""
-                    : item?.fullName?.toUpperCase().substr(0, 2)}
-                </Avatar>
-              ) : (
-                <></>
-              )}
-              <VStack>
-                <Text
-                  _dark={{
-                    color: "warmGray.50",
-                  }}
-                  color="coolGray.800"
-                  bold
-                  {..._textTitle}
-                >
-                  {textTitle ? (
-                    textTitle
-                  ) : item?.fullName ? (
-                    <>
-                      <HStack alignItems={"center"}>
-                        {item.admissionNo ? (
-                          item.admissionNo.toString().padStart(2, "0")
-                        ) : (
-                          <Text italic>{t("NOT_ENTERD")}</Text>
-                        )}
-                        <Text color={"coolGray.300"}>{" • "}</Text>
-                      </HStack>
-                      {item?.fullName}
-                    </>
-                  ) : (
-                    <Text italic>{t("NOT_ENTERD")}</Text>
-                  )}
-                </Text>
-                <Text
-                  color="coolGray.400"
-                  _dark={{
-                    color: "warmGray.200",
-                  }}
-                  fontSize={"xs"}
-                  {..._textSubTitle}
-                >
-                  {textSubTitle ? (
-                    textSubTitle
-                  ) : (
-                    <HStack space={1}>
-                      <Text>{t("FATHERS_NAME")}:</Text>
-                      {item.fathersName ? (
-                        <Text>{item.fathersName}</Text>
-                      ) : (
-                        <Text italic>{t("NOT_ENTERD")}</Text>
-                      )}
-                    </HStack>
-                  )}
-                </Text>
-              </VStack>
-            </HStack>
-          )}
+          <SubCard
+            {...{
+              item,
+              img,
+              type,
+              textTitle,
+              textSubTitle,
+              _textTitle,
+              _textSubTitle,
+            }}
+          />
         </PressableNew>
         {rightComponent ? (
           rightComponent
@@ -176,115 +199,132 @@ export default function Card({
               {..._arrow}
             />
             <Actionsheet isOpen={open} onClose={(e) => setOpen(false)}>
-              <Actionsheet.Content bg="coolGray.500">
-                <Header
-                  isDisabledAppBar={true}
-                  icon="Group"
-                  heading={
-                    item?.fullName ? (
-                      item?.fullName
-                    ) : (
-                      <Text italic>{t("NOT_ENTERD")}</Text>
-                    )
-                  }
-                  subHeading=""
-                  _box={{ bg: "coolGray.500", py: 0 }}
-                />
+              <Actionsheet.Content bg="#B9FBC0" alignItems="inherit">
+                <Box px="3" py="4" pt="0">
+                  <SubCard
+                    {...{
+                      item,
+                      img,
+                      type,
+                      textTitle,
+                      textSubTitle,
+                      _textTitle,
+                      _textSubTitle,
+                      type: "card",
+                    }}
+                  />
+                </Box>
               </Actionsheet.Content>
-              <Box bg="coolGray.100" width={"100%"}>
-                <Stack space={2} p="4">
+              <Box bg="white" width={"100%"}>
+                <Stack space={5}>
                   <VStack>
-                    <HStack
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                    >
-                      <Box borderColor="gray.500">
-                        <Text fontSize="md" color="primary.500" bold={true}>
+                    <Box px="5" pt="5">
+                      <HStack
+                        alignItems={"center"}
+                        justifyContent={"space-between"}
+                      >
+                        <Text fontSize="16px" fontWeight="500">
                           {t("DETAILS")}
                         </Text>
-                      </Box>
-                      <Link to={"/students/" + item.id + "/edit"}>
-                        <Icon size="sm" color="gray.900" name="edit" />
-                      </Link>
-                    </HStack>
-                    <Box
-                      borderWidth={1}
-                      p="2"
-                      borderColor="gray.500"
-                      bg="gray.50"
-                    >
-                      <Text>
-                        <Text bold>{t("ADDRESS")} </Text>
-                        {item.address ? (
-                          item.address
-                        ) : (
-                          <Text italic>{t("NOT_ENTERD")}</Text>
-                        )}
-                      </Text>
-                      <Text>
-                        <Text bold>{t("FATHERS_NAME")} </Text>
-                        {item.fathersName ? (
-                          item.fathersName
-                        ) : (
-                          <Text italic>{t("NOT_ENTERD")}</Text>
-                        )}
-                      </Text>
-                      <Text>
-                        <Text bold>{t("ADMISSION_NO")} </Text>
-                        {item.admissionNo ? (
-                          item.admissionNo
-                        ) : (
-                          <Text italic>{t("NOT_ENTERD")}</Text>
-                        )}
-                      </Text>
-                      <Text>
-                        <Text bold>{t("STUDYING_IN")} </Text>
-                        {item.className ? (
-                          item.className
-                        ) : item.currentClassID ? (
-                          item.currentClassID
-                        ) : (
-                          <Text italic>{t("NOT_ENTERD")}</Text>
-                        )}
-                      </Text>
+                        <Button
+                          variant="ghost"
+                          colorScheme="red"
+                          endIcon={
+                            <IconByName name={"pencil-alt"} isDisabled />
+                          }
+                          _text={{ fontWeight: "400" }}
+                        >
+                          {t("EDIT")}
+                        </Button>
+                      </HStack>
+                      {[
+                        {
+                          title: t("ADDRESS"),
+                          value: item.address,
+                        },
+                        {
+                          title: t("FATHERS_NAME"),
+                          value: item.fathersName,
+                        },
+                        {
+                          title: t("ADMISSION_NO"),
+                          value: item.admissionNo,
+                        },
+                        {
+                          title: t("STUDYING_IN"),
+                          value: item.className
+                            ? item.className
+                            : item.currentClassID,
+                        },
+                      ].map((item, index) => {
+                        return (
+                          <VStack
+                            space="3"
+                            p="5"
+                            borderBottomWidth={"1"}
+                            borderColor={"coolGray.200"}
+                            key={index}
+                          >
+                            <Text
+                              fontSize={"14px"}
+                              fontWeight="500"
+                              color={"coolGray.400"}
+                            >
+                              {item.title}
+                            </Text>
+                            {item.value ? (
+                              <Text>{item.value}</Text>
+                            ) : (
+                              <Text italic>{t("NOT_ENTERD")}</Text>
+                            )}
+                          </VStack>
+                        );
+                      })}
                     </Box>
                   </VStack>
                   <VStack>
-                    <HStack
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                    >
-                      <Box borderColor="gray.500">
-                        <Text fontSize="md" color="primary.500" bold={true}>
+                    <Box px="5">
+                      <HStack
+                        alignItems={"center"}
+                        justifyContent={"space-between"}
+                      >
+                        <Text fontSize="16px" fontWeight="500">
                           {t("NOTES")}
                         </Text>
+                        <Button
+                          variant="ghost"
+                          colorScheme="red"
+                          endIcon={
+                            <IconByName name={"pencil-alt"} isDisabled />
+                          }
+                          _text={{ fontWeight: "400" }}
+                        >
+                          {t("EDIT")}
+                        </Button>
+                      </HStack>
+                      <Box bg={"gray.100"} rounded={"md"} p="4">
+                        <HStack
+                          justifyContent={"space-between"}
+                          alignItems="center"
+                        >
+                          <Text>{t("STUDENT_IS_GOOD_NEED")}</Text>
+                        </HStack>
                       </Box>
-                      <Icon size="sm" color="gray.900" name="edit" />
-                    </HStack>
-                    <Box
-                      borderWidth={1}
-                      p="2"
-                      borderColor="gray.500"
-                      bg="gray.50"
-                    >
-                      <Text>
-                        <Text>{t("STUDENT_IS_GOOD_NEED")} </Text>
-                      </Text>
                     </Box>
                   </VStack>
-                  <Stack py={2} alignItems={"center"}>
+                  <Stack pb={5} alignItems={"center"}>
                     <Link
                       to={"/students/" + item.id}
                       style={{
-                        color: "rgb(63, 63, 70)",
                         textDecoration: "none",
                       }}
                     >
                       <Box
                         rounded="full"
-                        borderColor="coolGray.200"
+                        colorScheme="red"
+                        borderColor="red.400"
                         borderWidth="1"
-                        bg="coolGray.200"
+                        _text={{ color: "red.500" }}
                         px={6}
                         py={2}
                       >
