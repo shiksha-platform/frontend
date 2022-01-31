@@ -149,7 +149,7 @@ export default function App() {
           hidePopUpButton={true}
         />
       }
-      _subHeader={{ bg: "#B9FBC0" }}
+      _subHeader={{ bg: "studentCard.500" }}
     >
       <Stack space={2}>
         <Section
@@ -157,7 +157,7 @@ export default function App() {
           button={
             <Button
               variant="ghost"
-              colorScheme="red"
+              colorScheme="button"
               endIcon={<IconByName name={"pencil-alt"} isDisabled />}
               _text={{ fontWeight: "400" }}
             >
@@ -247,12 +247,11 @@ export default function App() {
                     >
                       <Box
                         rounded="lg"
-                        borderColor="red.500"
+                        borderColor="button.500"
                         borderWidth="1"
-                        _text={{ color: "red.500" }}
+                        _text={{ color: "button.500" }}
                         px={4}
                         py={2}
-                        style={{ textTransform: "uppercase" }}
                       >
                         {t("FULL_CLASS_ATTENDANCE")}
                       </Box>
@@ -269,7 +268,7 @@ export default function App() {
           button={
             <Button
               variant="ghost"
-              colorScheme="red"
+              colorScheme="button"
               endIcon={<IconByName name={"pencil-alt"} isDisabled />}
               _text={{ fontWeight: "400" }}
             >

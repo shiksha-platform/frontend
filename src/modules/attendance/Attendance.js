@@ -152,6 +152,7 @@ export default function App() {
           </HStack>
         </Link>
       }
+      _subHeader={{ bg: "attendanceCard.500" }}
     >
       <Stack space={1}>
         <Box bg="white" px="5" py="30">
@@ -188,7 +189,7 @@ export default function App() {
             />
             <Button
               variant="ghost"
-              colorScheme="red"
+              colorScheme="button"
               endIcon={
                 <IconByName
                   name={isEditDisabled ? "pencil-alt" : "check"}

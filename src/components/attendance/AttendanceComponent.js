@@ -114,14 +114,14 @@ export const GetIcon = ({ status, _box, color, _icon }) => {
   switch (status) {
     case "Present":
       icon = (
-        <Box {..._box} color={color ? color : "green.500"}>
+        <Box {..._box} color={color ? color : "attendanceCircal.400"}>
           <IconByName name="circle" {...iconProps} />
         </Box>
       );
       break;
     case "Absent":
       icon = (
-        <Box {..._box} color={color ? color : "danger.400"}>
+        <Box {..._box} color={color ? color : "attendanceCircal.300"}>
           <IconByName name="circle" {...iconProps} />
         </Box>
       );
@@ -136,14 +136,14 @@ export const GetIcon = ({ status, _box, color, _icon }) => {
     case "Today":
     case "Unmarked":
       icon = (
-        <Box {..._box} color={color ? color : "gray.400"}>
+        <Box {..._box} color={color ? color : "attendanceCircal.200"}>
           <IconByName name="circle" {...iconProps} />
         </Box>
       );
       break;
     default:
       icon = (
-        <Box {..._box} color={color ? color : "gray.200"}>
+        <Box {..._box} color={color ? color : "attendanceCircal.100"}>
           <IconByName name={status} {...iconProps} />
         </Box>
       );
@@ -480,7 +480,7 @@ export const MultipalAttendance = ({
                     )
                   )}
                 </HStack>
-                <Button colorScheme="red" variant="outline">
+                <Button colorScheme="button" variant="outline">
                   {(students?.length > 3 ? "+ " + (students.length - 3) : "") +
                     " " +
                     t("MORE")}
@@ -496,12 +496,14 @@ export const MultipalAttendance = ({
               <HStack alignItems={"center"} space={4}>
                 <Button
                   variant="outline"
-                  colorScheme="red"
+                  colorScheme="button"
                   onPress={(e) => setShowModal(false)}
                 >
                   {t("CLOSE")}
                 </Button>
-                <Button colorScheme="red">{t("SEE_FULL_REPORT")}</Button>
+                <Button colorScheme="button" _text={{ color: "white" }}>
+                  {t("SEE_FULL_REPORT")}
+                </Button>
               </HStack>
             </VStack>
           </Box>
@@ -528,12 +530,16 @@ export const MultipalAttendance = ({
                 <Button.Group>
                   <Button
                     variant="outline"
-                    colorScheme="red"
+                    colorScheme="button"
                     onPress={(e) => setShowModal(true)}
                   >
                     {t("SAVE")}
                   </Button>
-                  <Button colorScheme="red" onPress={markAllAttendance}>
+                  <Button
+                    colorScheme="button"
+                    onPress={markAllAttendance}
+                    _text={{ color: "white" }}
+                  >
                     {t("MARK_ALL_PRESENT")}
                   </Button>
                 </Button.Group>
@@ -541,7 +547,7 @@ export const MultipalAttendance = ({
                 <HStack alignItems={"center"} space={4}>
                   <Button
                     variant="outline"
-                    colorScheme="red"
+                    colorScheme="button"
                     onPress={(e) => setIsEditDisabled(false)}
                   >
                     {t("EDIT")}
@@ -769,7 +775,7 @@ const AttendanceComponent = ({
               textAlign="center"
               color={
                 day.getDay() === 0
-                  ? "red.500"
+                  ? "button.500"
                   : formatDate(day) === formatDate(todayDate)
                   ? "primary.500"
                   : ""
@@ -818,7 +824,7 @@ const AttendanceComponent = ({
                 <GetIcon
                   {...attendanceIconProp}
                   status="circle-notch"
-                  color={"red.500"}
+                  color={"button.500"}
                   isDisabled
                   _icon={{ _fontawesome: { spin: true } }}
                 />

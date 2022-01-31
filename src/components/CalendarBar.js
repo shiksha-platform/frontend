@@ -37,7 +37,7 @@ export default function DayWiesBar({
   useEffect(() => {
     setDate(new Date(todayDate.setDate(todayDate.getDate() + page)));
     if (setActiveColor) {
-      setActiveColor(page === 0 ? "red.500" : "coolGray.500");
+      setActiveColor(page === 0 ? "button.500" : "coolGray.500");
     }
   }, [page]);
 
@@ -85,7 +85,7 @@ export function WeekWiesBar({
   useEffect(() => {
     setWeekDays(weekDaysPageWise(page));
     if (setActiveColor) {
-      setActiveColor(page === 0 ? "red.500" : "coolGray.500");
+      setActiveColor(page === 0 ? "button.500" : "coolGray.500");
     }
   }, [page]);
 
@@ -131,7 +131,7 @@ const Display = ({
               previousDisabled === false
                 ? activeColor
                   ? activeColor
-                  : "red.500"
+                  : "button.500"
                 : "gray.400"
             }
             name="chevron-left"
@@ -159,7 +159,7 @@ const Display = ({
               typeof nextDisabled === "undefined" || nextDisabled === false
                 ? activeColor
                   ? activeColor
-                  : "red.500"
+                  : "button.500"
                 : "gray.400"
             }
             name="chevron-right"

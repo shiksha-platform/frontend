@@ -52,7 +52,7 @@ export default function App() {
       to: "09:25",
       title: "Mathematics",
       subTitle: "Class V, Sec B",
-      _boxMenu: { bg: "red.50", borderWidth: 1, borderColor: "red.100" },
+      _boxMenu: { bg: "button.50", borderWidth: 1, borderColor: "button.100" },
     },
     {
       id: "2",
@@ -60,7 +60,7 @@ export default function App() {
       to: "10:25",
       title: "Mathematics",
       subTitle: "Class V, Sec C",
-      _boxMenu: { bg: "red.50", borderWidth: 1, borderColor: "red.100" },
+      _boxMenu: { bg: "button.50", borderWidth: 1, borderColor: "button.100" },
     },
     {
       id: "3",
@@ -69,7 +69,7 @@ export default function App() {
       title: "Special dance Mid group",
       subTitle: "N/A",
       rightIcon: "ellipsis-v",
-      _boxMenu: { bg: "red.50", borderWidth: 1, borderColor: "red.100" },
+      _boxMenu: { bg: "button.50", borderWidth: 1, borderColor: "button.100" },
     },
     {
       id: "4",
@@ -78,7 +78,7 @@ export default function App() {
       title: "Free",
       subTitle: "N/A",
       rightIcon: "ellipsis-v",
-      _boxMenu: { bg: "red.50", borderWidth: 1, borderColor: "red.100" },
+      _boxMenu: { bg: "button.50", borderWidth: 1, borderColor: "button.100" },
     },
     {
       id: "5",
@@ -133,8 +133,8 @@ export default function App() {
               borderWidth={1}
               py={2}
               px={4}
-              borderColor={"red.400"}
-              _text={{ color: "red.400" }}
+              borderColor={"button.400"}
+              _text={{ color: "button.400" }}
               rounded={"full"}
             >
               {t("TODAY")}
@@ -220,9 +220,9 @@ export default function App() {
           >
             <Box
               rounded="lg"
-              borderColor="red.500"
+              borderColor="button.500"
               borderWidth="1"
-              _text={{ color: "red.500" }}
+              _text={{ color: "button.500" }}
               px={4}
               py={2}
               style={{ textTransform: "uppercase" }}
@@ -254,7 +254,7 @@ export default function App() {
           return (
             <Box
               borderBottomWidth="3"
-              borderColor={index === i ? "red.500" : "coolGray.200"}
+              borderColor={index === i ? "button.500" : "coolGray.200"}
               flex={1}
               alignItems="center"
               p="3"
@@ -262,10 +262,10 @@ export default function App() {
               key={i}
             >
               <Pressable onPress={() => setIndex(i)}>
-                <Animated.Text
-                  style={{ color: index === i ? "red" : "#a1a1aa" }}
-                >
-                  {route.title}
+                <Animated.Text>
+                  <Text {...{ color: index === i ? "button.500" : "#a1a1aa" }}>
+                    {route.title}
+                  </Text>
                 </Animated.Text>
               </Pressable>
             </Box>
@@ -293,7 +293,7 @@ export default function App() {
           </VStack>
         </HStack>
       }
-      _subHeader={{ bg: "lightBlue.200" }}
+      _subHeader={{ bg: "classCard.500" }}
     >
       <Box bg="white" p="5" mb="4" roundedBottom={"xl"} shadow={2}>
         <TabView

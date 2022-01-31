@@ -56,7 +56,7 @@ export default function Menu({
               <PressableNew
                 key={item.keyId ? item.keyId : item.id}
                 item={item}
-                bg="red.400"
+                bg="button.400"
                 rounded={"md"}
                 p="2"
                 minW={item?.boxMinW ? item?.boxMinW : "104px"}

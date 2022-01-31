@@ -117,8 +117,8 @@ export default function App() {
     return (
       <Box flexDirection="row">
         {props.navigationState.routes.map((route, i) => {
-          const color = index === i ? "#1f2937" : "#a1a1aa";
-          const borderColor = index === i ? "cyan.500" : "coolGray.200";
+          const color = index === i ? "button.500" : "coolGray.400";
+          const borderColor = index === i ? "button.500" : "coolGray.200";
 
           return (
             <Box
@@ -131,7 +131,9 @@ export default function App() {
               cursor="pointer"
             >
               <Pressable onPress={() => setIndex(i)}>
-                <Animated.Text style={{ color }}>{route.title}</Animated.Text>
+                <Animated.Text>
+                  <Text color={color}>{route.title}</Text>
+                </Animated.Text>
               </Pressable>
             </Box>
           );
@@ -190,7 +192,7 @@ export default function App() {
       }
       _subHeader={{
         bottom: "15px",
-        bg: "primary.50",
+        bg: "classCard.500",
       }}
     >
       <Stack space={1} mb="2" shadow={2}>
@@ -244,12 +246,7 @@ export default function App() {
                       keyExtractor={(item) => item.id}
                     />
                   </Box>
-                  <Button
-                    mt="2"
-                    variant="outline"
-                    borderColor={"red.400"}
-                    _text={{ color: "red.400" }}
-                  >
+                  <Button mt="2" variant="outline" colorScheme="button">
                     {t("SHOW_ALL_STUDENTS")}
                   </Button>
                 </VStack>
@@ -265,7 +262,7 @@ export default function App() {
               header={t("SUBJECTS")}
               body={
                 <VStack>
-                  <Box bd={"red"}>
+                  <Box>
                     <TabView
                       navigationState={{ index, routes }}
                       renderScene={renderScene}
@@ -412,7 +409,7 @@ export default function App() {
                                   my="4"
                                   size={"2xl"}
                                   colorScheme="green"
-                                  bg="red.400"
+                                  bg="button.400"
                                 />
                                 <HStack
                                   justifyContent={"space-between"}
@@ -430,8 +427,8 @@ export default function App() {
                               py={2}
                               mt="2"
                               textAlign={"center"}
-                              borderColor={"red.400"}
-                              _text={{ color: "red.400" }}
+                              borderColor={"button.500"}
+                              _text={{ color: "button.500" }}
                             >
                               {t("ATTENDANCE_REGISTER")}
                             </Box>

@@ -199,7 +199,7 @@ export default function Card({
               {..._arrow}
             />
             <Actionsheet isOpen={open} onClose={(e) => setOpen(false)}>
-              <Actionsheet.Content bg="#B9FBC0" alignItems="inherit">
+              <Actionsheet.Content bg="studentCard.500" alignItems="inherit">
                 <Box px="3" py="4" pt="0">
                   <SubCard
                     {...{
@@ -228,7 +228,7 @@ export default function Card({
                         </Text>
                         <Button
                           variant="ghost"
-                          colorScheme="red"
+                          colorScheme="button"
                           endIcon={
                             <IconByName name={"pencil-alt"} isDisabled />
                           }
@@ -293,7 +293,7 @@ export default function Card({
                         </Text>
                         <Button
                           variant="ghost"
-                          colorScheme="red"
+                          colorScheme="button"
                           endIcon={
                             <IconByName name={"pencil-alt"} isDisabled />
                           }
@@ -320,11 +320,10 @@ export default function Card({
                       }}
                     >
                       <Box
-                        rounded="full"
-                        colorScheme="red"
-                        borderColor="red.400"
+                        rounded="lg"
+                        borderColor="button.500"
                         borderWidth="1"
-                        _text={{ color: "red.500" }}
+                        _text={{ color: "button.500" }}
                         px={6}
                         py={2}
                       >

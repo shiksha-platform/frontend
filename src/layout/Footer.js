@@ -1,14 +1,17 @@
-import React from "react";
-import { Box, Text, HStack, Center } from "native-base";
+import React, { useEffect } from "react";
+import { Box, Text, HStack, Center, Stack } from "native-base";
 import IconByName from "../components/IconByName";
 import manifest from "../shiksha-os/manifest.json";
 import { useTranslation } from "react-i18next";
 import { Link, generatePath } from "react-router-dom";
+import { useWindowSize } from "../App";
 
 export default function Footer({ routeDynamics }) {
   const [selected, setSelected] = React.useState(1);
   const { t } = useTranslation();
   const [refFoot, serRefFoot] = React.useState({});
+  const [width, height] = useWindowSize();
+
   const footerMenus = manifest.menus.footer;
   const PressableNew = ({ item, children, ...prop }) => {
     return item?.route ? (
@@ -30,13 +33,13 @@ export default function Footer({ routeDynamics }) {
   };
 
   return (
-    <>
+    <Stack>
       <Box minH={refFoot?.clientHeight}></Box>
       <Box
         flex={1}
         safeAreaTop
         position="fixed"
-        w="100%"
+        w={width}
         bottom="0"
         ref={(e) => serRefFoot(e)}
       >
@@ -60,6 +63,6 @@ export default function Footer({ routeDynamics }) {
           ))}
         </HStack>
       </Box>
-    </>
+    </Stack>
   );
 }
