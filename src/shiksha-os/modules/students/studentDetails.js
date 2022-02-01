@@ -8,9 +8,6 @@ import {
   HStack,
   Pressable,
   PresenceTransition,
-  useToast,
-  FormControl,
-  Input,
 } from "native-base";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
@@ -20,7 +17,7 @@ import { Link, useParams } from "react-router-dom";
 import AttendanceComponent, {
   GetAttendance,
 } from "../../../components/attendance/AttendanceComponent";
-import Menu from "../../../components/Menu";
+import StudentEdit from "./StudentEdit";
 import manifest from "../../../modules/attendance/manifest.json";
 import Card from "../../../components/students/Card";
 import IconByName from "../../../components/IconByName";
@@ -33,32 +30,6 @@ export default function App() {
   const { studentId } = useParams();
   const [attendance, setAttendance] = useState([]);
   const teacherId = sessionStorage.getItem("id");
-  const toast = useToast();
-  const onlyParameter = [
-    "firstName",
-    "lastName",
-    "address",
-    "fathersName",
-    "phoneNumber",
-    "email",
-    "gender",
-  ];
-  const parameter = {
-    firstName: { placeholder: "First name", required: true },
-    lastName: { placeholder: "Last name" },
-    address: { placeholder: "Address" },
-    fathersName: { placeholder: "Parent Name" },
-    phoneNumber: { placeholder: "Phone number" },
-    email: { placeholder: "Email", type: "email" },
-  };
-  const formInputs = onlyParameter.map((e) => {
-    return {
-      placeholder: parameter[e]?.placeholder ? parameter[e].placeholder : e,
-      isRequired: parameter[e]?.required ? parameter[e].required : false,
-      type: parameter[e]?.type ? parameter[e].type : "text",
-      value: studentObject[e] ? studentObject[e] : "",
-    };
-  });
 
   useEffect(() => {
     let ignore = false;
@@ -94,40 +65,6 @@ export default function App() {
     setAttendance(attendanceData);
   };
 
-  const InfoSection = ({ items, isLastBorderEnable }) =>
-    items.map((item, index) => (
-      <VStack
-        space="3"
-        p="5"
-        borderBottomWidth={
-          items.length - 1 !== index || isLastBorderEnable ? "1" : "0"
-        }
-        borderColor={"coolGray.200"}
-        key={index}
-      >
-        <Text fontSize={"14px"} fontWeight="500" color={"coolGray.400"}>
-          {item.title}
-        </Text>
-        {item.value ? (
-          <Text>{item.value}</Text>
-        ) : (
-          <Text italic>{t("NOT_ENTERD")}</Text>
-        )}
-      </VStack>
-    ));
-
-  const Section = ({ title, button, children, _box }) => (
-    <Box bg={"white"} p="5" {..._box}>
-      <HStack alignItems={"center"} justifyContent={"space-between"}>
-        <Text fontSize="16px" fontWeight="500">
-          {title}
-        </Text>
-        {button}
-      </HStack>
-      {children}
-    </Box>
-  );
-
   return (
     <Layout
       _header={{
@@ -152,52 +89,7 @@ export default function App() {
       _subHeader={{ bg: "studentCard.500" }}
     >
       <Stack space={2}>
-        <Section
-          title={t("DETAILS")}
-          button={
-            <Button
-              variant="ghost"
-              colorScheme="button"
-              endIcon={<IconByName name={"pencil-alt"} isDisabled />}
-              _text={{ fontWeight: "400" }}
-            >
-              {t("EDIT")}
-            </Button>
-          }
-        >
-          <VStack>
-            <FormControl>
-              <Stack space={3}>
-                {formInputs.map((item, index) => {
-                  return (
-                    <VStack
-                      space="3"
-                      p="5"
-                      borderBottomWidth={
-                        formInputs.length - 1 !== index ? "1" : "0"
-                      }
-                      borderColor={"coolGray.200"}
-                      key={index}
-                    >
-                      <Text
-                        fontSize={"14px"}
-                        fontWeight="500"
-                        color={"coolGray.400"}
-                      >
-                        {item.placeholder}
-                      </Text>
-                      {item.value ? (
-                        <Text>{item.value}</Text>
-                      ) : (
-                        <Text italic>{t("NOT_ENTERD")}</Text>
-                      )}
-                    </VStack>
-                  );
-                })}
-              </Stack>
-            </FormControl>
-          </VStack>
-        </Section>
+        <StudentEdit {...{ studentObject, setStudentObject }} />
 
         <Section title={t("ACADEMIC")}>
           <InfoSection
@@ -339,6 +231,42 @@ export default function App() {
     </Layout>
   );
 }
+
+const InfoSection = ({ items, isLastBorderEnable }) => {
+  const { t } = useTranslation();
+  return items.map((item, index) => (
+    <VStack
+      space="3"
+      p="5"
+      borderBottomWidth={
+        items.length - 1 !== index || isLastBorderEnable ? "1" : "0"
+      }
+      borderColor={"coolGray.200"}
+      key={index}
+    >
+      <Text fontSize={"14px"} fontWeight="500" color={"coolGray.400"}>
+        {item.title}
+      </Text>
+      {item.value ? (
+        <Text>{item.value}</Text>
+      ) : (
+        <Text italic>{t("NOT_ENTERD")}</Text>
+      )}
+    </VStack>
+  ));
+};
+
+const Section = ({ title, button, children, _box }) => (
+  <Box bg={"white"} p="5" {..._box}>
+    <HStack alignItems={"center"} justifyContent={"space-between"}>
+      <Text fontSize="16px" fontWeight="500">
+        {title}
+      </Text>
+      {button}
+    </HStack>
+    {children}
+  </Box>
+);
 
 const Collapsible = ({
   header,

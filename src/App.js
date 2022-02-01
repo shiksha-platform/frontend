@@ -2,7 +2,6 @@ import { Box, Center, extendTheme, NativeBaseProvider } from "native-base";
 import Home from "./shiksha-os/home";
 import ClassDetails from "./shiksha-os/modules/classes/classDetails";
 import StudentDetails from "./shiksha-os/modules/students/studentDetails";
-import StudentEdit from "./shiksha-os/modules/students/studentEdit";
 import Classes from "./shiksha-os/modules/classes/classes";
 import Attendance from "./modules/attendance/Attendance";
 import ClassAttendance from "./modules/attendance/ClassAttendance";
@@ -11,37 +10,10 @@ import { useTranslation, initReactI18next } from "react-i18next";
 import init from "./shiksha-os/lang/init";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./shiksha-os/Login";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import manifest from "./shiksha-os/manifest.json";
 i18n.use(initReactI18next).init(init);
 
-const newColorTheme = {
-  studentCard: {
-    500: "#B9FBC0",
-  },
-  classCard: {
-    500: "#D9F0FC",
-  },
-  attendanceCard: {
-    500: "#C9AFF4",
-  },
-  button: {
-    50: "#fcf1ee",
-    100: "#fae2dd",
-    200: "#f5c8bc",
-    300: "#f2ab99",
-    400: "#ee8e78",
-    500: "#F87558",
-    600: "#d9654c",
-  },
-  attendanceCircal: {
-    100: "#F0F0F4",
-    200: "#C4C4D4",
-    300: "#F57B7B",
-    400: "#2BB639",
-    500: "#2BB639",
-  },
-};
 const theme = extendTheme({
   // Make sure values below matches any of the keys in `fontConfig`
   fonts: {
@@ -49,7 +21,41 @@ const theme = extendTheme({
     body: "Inter",
     mono: "Inter",
   },
-  colors: newColorTheme,
+  components: {
+    Text: {
+      baseStyle: {
+        textTransform: "capitalize",
+        fontFamily: "Inter",
+      },
+    },
+  },
+  colors: {
+    studentCard: {
+      500: "#B9FBC0",
+    },
+    classCard: {
+      500: "#D9F0FC",
+    },
+    attendanceCard: {
+      500: "#C9AFF4",
+    },
+    button: {
+      50: "#fcf1ee",
+      100: "#fae2dd",
+      200: "#f5c8bc",
+      300: "#f2ab99",
+      400: "#ee8e78",
+      500: "#F87558",
+      600: "#d9654c",
+    },
+    attendanceCircal: {
+      100: "#F0F0F4",
+      200: "#C4C4D4",
+      300: "#F57B7B",
+      400: "#2BB639",
+      500: "#2BB639",
+    },
+  },
 });
 
 function NotFound() {
@@ -124,14 +130,6 @@ export default function App() {
           element={
             <SubApp>
               <StudentDetails />
-            </SubApp>
-          }
-        />
-        <Route
-          path="/students/:studentId/edit"
-          element={
-            <SubApp>
-              <StudentEdit />
             </SubApp>
           }
         />

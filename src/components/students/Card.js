@@ -11,10 +11,10 @@ import {
 import React, { useState } from "react";
 import Icon from "../IconByName";
 import { useTranslation } from "react-i18next";
-import Header from "../../layout/Header";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
 import { Link } from "react-router-dom";
 import IconByName from "../IconByName";
+import StudentEdit from "../../shiksha-os/modules/students/StudentEdit";
 
 const SubCard = ({
   item,
@@ -101,7 +101,7 @@ const SubCard = ({
         {type === "card" ? (
           <HStack alignItems={"center"}>
             {item?.className ? (
-              item?.className
+              <Text>{item?.className}</Text>
             ) : (
               <Text italic>{t("NOT_ENTERD")}</Text>
             )}
@@ -149,6 +149,7 @@ export default function Card({
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [studentObject, setStudentObject] = useState(item);
 
   const handalOpenPoup = async (e) => {
     let classObj = await classServiceRegistry.getOne({
@@ -217,71 +218,17 @@ export default function Card({
               </Actionsheet.Content>
               <Box bg="white" width={"100%"}>
                 <Stack space={5}>
-                  <VStack>
-                    <Box px="5" pt="5">
-                      <HStack
-                        alignItems={"center"}
-                        justifyContent={"space-between"}
-                      >
-                        <Text fontSize="16px" fontWeight="500">
-                          {t("DETAILS")}
-                        </Text>
-                        <Button
-                          variant="ghost"
-                          colorScheme="button"
-                          endIcon={
-                            <IconByName name={"pencil-alt"} isDisabled />
-                          }
-                          _text={{ fontWeight: "400" }}
-                        >
-                          {t("EDIT")}
-                        </Button>
-                      </HStack>
-                      {[
-                        {
-                          title: t("ADDRESS"),
-                          value: item.address,
-                        },
-                        {
-                          title: t("FATHERS_NAME"),
-                          value: item.fathersName,
-                        },
-                        {
-                          title: t("ADMISSION_NO"),
-                          value: item.admissionNo,
-                        },
-                        {
-                          title: t("STUDYING_IN"),
-                          value: item.className
-                            ? item.className
-                            : item.currentClassID,
-                        },
-                      ].map((item, index) => {
-                        return (
-                          <VStack
-                            space="3"
-                            p="5"
-                            borderBottomWidth={"1"}
-                            borderColor={"coolGray.200"}
-                            key={index}
-                          >
-                            <Text
-                              fontSize={"14px"}
-                              fontWeight="500"
-                              color={"coolGray.400"}
-                            >
-                              {item.title}
-                            </Text>
-                            {item.value ? (
-                              <Text>{item.value}</Text>
-                            ) : (
-                              <Text italic>{t("NOT_ENTERD")}</Text>
-                            )}
-                          </VStack>
-                        );
-                      })}
-                    </Box>
-                  </VStack>
+                  <StudentEdit
+                    {...{
+                      studentObject,
+                      setStudentObject,
+                      onlyParameterProp: [
+                        "address",
+                        "fathersName",
+                        "admissionNo",
+                      ],
+                    }}
+                  />
                   <VStack>
                     <Box px="5">
                       <HStack

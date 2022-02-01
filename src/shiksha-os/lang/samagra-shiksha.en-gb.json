@@ -41,6 +41,10 @@
   "FATHERS_NAME": "Father's Name",
   "ADMISSION_NO": "Admission No",
   "STUDYING_IN": "Studying In",
+  "PHONE_NUMBER": "Phone Number",
+  "FIRST_NAME": "First name",
+  "LAST_NAME": "Last name",
+  "EMAIL": "Email",
   "SEE_MORE": "See more",
   "MORE": "More",
   "CLASS": "Class",
@@ -110,6 +114,5 @@
   "CATEGORY": "Category",
   "ABOUT": "About",
   "CHOOSE_ANOTHER_CLASS": "Choose another Class",
-  "ACADEMIC": "Academic",
-  "PHONE_Number": "Phone Number"
+  "ACADEMIC": "Academic"
 }

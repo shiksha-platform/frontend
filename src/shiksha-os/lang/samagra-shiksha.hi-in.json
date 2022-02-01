@@ -41,6 +41,10 @@
   "FATHERS_NAME": "पिता का नाम",
   "ADMISSION_NO": "प्रवेश संख्या",
   "STUDYING_IN": "इसमें पढ़ाई हो रही है",
+  "PHONE_NUMBER": "फ़ोन नंबर",
+  "FIRST_NAME": "पहला नाम",
+  "LAST_NAME": "अंतिम नाम",
+  "EMAIL": "ईमेल",
   "SEE_MORE": "और देखें",
   "MORE": "और",
   "CLASS": "कक्षा",
@@ -110,6 +114,5 @@
   "CATEGORY": "वर्ग",
   "ABOUT": "के बारे में",
   "CHOOSE_ANOTHER_CLASS": "दूसरा वर्ग चुनें",
-  "ACADEMIC": "अकादमिक",
-  "PHONE_Number": "फ़ोन नंबर"
+  "ACADEMIC": "अकादमिक"
 }
