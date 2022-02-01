@@ -6,6 +6,7 @@ import {
   FlatList,
   Heading,
   HStack,
+  Pressable,
   Spinner,
   Stack,
   Text,
@@ -90,13 +91,20 @@ export default function ClassAttendance() {
   const PopupActionSheet = () => {
     return (
       <Actionsheet
+        // maxW={414}
+        // alignSelf="center"
         isOpen={showModal}
-        hideDragIndicator
+        // hideDragIndicator
         _backdrop={{ opacity: "0.9", bg: "gray.500" }}
       >
-        <Actionsheet.Content>
-          {!showType ? (
-            <Box w="100%" px={4}>
+        <Actionsheet.Content
+          bg="classCard.500"
+          alignItems="inherit"
+          px="0"
+          pb="0"
+        >
+          <Box p="5" pt="2">
+            {!showType ? (
               <Text
                 fontSize="16"
                 color="gray.500"
@@ -106,10 +114,29 @@ export default function ClassAttendance() {
               >
                 {t("SELECT_SUBJECT")}
               </Text>
-              {attendanceTypes.map((item) => {
+            ) : (
+              <Text
+                fontSize="16"
+                color="gray.500"
+                _dark={{
+                  color: "gray.300",
+                }}
+              >
+                {t("SELECT_CLASS_MARK_ATTENDANCE")}
+              </Text>
+            )}
+          </Box>
+        </Actionsheet.Content>
+
+        <Box w="100%" bg="white" p="5">
+          {!showType
+            ? attendanceTypes.map((item, index) => {
                 return (
-                  <Actionsheet.Item
-                    key={item}
+                  <Pressable
+                    p="5"
+                    borderBottomWidth={1}
+                    borderBottomColor="coolGray.100"
+                    key={index}
                     onPress={(e) => {
                       setAttendanceType(item);
                       if (!classObject) {
@@ -121,31 +148,21 @@ export default function ClassAttendance() {
                   >
                     {attendanceType === item ? (
                       <HStack alignItems="center">
-                        <Text>{item}</Text>
-                        <IconByName isDisabled={false} name={"Check"} />
+                        <Text color={"button.500"}>{item}</Text>
                       </HStack>
                     ) : (
-                      item
+                      <Text>{item}</Text>
                     )}
-                  </Actionsheet.Item>
+                  </Pressable>
                 );
-              })}
-            </Box>
-          ) : (
-            <Box w="100%" px={4}>
-              <Text
-                fontSize="16"
-                color="gray.500"
-                _dark={{
-                  color: "gray.300",
-                }}
-              >
-                {t("SELECT_CLASS")}
-              </Text>
-              {calsses.map((item) => {
+              })
+            : calsses.map((item, index) => {
                 return (
-                  <Actionsheet.Item
-                    key={item.id}
+                  <Pressable
+                    p="5"
+                    borderBottomWidth={1}
+                    borderBottomColor="coolGray.100"
+                    key={index}
                     onPress={(e) => {
                       setClassObject(item);
                       if (!attendanceType) {
@@ -157,18 +174,15 @@ export default function ClassAttendance() {
                   >
                     {classObject.className === item.className ? (
                       <HStack alignItems="center">
-                        <Text>{item.className}</Text>
-                        <IconByName isDisabled={false} name={"Check"} />
+                        <Text color={"button.500"}>{item.className}</Text>
                       </HStack>
                     ) : (
-                      item.className
+                      <Text>{item.className}</Text>
                     )}
-                  </Actionsheet.Item>
+                  </Pressable>
                 );
               })}
-            </Box>
-          )}
-        </Actionsheet.Content>
+        </Box>
       </Actionsheet>
     );
   };

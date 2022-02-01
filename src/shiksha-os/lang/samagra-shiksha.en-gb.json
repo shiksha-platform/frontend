@@ -90,6 +90,7 @@
   "WHAT_ATTENDANCE_MARK": "what attendance do you want to mark for class/group",
   "CLASS_CHOOE_ATTENDANCE": "Please choose class / group to mark attendance",
   "SELECT_CLASS": "Select class / group",
+  "SELECT_CLASS_MARK_ATTENDANCE": "For which class do you want to mark attendance?",
   "SELECT_SUBJECT": "Select subject",
   "SUBJECTS": "Subjects",
   "EDIT": "Edit",
