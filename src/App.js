@@ -48,12 +48,18 @@ const theme = extendTheme({
       500: "#F87558",
       600: "#d9654c",
     },
-    attendanceCircal: {
-      100: "#F0F0F4",
-      200: "#C4C4D4",
-      300: "#F57B7B",
-      400: "#2BB639",
+    attendancePresent: {
+      600: "#2BB639",
       500: "#2BB639",
+    },
+    attendanceAbsent: {
+      600: "#F57B7B",
+      500: "#F57B7B",
+    },
+    attendanceUnmarked: {
+      600: "#C4C4D4",
+      500: "#C4C4D4",
+      100: "#F0F0F4",
     },
   },
 });

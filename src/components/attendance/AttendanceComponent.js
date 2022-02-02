@@ -9,6 +9,7 @@ import {
   Stack,
   FlatList,
   Button,
+  Progress,
 } from "native-base";
 import * as attendanceServiceRegistry from "../../services/attendanceServiceRegistry";
 import manifest from "../../modules/attendance/manifest.json";
@@ -114,14 +115,14 @@ export const GetIcon = ({ status, _box, color, _icon }) => {
   switch (status) {
     case "Present":
       icon = (
-        <Box {..._box} color={color ? color : "attendanceCircal.400"}>
+        <Box {..._box} color={color ? color : "attendancePresent.500"}>
           <IconByName name="circle" {...iconProps} />
         </Box>
       );
       break;
     case "Absent":
       icon = (
-        <Box {..._box} color={color ? color : "attendanceCircal.300"}>
+        <Box {..._box} color={color ? color : "attendanceAbsent.500"}>
           <IconByName name="circle" {...iconProps} />
         </Box>
       );
@@ -136,14 +137,14 @@ export const GetIcon = ({ status, _box, color, _icon }) => {
     case "Today":
     case "Unmarked":
       icon = (
-        <Box {..._box} color={color ? color : "attendanceCircal.200"}>
+        <Box {..._box} color={color ? color : "attendanceUnmarked.500"}>
           <IconByName name="circle" {...iconProps} />
         </Box>
       );
       break;
     default:
       icon = (
-        <Box {..._box} color={color ? color : "attendanceCircal.100"}>
+        <Box {..._box} color={color ? color : "attendanceUnmarked.100"}>
           <IconByName name={status} {...iconProps} />
         </Box>
       );
@@ -324,7 +325,7 @@ export const MultipalAttendance = ({
   const PopupActionSheet = () => {
     return (
       <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
-        <Actionsheet.Content alignItems={"left"} bg="purple.500">
+        <Actionsheet.Content alignItems={"left"} bg="attendanceCard.500">
           <Stack p={5} pt={2} pb="25px">
             <Text color={"white"} fontSize="16px" fontWeight={"600"}>
               {t("ATTENDANCE")}
@@ -345,111 +346,73 @@ export const MultipalAttendance = ({
                 <Text fontWeight={"600"}>{moment().format("DD MMM, Y")}</Text>
               </Text>
             </HStack>
-            <Box borderWidth={1} borderColor="coolGray.200" rounded={"xl"}>
+            <Box
+              borderWidth={1}
+              borderColor="coolGray.200"
+              rounded={"xl"}
+              bg={"coolGray.50"}
+            >
               <FlatList
-                data={[t("CATEGORY"), t("BOYS"), t("GIRLS"), t("TOTAL")]}
+                data={[t("BOYS"), t("GIRLS"), t("TOTAL")]}
                 renderItem={({ item, index }) => (
                   <HStack
                     alignItems={"center"}
                     space={2}
                     justifyContent={"space-around"}
-                    bg={index % 2 === 0 ? "coolGray.50" : "white"}
-                    p={index ? 4 : 5}
-                    borderBottomWidth={1}
-                    borderColor="coolGray.200"
-                    {...(index === 0
-                      ? { roundedTop: "xl" }
-                      : index === 3
-                      ? { roundedBottom: "xl" }
-                      : {})}
+                    py="5"
+                    px="2"
                   >
-                    <Text fontSize="12px" minW={"55"} maxW={"55"}>
+                    <Text px="2" fontSize="12px" textAlign={"center"}>
                       {item}
                     </Text>
-                    {item === t("CATEGORY") ? (
-                      <>
-                        {status.map((item, index) => {
-                          return (
-                            <GetIcon
-                              key={index}
-                              status={item}
-                              _box={{
-                                p: 0,
-                                minW: "55",
-                                maxW: "55",
-                                alignItems: "center",
-                              }}
-                            />
-                          );
-                        })}
-                        {!status.includes("Unmarked") ? (
-                          <GetIcon
-                            status={"Today"}
-                            _box={{
-                              p: 0,
-                              minW: "55",
-                              maxW: "55",
-                              alignItems: "center",
-                            }}
-                          />
-                        ) : (
-                          <></>
-                        )}
-                        <Text
-                          fontSize="12px"
-                          textAlign={"center"}
-                          minW={"55"}
-                          maxW={"55"}
-                        >
-                          {t("TOTAL")}
-                        </Text>
-                      </>
-                    ) : (
-                      <>
-                        {status.map((subItem, index) => {
-                          return (
-                            <Text
-                              key={index}
-                              fontSize="12px"
-                              minW={"55"}
-                              maxW={"55"}
-                              textAlign={"center"}
+                    <VStack space={2} flex="auto">
+                      {status.map((subItem, index) => {
+                        return (
+                          <HStack alignItems="center" space={2}>
+                            <Progress
+                              flex="auto"
+                              max={countReport({
+                                gender: "Total",
+                                type: "Total",
+                              })}
+                              value={countReport({
+                                gender: item,
+                                attendanceType: subItem,
+                              })}
+                              size="md"
+                              colorScheme={
+                                subItem === "Present"
+                                  ? "attendancePresent"
+                                  : subItem === "Absent"
+                                  ? "attendanceAbsent"
+                                  : subItem === "Unmarked"
+                                  ? "attendanceUnmarked"
+                                  : "coolGray"
+                              }
+                              bg="transparent"
                             >
                               {countReport({
                                 gender: item,
                                 attendanceType: subItem,
-                              })}
-                            </Text>
-                          );
-                        })}
-                        {!status.includes("Unmarked") ? (
-                          <Text
-                            fontSize="12px"
-                            minW={"55"}
-                            maxW={"55"}
-                            textAlign={"center"}
-                          >
-                            {countReport({
-                              type: "Unmarked",
-                              gender: item,
-                            })}
-                          </Text>
-                        ) : (
-                          <></>
-                        )}
-                        <Text
-                          fontSize="12px"
-                          minW={"55"}
-                          maxW={"55"}
-                          textAlign={"center"}
-                        >
-                          {countReport({
-                            type: "Total",
-                            gender: item,
-                          })}
-                        </Text>
-                      </>
-                    )}
+                              }) !== 0 ? (
+                                <Text
+                                  fontSize="10px"
+                                  fontWeight="700"
+                                  color="white"
+                                >
+                                  {countReport({
+                                    gender: item,
+                                    attendanceType: subItem,
+                                  })}
+                                </Text>
+                              ) : (
+                                <></>
+                              )}
+                            </Progress>
+                          </HStack>
+                        );
+                      })}
+                    </VStack>
                   </HStack>
                 )}
                 keyExtractor={(item, index) => index}
@@ -624,6 +587,7 @@ const AttendanceComponent = ({
             headers: {
               Authorization: "Bearer " + sessionStorage.getItem("token"),
             },
+            onlyParameter: ["attendance", "id", "date"],
           }
         )
         .then((e) => {
