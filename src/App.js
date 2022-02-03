@@ -5,6 +5,7 @@ import StudentDetails from "./shiksha-os/modules/students/studentDetails";
 import Classes from "./shiksha-os/modules/classes/classes";
 import Attendance from "./modules/attendance/Attendance";
 import ClassAttendance from "./modules/attendance/ClassAttendance";
+import SubjectDetails from "./shiksha-os/modules/classes/subjectDetais";
 import i18n from "i18next";
 import { useTranslation, initReactI18next } from "react-i18next";
 import init from "./shiksha-os/lang/init";
@@ -12,6 +13,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./shiksha-os/Login";
 import { useLayoutEffect, useState } from "react";
 import manifest from "./shiksha-os/manifest.json";
+import AttendanceReport from "./modules/attendance/AttendanceReport";
 i18n.use(initReactI18next).init(init);
 
 const theme = extendTheme({
@@ -39,6 +41,9 @@ const theme = extendTheme({
     attendanceCard: {
       500: "#C9AFF4",
     },
+    reportCard: {
+      500: "#FFCAAC",
+    },
     button: {
       50: "#fcf1ee",
       100: "#fae2dd",
@@ -60,6 +65,9 @@ const theme = extendTheme({
       600: "#C4C4D4",
       500: "#C4C4D4",
       100: "#F0F0F4",
+    },
+    timeTableCardOrange: {
+      500: "#FFF7F5",
     },
   },
 });
@@ -140,6 +148,14 @@ export default function App() {
           }
         />
         <Route
+          path="/subject/:classId"
+          element={
+            <SubApp>
+              <SubjectDetails />
+            </SubApp>
+          }
+        />
+        <Route
           path="/attendance/:classId"
           element={
             <SubApp>
@@ -152,6 +168,15 @@ export default function App() {
           element={
             <SubApp>
               <ClassAttendance />
+            </SubApp>
+          }
+        />
+
+        <Route
+          path="/classes/attendance/report"
+          element={
+            <SubApp>
+              <AttendanceReport />
             </SubApp>
           }
         />

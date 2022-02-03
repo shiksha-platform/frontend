@@ -133,10 +133,27 @@ export default function App() {
   return (
     <Layout
       _header={{
-        title: t("ATTENDANCE_REGISTER"),
+        title: classObject?.title ? classObject?.title : "",
         isEnableSearchBtn: true,
         setSearch: setSearch,
-        subHeading: t("ATTENDANCE"),
+        subHeading: t("ATTENDANCE_REGISTER"),
+        iconComponent: (
+          <Link
+            to="/classes/attendance/report"
+            style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
+          >
+            <Box
+              rounded="full"
+              borderColor="button.500"
+              borderWidth="1"
+              _text={{ color: "button.500" }}
+              px={6}
+              py={2}
+            >
+              {t("REPORT")}
+            </Box>
+          </Link>
+        ),
       }}
       subHeader={
         <Link
@@ -145,8 +162,12 @@ export default function App() {
         >
           <HStack space="4" justifyContent="space-between">
             <VStack>
-              <Text fontSize={"lg"}>{classObject?.title ?? ""}</Text>
-              <Text fontSize={"sm"}>{t("TOTAL") + " " + students.length}</Text>
+              <Text fontSize={"lg"}>
+                {classObject?.title ? classObject?.title : ""}
+              </Text>
+              <Text fontSize={"sm"}>
+                {t("TOTAL") + " " + students.length + " " + t("STUDENTS")}
+              </Text>
             </VStack>
             <IconByName size="sm" name="angle-double-right" />
           </HStack>

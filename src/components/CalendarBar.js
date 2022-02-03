@@ -8,18 +8,18 @@ import IconByName from "./IconByName";
 const FormatDate = ({ date, type }) => {
   if (type === "Week") {
     return (
-      moment(date[0]).format("Do MMM") +
+      moment(date[0]).format("D MMM") +
       " - " +
-      moment(date[date.length - 1]).format("Do MMM")
+      moment(date[date.length - 1]).format("D MMM")
     );
   } else if (type === "Today") {
-    return moment(date).format("Do MMM, ddd, HH:MM");
+    return moment(date).format("D MMM, ddd, HH:MM");
   } else if (type === "Tomorrow") {
-    return moment(date).format("Do MMM, ddd");
+    return moment(date).format("D MMM, ddd");
   } else if (type === "Yesterday") {
-    return moment(date).format("Do MMM, ddd");
+    return moment(date).format("D MMM, ddd");
   } else {
-    return moment(date).format("D, MMMM Y");
+    return moment(date).format("D MMMM, Y");
   }
 };
 
@@ -81,6 +81,7 @@ export function WeekWiesBar({
   leftErrorText,
 }) {
   const [weekDays, setWeekDays] = useState([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setWeekDays(weekDaysPageWise(page));
@@ -103,7 +104,12 @@ export function WeekWiesBar({
         leftErrorText,
       }}
     >
-      <FormatDate date={weekDays} type="Week" />
+      <VStack>
+        <FormatDate date={weekDays} type="Week" />
+        <Text fontSize="10" fontWeight="300">
+          {t("THIS_WEEK")}
+        </Text>
+      </VStack>
     </Display>
   );
 }

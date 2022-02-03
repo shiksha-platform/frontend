@@ -20,87 +20,21 @@ import Card from "../students/Card";
 import IconByName from "../IconByName";
 
 export function weekDaysPageWise(weekPage, today) {
-  let date = new Date();
-  date.setDate(date.getDate() + weekPage * 7);
+  let date = moment();
+  date.add(weekPage * 7, "days");
   return weekDates({ today: today }, date);
 }
 
-export const weekDates = (filter = {}, current = new Date()) => {
-  let week = [];
+export const weekDates = (filter = {}, currentDate = moment()) => {
   if (filter.today) {
-    return [new Date()];
+    return [moment()];
   }
-  function getIntday(data = [], type = "except") {
-    let weekName = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    let shortWeekName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    let resultWeek = weekName.reduce(function (a, e, i) {
-      if (
-        (type === "except" && !data.includes(e)) ||
-        (type === "only" && data.includes(e))
-      )
-        a.push(i);
-      return a;
-    }, []);
-    let resultShort = shortWeekName.reduce(function (a, e, i) {
-      if (
-        (type === "except" && !data.includes(e)) ||
-        (type === "only" && data.includes(e))
-      )
-        a.push(i);
-      return a;
-    }, []);
-    if (
-      type === "except" &&
-      resultWeek &&
-      resultWeek.length > 0 &&
-      resultShort &&
-      resultShort.length > 0
-    ) {
-      return resultWeek.filter((e) => resultShort.includes(e));
-    } else if (
-      type === "only" &&
-      resultWeek &&
-      resultWeek.length > 0 &&
-      resultShort &&
-      resultShort.length > 0
-    ) {
-      return resultWeek.concat(resultShort);
-    } else if (resultWeek && resultWeek.length > 0) {
-      return resultWeek;
-    } else if (resultShort && resultShort.length > 0) {
-      return resultShort;
-    }
+  let weekStart = currentDate.clone().startOf("isoWeek");
+  let days = [];
+  for (let i = 0; i <= 6; i++) {
+    days.push(moment(weekStart).add(i, "days"));
   }
-  // Starting Monday not Sunday
-  let weekInt = [];
-  const only = filter.only;
-  const except = filter.except;
-
-  if (only) {
-    weekInt = getIntday(only, "only");
-  } else if (except) {
-    weekInt = getIntday(except, "except");
-  } else {
-    weekInt = getIntday();
-  }
-  current.setDate(current.getDate() - current.getDay());
-
-  for (var i = 0; i < 7; i++) {
-    if (weekInt.includes(current.getDay())) {
-      week.push(new Date(current));
-    }
-    current.setDate(current.getDate() + 1);
-    // console.log("current", current, "week", weekInt, current.getDay());
-  }
-  return week;
+  return days;
 };
 
 export const GetAttendance = async (filters) => {
@@ -134,10 +68,23 @@ export const GetIcon = ({ status, _box, color, _icon }) => {
         </Box>
       );
       break;
-    case "Today":
+    case "Holiday":
+      icon = (
+        <Box {..._box} color={color ? color : "attendanceUnmarked.500"}>
+          <IconByName name="circle" {...iconProps} />
+        </Box>
+      );
+      break;
     case "Unmarked":
       icon = (
         <Box {..._box} color={color ? color : "attendanceUnmarked.500"}>
+          <IconByName name="circle" {...iconProps} />
+        </Box>
+      );
+      break;
+    case "Today":
+      icon = (
+        <Box {..._box} color={color ? color : "attendanceUnmarked.100"}>
           <IconByName name="circle" {...iconProps} />
         </Box>
       );
@@ -328,7 +275,7 @@ export const MultipalAttendance = ({
         <Actionsheet.Content alignItems={"left"} bg="attendanceCard.500">
           <Stack p={5} pt={2} pb="25px">
             <Text color={"white"} fontSize="16px" fontWeight={"600"}>
-              {t("ATTENDANCE")}
+              {t("ATTENDANCE_SUMMARY_REPORT")}
             </Text>
             <Text color={"white"} fontSize="12px" fontWeight={"400"}>
               {classObject?.title ?? ""}
@@ -367,34 +314,40 @@ export const MultipalAttendance = ({
                     </Text>
                     <VStack space={2} flex="auto">
                       {status.map((subItem, index) => {
+                        console.log(
+                          countReport({
+                            gender: "item",
+                            attendanceType: subItem,
+                          })
+                        );
                         return (
                           <HStack alignItems="center" space={2}>
-                            <Progress
-                              flex="auto"
-                              max={countReport({
-                                gender: "Total",
-                                type: "Total",
-                              })}
-                              value={countReport({
-                                gender: item,
-                                attendanceType: subItem,
-                              })}
-                              size="md"
-                              colorScheme={
-                                subItem === "Present"
-                                  ? "attendancePresent"
-                                  : subItem === "Absent"
-                                  ? "attendanceAbsent"
-                                  : subItem === "Unmarked"
-                                  ? "attendanceUnmarked"
-                                  : "coolGray"
-                              }
-                              bg="transparent"
-                            >
-                              {countReport({
-                                gender: item,
-                                attendanceType: subItem,
-                              }) !== 0 ? (
+                            {countReport({
+                              gender: item,
+                              attendanceType: subItem,
+                            }) > 0 ? (
+                              <Progress
+                                flex="auto"
+                                max={countReport({
+                                  gender: t("TOTAL"),
+                                  type: "Total",
+                                })}
+                                value={countReport({
+                                  gender: item,
+                                  attendanceType: subItem,
+                                })}
+                                size="md"
+                                colorScheme={
+                                  subItem === "Present"
+                                    ? "attendancePresent"
+                                    : subItem === "Absent"
+                                    ? "attendanceAbsent"
+                                    : subItem === "Unmarked"
+                                    ? "attendanceUnmarked"
+                                    : "coolGray"
+                                }
+                                bg="transparent"
+                              >
                                 <Text
                                   fontSize="10px"
                                   fontWeight="700"
@@ -405,10 +358,10 @@ export const MultipalAttendance = ({
                                     attendanceType: subItem,
                                   })}
                                 </Text>
-                              ) : (
-                                <></>
-                              )}
-                            </Progress>
+                              </Progress>
+                            ) : (
+                              <></>
+                            )}
                           </HStack>
                         );
                       })}
@@ -708,10 +661,11 @@ const AttendanceComponent = ({
           ...attendanceIconProp,
           status: attendanceItem?.attendance,
         };
+      } else if (day.day() === 0) {
+        attendanceIconProp = { ...attendanceIconProp, status: "Holiday" };
       } else if (formatDate(day) === formatDate(todayDate)) {
         attendanceIconProp = { ...attendanceIconProp, status: "Today" };
-      }
-      if (day > todayDate) {
+      } else if (day > todayDate) {
         attendanceIconProp = { ...attendanceIconProp, color: "gray.100" };
       }
 
@@ -729,7 +683,18 @@ const AttendanceComponent = ({
         <VStack
           key={subIndex}
           alignItems="center"
-          // bgColor={formatDate(day) === formatDate(todayDate) ? "white" : ""}
+          borderWidth={formatDate(day) === formatDate(todayDate) ? "1" : ""}
+          borderTopWidth={
+            formatDate(day) === formatDate(todayDate) && isShowDate ? "1" : "0"
+          }
+          borderBottomWidth={
+            formatDate(day) === formatDate(todayDate) && isShowAttendance
+              ? "1"
+              : "0"
+          }
+          borderColor={
+            formatDate(day) === formatDate(todayDate) ? "button.500" : ""
+          }
         >
           {isShowDate ? (
             <Text
@@ -737,13 +702,7 @@ const AttendanceComponent = ({
               py={!isIconSizeSmall ? 2 : 0}
               minW={"46px"}
               textAlign="center"
-              color={
-                day.getDay() === 0
-                  ? "button.500"
-                  : formatDate(day) === formatDate(todayDate)
-                  ? "primary.500"
-                  : ""
-              }
+              color={day.day() === 0 ? "button.500" : ""}
             >
               {!isIconSizeSmall ? (
                 <VStack alignItems={"center"}>

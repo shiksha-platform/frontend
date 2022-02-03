@@ -43,6 +43,7 @@ export default function App({
     fathersName: { placeholder: t("FATHERS_NAME") },
     phoneNumber: { placeholder: t("PHONE_NUMBER") },
     email: { placeholder: t("EMAIL"), type: "email" },
+    gender: { placeholder: t("GENDER") },
   };
   const formInputs = onlyParameter.map((e) => {
     return {

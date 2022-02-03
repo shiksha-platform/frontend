@@ -97,8 +97,8 @@ export default function App() {
             items={[
               {
                 title: t("CLASS"),
-                value: studentObject?.className
-                  ? studentObject?.className
+                value: classObject?.className
+                  ? classObject?.class + " " + classObject?.section
                   : studentObject.currentClassID,
               },
             ]}
@@ -196,32 +196,26 @@ export default function App() {
         <Section
           title={t("NOTES_FEEDBACK_ON_STUDENT")}
           _box={{ mb: "4", roundedBottom: "xl", shadow: 2 }}
+          button={
+            <Button
+              variant="ghost"
+              colorScheme="button"
+              endIcon={<IconByName name={"pencil-alt"} isDisabled />}
+              _text={{ fontWeight: "400" }}
+            >
+              {t("EDIT")}
+            </Button>
+          }
         >
           <Box p="5">
             <Collapsible
               defaultCollapse
-              header={"NOTES"}
+              header={t("NOTES")}
               body={
                 <Box pt="18px">
                   <Text fontWeight="500" fontSize="14px" pb="30">
-                    {"1 NOTE"}
+                    {"2 " + t("NOTES")}
                   </Text>
-                  <Box bg={"gray.100"} rounded={"md"} p="4">
-                    <VStack space={2}>
-                      <HStack
-                        justifyContent={"space-between"}
-                        alignItems="center"
-                      >
-                        <Text bold>{t("Last day of school")}</Text>
-                        <IconByName name="ellipsis-v" />
-                      </HStack>
-                      <Text>
-                        {t(
-                          "My wish for you is that you see the light in this world, in yourself, and in others. I see the light in you."
-                        )}
-                      </Text>
-                    </VStack>
-                  </Box>
                 </Box>
               }
             />

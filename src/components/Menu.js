@@ -56,7 +56,7 @@ export default function Menu({
               <PressableNew
                 key={item.keyId ? item.keyId : item.id}
                 item={item}
-                bg="button.400"
+                bg="button.500"
                 rounded={"md"}
                 p="2"
                 minW={item?.boxMinW ? item?.boxMinW : "104px"}
@@ -83,7 +83,12 @@ export default function Menu({
                   ) : (
                     <></>
                   )}
-                  <Text color="white" maxW={20} lineHeight={14}>
+                  <Text
+                    color="white"
+                    maxW={20}
+                    lineHeight={14}
+                    {...item?._text}
+                  >
                     {item.title}
                   </Text>
                 </VStack>
@@ -118,7 +123,7 @@ export default function Menu({
               {..._boxMenu}
               {...item._boxMenu}
             >
-              <PressableNew px="5" py="3" item={item}>
+              <PressableNew item={item}>
                 <HStack
                   space={3}
                   justifyContent={"space-between"}
@@ -142,8 +147,11 @@ export default function Menu({
                     </Text>
                   </HStack>
                   <IconByName
-                    name={item.rightIcon ? item.rightIcon : "chevron-right"}
+                    name={
+                      item.rightIcon ? item.rightIcon : "angle-double-right"
+                    }
                     p="0"
+                    color="#C1C1DE"
                     {..._icon}
                   />
                 </HStack>

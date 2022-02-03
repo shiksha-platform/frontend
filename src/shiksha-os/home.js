@@ -13,8 +13,8 @@ export default function Home() {
       title: t("QUICK_CHECK"),
       data: [
         {
-          title: "Time Table",
-          subTitle: "2 Free Periods",
+          title: t("TIME_TABLE"),
+          subTitle: "2 " + t("FREE_PERIODS"),
           _box: {
             style: {
               background:
@@ -23,8 +23,8 @@ export default function Home() {
           },
         },
         {
-          title: "Calendar",
-          subTitle: "8 Holidays",
+          title: t("CALENDAR"),
+          subTitle: "8 " + t("HOLIDAYS"),
           _box: {
             style: {
               background:
@@ -35,11 +35,11 @@ export default function Home() {
       ],
     },
     {
-      title: t("TODAY"),
+      title: t("TODAY_TASKS"),
       data: [
         {
-          title: "Classes",
-          subTitle: "3 Remaining",
+          title: t("CLASSES"),
+          subTitle: "3 " + t("REMAINING"),
           icon: "users",
           _box: {
             bg: "violet.200",
@@ -47,8 +47,8 @@ export default function Home() {
           _text: { color: "warmGray.700" },
         },
         {
-          title: "Activity",
-          subTitle: "1 activity to perform",
+          title: t("ACTIVITY"),
+          subTitle: "1 " + t("REMAINING"),
           icon: "theater-masks",
           _box: {
             bg: "orange.200",
@@ -56,8 +56,8 @@ export default function Home() {
           _text: { color: "warmGray.700" },
         },
         {
-          title: "Holidays",
-          subTitle: "2 This week",
+          title: t("HOLIDAYS"),
+          subTitle: "2 " + t("THIS_WEEK"),
           icon: "volleyball-ball",
           _box: {
             bg: "blue.200",
@@ -67,8 +67,8 @@ export default function Home() {
           },
         },
         {
-          title: "Attendance",
-          subTitle: "12 Remaining",
+          title: t("ATTENDANCE"),
+          subTitle: "12 " + t("REMAINING"),
           icon: "suitcase-rolling",
           _box: {
             bg: "green.200",
@@ -78,11 +78,11 @@ export default function Home() {
       ],
     },
     {
-      title: t("THIS_WEEK"),
+      title: t("THIS_WEEK_TASKS"),
       data: [
         {
-          title: "Inspection",
-          subTitle: "1 Offical visit",
+          title: t("INSPECTION"),
+          subTitle: "1 " + t("OFFICAL_VISIT"),
           icon: "award",
           _box: {
             bg: "orange.200",
@@ -90,8 +90,8 @@ export default function Home() {
           _text: { color: "warmGray.700" },
         },
         {
-          title: "Activity",
-          subTitle: "2 School Activity",
+          title: t("ACTIVITY"),
+          subTitle: "1 " + t("SCHOOL_ACTIVITY"),
           icon: "theater-masks",
           _box: {
             bg: "violet.200",
@@ -105,7 +105,7 @@ export default function Home() {
   return (
     <Layout
       _header={{
-        title: t("MY_SCHOOL_APP"),
+        title: firstName,
         isEnableHamburgerMenuButton: true,
         isEnableLanguageMenu: true,
         avatar: firstName,

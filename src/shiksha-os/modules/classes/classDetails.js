@@ -16,7 +16,7 @@ import {
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Menu from "../../../components/Menu";
 import Card from "../../../components/students/Card";
 import Layout from "../../../layout/Layout";
@@ -143,7 +143,7 @@ export default function App() {
   };
   return (
     <Layout
-      imageUrl="https://images.freeimages.com/images/large-previews/51b/school-children-in-india-1438445.jpg"
+      imageUrl={window.location.origin + "/class.png"}
       _header={{
         title: t("MY_CLASSES"),
         fullRightComponent: (
@@ -176,16 +176,10 @@ export default function App() {
               id: classId,
               keyId: 1,
               title: t("TAKE_ATTENDANCE"),
-              icon: "certificate",
+              icon: "sun",
               route: "/attendance/:id",
               boxMinW: "200px",
             },
-            // {
-            //   keyId: 3,
-            //   id: classId,
-            //   title: t("CLASS_TEST"),
-            //   icon: "bars",
-            // },
           ]}
           type={"veritical"}
         />
@@ -219,42 +213,63 @@ export default function App() {
                         size={"2xl"}
                         colorScheme="green"
                         bg="button.400"
-                      />
+                      >
+                        <Text color="white">17 {t("PRESENT")}</Text>
+                      </Progress>
                       <HStack
                         justifyContent={"space-between"}
                         alignItems="center"
                       >
-                        <Text>{t("GRADE") + ": " + t("GOOD")}</Text>
-                        <Text>{t("TOTAL") + ": 24"}</Text>
+                        {/* <Text>{t("GRADE") + ": " + t("GOOD")}</Text> */}
+                        <Text>{t("TOTAL") + ": 24 " + t("STUDENTS")}</Text>
                       </HStack>
                     </VStack>
                   </Box>
-                  <Box
-                    rounded="xs"
-                    borderWidth="1"
-                    px={6}
-                    py={2}
-                    mt="2"
-                    textAlign={"center"}
-                    borderColor={"button.500"}
-                    _text={{ color: "button.500" }}
+                  <Link
+                    style={{
+                      color: "rgb(63, 63, 70)",
+                      textDecoration: "none",
+                    }}
+                    to={"/attendance/" + classId}
                   >
-                    {t("ATTENDANCE_REGISTER")}
+                    <Box
+                      rounded="xs"
+                      borderWidth="1"
+                      px={6}
+                      py={2}
+                      mt="2"
+                      textAlign={"center"}
+                      borderColor={"button.500"}
+                      _text={{ color: "button.500" }}
+                    >
+                      {t("ATTENDANCE_REGISTER")}
+                    </Box>
+                  </Link>
+
+                  <Box
+                    bg="white"
+                    p={4}
+                    borderBottomWidth="1"
+                    borderBottomColor={"coolGray.200"}
+                  >
+                    <Stack space={2}>
+                      <Collapsible header={t("REPORTS")} />
+                    </Stack>
+                  </Box>
+
+                  <Box
+                    bg="white"
+                    p={4}
+                    borderBottomWidth="1"
+                    borderBottomColor={"coolGray.200"}
+                  >
+                    <Stack space={2}>
+                      <Collapsible header={t("SMS_REPORTS")} />
+                    </Stack>
                   </Box>
                 </VStack>
               }
             />
-          </Stack>
-        </Box>
-        <Box bg="white" p={4}>
-          <Stack space={2}>
-            <Collapsible header={t("REPORTS")} />
-          </Stack>
-        </Box>
-
-        <Box bg="white" p={4}>
-          <Stack space={2}>
-            <Collapsible header={t("SMS_REPORTS")} />
           </Stack>
         </Box>
 
@@ -351,9 +366,7 @@ export default function App() {
                                   <Text bold>{t("CLASS_TEACHER")}</Text>
                                   <IconByName name="ellipsis-v" />
                                 </HStack>
-                                <Text>
-                                  {t("CLASS_TEACHER")} {fullName}
-                                </Text>
+                                <Text>{fullName}</Text>
                               </VStack>
                             </Box>
                             <Box bg={"gray.100"} rounded={"md"} p="4">
@@ -398,8 +411,8 @@ export default function App() {
                                       </Text>
                                     </HStack>
                                     <Text>
-                                      <Text bold>{t("TOTAL")}: </Text>{" "}
-                                      {students.length}
+                                      <Text bold>{t("TOTAL")}: </Text>
+                                      {students.length} {t("STUDENTS")}
                                     </Text>
                                   </VStack>
                                   <Progress
@@ -414,21 +427,6 @@ export default function App() {
                                     bg="info.400"
                                   />
                                 </HStack>
-                              </VStack>
-                            </Box>
-
-                            <Box bg={"gray.100"} rounded={"md"} p="4">
-                              <VStack space={2}>
-                                <HStack
-                                  justifyContent={"space-between"}
-                                  alignItems="center"
-                                >
-                                  <Text bold>{t("AGE_GROUP")}</Text>
-                                  <IconByName name="ellipsis-v" />
-                                </HStack>
-                                <Text>
-                                  <Text bold>{t("RANGE")}: </Text>
-                                </Text>
                               </VStack>
                             </Box>
                           </VStack>
