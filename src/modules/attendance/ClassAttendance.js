@@ -227,23 +227,10 @@ export default function ClassAttendance() {
       ) : (
         <Layout
           title={t("MY_CLASSES")}
-          fullRightComponent={
-            <Stack bg="black" p="2">
-              <HStack space={4}>
-                <IconByName
-                  p="0"
-                  isDisabled={true}
-                  name={"Group"}
-                  color="white"
-                  _icon={{
-                    style: { fontSize: "45px" },
-                  }}
-                />
-                <HStack
-                  space={3}
-                  justifyContent={"space-between"}
-                  width={"80%"}
-                >
+          _header={{
+            fullRightComponent: (
+              <Stack bg="black" px="10" py="3">
+                <HStack space={3} justifyContent={"space-between"}>
                   <VStack space={1}>
                     <Text fontSize={"lg"} color={"coolGray.100"} bold>
                       {attendanceType ? attendanceType : t("SELECT_SUBJECT")}
@@ -306,9 +293,9 @@ export default function ClassAttendance() {
                     />
                   </VStack>
                 </HStack>
-              </HStack>
-            </Stack>
-          }
+              </Stack>
+            ),
+          }}
         >
           {students.length === 0 ? (
             <Box p={6} minH={300}>

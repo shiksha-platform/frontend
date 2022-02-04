@@ -789,8 +789,8 @@ const AttendanceComponent = ({
   };
 
   return (
-    <Stack space={"15px"}>
-      <VStack space={"15px"}>
+    <Stack space={!today ? "15px" : ""}>
+      <VStack space={!today ? "15px" : ""}>
         <Card
           item={student}
           _arrow={{ _icon: { fontSize: "large" } }}
@@ -801,6 +801,8 @@ const AttendanceComponent = ({
           rightComponent={
             today ? (
               <WeekDaysComponent
+                isShowDate
+                isShowAttendance
                 weekDays={weekDays}
                 isIconSizeSmall={true}
                 isEditDisabled={isEditDisabled}
