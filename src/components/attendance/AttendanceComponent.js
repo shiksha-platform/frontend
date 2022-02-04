@@ -7,9 +7,7 @@ import {
   Pressable,
   Actionsheet,
   Stack,
-  FlatList,
   Button,
-  Progress,
 } from "native-base";
 import * as attendanceServiceRegistry from "../../services/attendanceServiceRegistry";
 import manifest from "../../modules/attendance/manifest.json";
@@ -18,6 +16,7 @@ import { TouchableHighlight } from "react-native-web";
 import moment from "moment";
 import Card from "../students/Card";
 import IconByName from "../IconByName";
+import Report from "./Report";
 
 export function weekDaysPageWise(weekPage, today) {
   let date = moment();
@@ -115,8 +114,6 @@ export const MultipalAttendance = ({
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const teacherId = sessionStorage.getItem("id");
-  const fullName = sessionStorage.getItem("fullName");
-  const status = manifest?.status ? manifest?.status : [];
 
   const getStudentsAttendance = (e) => {
     return students
@@ -130,64 +127,6 @@ export const MultipalAttendance = ({
           );
       })
       .filter((e) => e);
-  };
-
-  const countReport = ({ gender, attendanceType, type }) => {
-    let attendanceAll = getStudentsAttendance();
-
-    let studentIds = students.map((e) => e.id);
-    if (gender && [t("BOYS"), t("GIRLS")].includes(gender)) {
-      studentIds = students
-        .filter(
-          (e) =>
-            e.gender ===
-            (gender === t("BOYS")
-              ? "Male"
-              : gender === t("GIRLS")
-              ? "Female"
-              : "")
-        )
-        .map((e) => e.id);
-    }
-    if (type === "Total" && gender === t("TOTAL")) {
-      return studentIds.length;
-    } else if (type === "Total" && [t("BOYS"), t("GIRLS")].includes(gender)) {
-      let studentIds1 = studentIds.filter(
-        (e) =>
-          !attendanceAll
-            .filter((e) => studentIds.includes(e?.studentId))
-            .map((e) => e.studentId)
-            .includes(e)
-      );
-
-      return (
-        attendanceAll.filter((e) => studentIds.includes(e?.studentId)).length +
-        studentIds1.length
-      );
-    } else if (attendanceType === "Unmarked" && gender === t("TOTAL")) {
-      let studentIds1 = attendanceAll.filter(
-        (e) =>
-          studentIds.includes(e.studentId) && e.attendance !== attendanceType
-      );
-      return Math.abs(studentIds.length - studentIds1.length);
-    } else if (type === "Unmarked" || attendanceType === "Unmarked") {
-      let studentIds1 = attendanceAll.filter((e) =>
-        studentIds.includes(e.studentId)
-      );
-
-      if (attendanceType === "Unmarked") {
-        studentIds1 = attendanceAll.filter(
-          (e) =>
-            studentIds.includes(e?.studentId) && e.attendance !== attendanceType
-        );
-      }
-      return Math.abs(studentIds.length - studentIds1.length);
-    } else {
-      return attendanceAll.filter(
-        (e) =>
-          studentIds.includes(e?.studentId) && e.attendance === attendanceType
-      ).length;
-    }
   };
 
   const markAllAttendance = async () => {
@@ -294,108 +233,7 @@ export const MultipalAttendance = ({
                 <Text fontWeight={"600"}>{moment().format("DD MMM, Y")}</Text>
               </Text>
             </HStack>
-            <Box
-              borderWidth={1}
-              borderColor="coolGray.200"
-              rounded={"xl"}
-              bg={"coolGray.50"}
-            >
-              <Box
-                borderWidth={1}
-                borderColor="coolGray.200"
-                roundedTop={"xl"}
-                p="5"
-                bg={"button.500"}
-              >
-                <HStack alignItems={"center"} space={2}>
-                  <IconByName name="smile" isDisabled color="white" />
-                  <Text color="white">{t("ABSENT_TODAY_POOR_LAST_WEEK")}</Text>
-                </HStack>
-              </Box>
-              <FlatList
-                data={[t("BOYS"), t("GIRLS"), t("TOTAL")]}
-                renderItem={({ item, index }) => (
-                  <HStack
-                    alignItems={"center"}
-                    space={2}
-                    justifyContent={"space-around"}
-                    py="5"
-                    px="2"
-                  >
-                    <Text px="2" fontSize="12px" textAlign={"center"}>
-                      {item}
-                    </Text>
-                    <VStack space={2} flex="auto">
-                      {status.map((subItem, index) => {
-                        console.log(
-                          countReport({
-                            gender: "item",
-                            attendanceType: subItem,
-                          })
-                        );
-                        return (
-                          <HStack alignItems="center" space={2}>
-                            {countReport({
-                              gender: item,
-                              attendanceType: subItem,
-                            }) > 0 ? (
-                              <Progress
-                                flex="auto"
-                                max={countReport({
-                                  gender: t("TOTAL"),
-                                  type: "Total",
-                                })}
-                                value={countReport({
-                                  gender: item,
-                                  attendanceType: subItem,
-                                })}
-                                size="md"
-                                colorScheme={
-                                  subItem === "Present"
-                                    ? "attendancePresent"
-                                    : subItem === "Absent"
-                                    ? "attendanceAbsent"
-                                    : subItem === "Unmarked"
-                                    ? "attendanceUnmarked"
-                                    : "coolGray"
-                                }
-                                bg="transparent"
-                              >
-                                <Text
-                                  fontSize="10px"
-                                  fontWeight="700"
-                                  color="white"
-                                >
-                                  {countReport({
-                                    gender: item,
-                                    attendanceType: subItem,
-                                  })}
-                                </Text>
-                              </Progress>
-                            ) : (
-                              <></>
-                            )}
-                          </HStack>
-                        );
-                      })}
-                    </VStack>
-                  </HStack>
-                )}
-                keyExtractor={(item, index) => index}
-              />
-              <Box
-                borderWidth={1}
-                borderColor="coolGray.200"
-                roundedBottom={"xl"}
-                p="5"
-                bg={"coolGray.200"}
-              >
-                <HStack justifyContent={"space-between"}>
-                  <Text>{t("ATTENDANCE_TAKEN_BY")}</Text>
-                  <Text>{fullName}</Text>
-                </HStack>
-              </Box>
-            </Box>
+            <Report {...{ students, attendance }} />
           </Box>
           <Box bg="white" p={5}>
             <Box bg={"gray.100"} rounded={"md"} p="4">
@@ -464,7 +302,11 @@ export const MultipalAttendance = ({
         >
           <Box p="2" py="5" bg="white">
             <VStack space={"15px"} alignItems={"center"}>
-              <Text textAlign={"center"} fontSize="10px">
+              <Text
+                textAlign={"center"}
+                fontSize="10px"
+                textTransform={"inherit"}
+              >
                 {t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
               </Text>
               {!isEditDisabled ? (
@@ -517,7 +359,6 @@ const AttendanceComponent = ({
   isEditDisabled,
 }) => {
   const { t } = useTranslation();
-  const todayDate = new Date();
   const teacherId = sessionStorage.getItem("id");
   const [attendance, setAttendance] = useState([]);
   const [attendanceObject, setAttendanceObject] = useState([]);
@@ -536,18 +377,6 @@ const AttendanceComponent = ({
     }
     getData();
   }, [weekPage, attendanceProp, today]);
-
-  const formatDate = (date) => {
-    var d = new Date(date),
-      month = "" + (d.getMonth() + 1),
-      day = "" + d.getDate(),
-      year = d.getFullYear();
-
-    if (month.length < 2) month = "0" + month;
-    if (day.length < 2) day = "0" + day;
-
-    return [year, month, day].join("-");
-  };
 
   const markAttendance = async (dataObject) => {
     setLoding({
@@ -650,7 +479,8 @@ const AttendanceComponent = ({
     isShowAttendance,
   }) => {
     return weekDays.map((day, subIndex) => {
-      let dateValue = formatDate(day);
+      let isToday = moment().format("Y-MM-DD") === day.format("Y-MM-DD");
+      let dateValue = day.format("Y-MM-DD");
       let attendanceItem = attendance
         .slice()
         .reverse()
@@ -688,9 +518,9 @@ const AttendanceComponent = ({
         };
       } else if (day.day() === 0) {
         attendanceIconProp = { ...attendanceIconProp, status: "Holiday" };
-      } else if (formatDate(day) === formatDate(todayDate)) {
+      } else if (isToday) {
         attendanceIconProp = { ...attendanceIconProp, status: "Today" };
-      } else if (day > todayDate) {
+      } else if (moment().diff(day, "days") > 0) {
         attendanceIconProp = { ...attendanceIconProp, color: "gray.100" };
       }
 
@@ -708,18 +538,10 @@ const AttendanceComponent = ({
         <VStack
           key={subIndex}
           alignItems="center"
-          borderWidth={formatDate(day) === formatDate(todayDate) ? "1" : ""}
-          borderTopWidth={
-            formatDate(day) === formatDate(todayDate) && isShowDate ? "1" : "0"
-          }
-          borderBottomWidth={
-            formatDate(day) === formatDate(todayDate) && isShowAttendance
-              ? "1"
-              : "0"
-          }
-          borderColor={
-            formatDate(day) === formatDate(todayDate) ? "button.500" : ""
-          }
+          borderWidth={isToday ? "1" : ""}
+          borderTopWidth={isToday && isShowDate ? "1" : "0"}
+          borderBottomWidth={isToday && isShowAttendance ? "1" : "0"}
+          borderColor={isToday ? "button.500" : ""}
         >
           {isShowDate ? (
             <Text
@@ -731,13 +553,13 @@ const AttendanceComponent = ({
             >
               {!isIconSizeSmall ? (
                 <VStack alignItems={"center"}>
-                  <Text>{moment(day).format("ddd")}</Text>
-                  <Text color={"coolGray.400"}>{moment(day).format("DD")}</Text>
+                  <Text>{day.format("ddd")}</Text>
+                  <Text color={"coolGray.400"}>{day.format("DD")}</Text>
                 </VStack>
               ) : (
                 <HStack alignItems={"center"} space={1}>
-                  <Text>{moment(day).format("dd")}</Text>
-                  <Text>{moment(day).format("D")}</Text>
+                  <Text>{day.format("dd")}</Text>
+                  <Text>{day.format("D")}</Text>
                 </HStack>
               )}
             </Text>

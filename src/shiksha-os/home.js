@@ -116,11 +116,12 @@ export default function Home() {
         _heading: { color: "black" },
         _subHeading: { color: "black" },
       }}
+      subHeader={t("THIS_IS_HOW_YOUR_DAY_LOOKS")}
+      _subHeader={{ bg: "white" }}
     >
-      <Box bg="white" roundedTop={"2xl"} py={6} px={4} shadow={3}>
+      <Box bg="white" roundedBottom={"2xl"} py={6} px={4} shadow={3}>
         <Stack>
           <VStack space={6}>
-            <Text>{t("THIS_IS_HOW_YOUR_DAY_LOOKS")}</Text>
             {widgetData.map((item, index) => {
               return <Widget {...item} key={index} />;
             })}

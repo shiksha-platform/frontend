@@ -42,6 +42,7 @@ export default function Layout({
             position: "relative",
             bg: "purple.400",
             roundedTop: "20",
+            _text: { textTransform: "inherit" },
           }}
           {..._subHeader}
         >

@@ -244,7 +244,7 @@ const InfoSection = ({ items, isLastBorderEnable }) => {
       {item.value ? (
         <Text>{item.value}</Text>
       ) : (
-        <Text italic>{t("NOT_ENTERD")}</Text>
+        <Text italic>{t("NOT_ENTERED")}</Text>
       )}
     </VStack>
   ));

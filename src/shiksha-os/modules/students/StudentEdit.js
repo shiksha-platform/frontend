@@ -23,6 +23,7 @@ export default function App({
   const { t } = useTranslation();
   const [editState, setEditState] = useState(false);
   const [editChangeState, setEditChangeState] = useState(false);
+  const [errors, setErrors] = React.useState({});
   const toast = useToast();
   const onlyParameter =
     onlyParameterProp?.length > "0"
@@ -47,6 +48,7 @@ export default function App({
   };
   const formInputs = onlyParameter.map((e) => {
     return {
+      name: e,
       placeholder: parameter[e]?.placeholder ? parameter[e].placeholder : e,
       isRequired: parameter[e]?.required ? parameter[e].required : false,
       type: parameter[e]?.type ? parameter[e].type : "text",
@@ -72,33 +74,54 @@ export default function App({
     };
   });
 
+  const validate = () => {
+    let arr = {};
+    if (!studentObject?.phoneNumber || studentObject?.phoneNumber === "") {
+      arr = { ...arr, phoneNumber: "Phone Number is invalid" };
+    }
+
+    if (!studentObject?.email || studentObject?.email === "") {
+      arr = { ...arr, email: "email is invalid" };
+    }
+
+    setErrors(arr);
+    if (arr.phoneNumber || arr.email) {
+      return false;
+    }
+    return true;
+  };
+
   const handalSubmit = async (e) => {
-    if (editChangeState) {
-      let result = await studentServiceRegistry.update(studentObject, {
-        headers: { Authorization: "Bearer " + sessionStorage.getItem("token") },
-        onlyParameter: [...onlyParameter, "fullName"],
-      });
-      if (result.data) {
-        toast.show({
-          render: () => {
-            return (
-              <Box bg="emerald.500" px="3" py="2" rounded="sm" mb={5}>
-                <Text fontSize={"lg"} color="coolGray.100">
-                  {result.data?.params?.status
-                    ? result.data?.params?.status
-                    : "successful"}
-                </Text>
-              </Box>
-            );
+    if (validate()) {
+      if (editChangeState) {
+        let result = await studentServiceRegistry.update(studentObject, {
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
           },
-          placement: "top",
+          onlyParameter: [...onlyParameter, "fullName"],
         });
+        if (result.data) {
+          toast.show({
+            render: () => {
+              return (
+                <Box bg="emerald.500" px="3" py="2" rounded="sm" mb={5}>
+                  <Text fontSize={"lg"} color="coolGray.100">
+                    {result.data?.params?.status
+                      ? result.data?.params?.status
+                      : "successful"}
+                  </Text>
+                </Box>
+              );
+            },
+            placement: "top",
+          });
+          setEditState(false);
+        }
+      } else {
         setEditState(false);
       }
-    } else {
-      setEditState(false);
+      setEditChangeState(false);
     }
-    setEditChangeState(false);
   };
 
   return (
@@ -140,7 +163,7 @@ export default function App({
               key={index}
             >
               {editState ? (
-                <FormControl>
+                <FormControl isInvalid={item.name in errors}>
                   <FormControl.Label>
                     <Text
                       fontSize={"14px"}
@@ -151,6 +174,19 @@ export default function App({
                     </Text>
                   </FormControl.Label>
                   <Input key={index} variant="filled" p={2} {...item} />
+                  {item.name in errors ? (
+                    <FormControl.ErrorMessage
+                      _text={{
+                        fontSize: "xs",
+                        color: "error.500",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {errors[item.name]}
+                    </FormControl.ErrorMessage>
+                  ) : (
+                    <></>
+                  )}
                 </FormControl>
               ) : (
                 <>
@@ -163,10 +199,12 @@ export default function App({
                     {item.placeholder}
                   </Text>
                   {item.value ? (
-                    <Text p={2}>{item.value}</Text>
+                    <Text p={2} textTransform="inherit">
+                      {item.value}
+                    </Text>
                   ) : (
                     <Text italic p={2}>
-                      {t("NOT_ENTERD")}
+                      {t("NOT_ENTERED")}
                     </Text>
                   )}
                 </>

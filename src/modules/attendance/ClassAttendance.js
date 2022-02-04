@@ -104,27 +104,13 @@ export default function ClassAttendance() {
           pb="0"
         >
           <Box p="5" pt="2">
-            {!showType ? (
-              <Text
-                fontSize="16"
-                color="gray.500"
-                _dark={{
-                  color: "gray.300",
-                }}
-              >
-                {t("SELECT_SUBJECT")}
-              </Text>
-            ) : (
-              <Text
-                fontSize="16"
-                color="gray.500"
-                _dark={{
-                  color: "gray.300",
-                }}
-              >
-                {t("SELECT_CLASS_MARK_ATTENDANCE")}
-              </Text>
-            )}
+            <Text fontSize="16" color="gray.500" textTransform={"inherit"}>
+              {!showType ? (
+                <Text>{t("SELECT_SUBJECT")}</Text>
+              ) : (
+                <Text>{t("SELECT_CLASS_MARK_ATTENDANCE")}</Text>
+              )}
+            </Text>
           </Box>
         </Actionsheet.Content>
 

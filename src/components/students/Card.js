@@ -46,7 +46,7 @@ const SubCard = ({
           ) : item?.fullName ? (
             item?.fullName
           ) : (
-            <Text italic>{t("NOT_ENTERD")}</Text>
+            <Text italic>{t("NOT_ENTERED")}</Text>
           )}
         </Text>
         <Text color="coolGray.400" fontSize={"10px"} {..._textSubTitle}>
@@ -55,7 +55,7 @@ const SubCard = ({
             {item.admissionNo ? (
               item.admissionNo.toString().padStart(2, "0")
             ) : (
-              <Text italic>{t("NOT_ENTERD")}</Text>
+              <Text italic>{t("NOT_ENTERED")}</Text>
             )}
           </HStack>
         </Text>
@@ -85,7 +85,7 @@ const SubCard = ({
                   {item.admissionNo ? (
                     item.admissionNo.toString().padStart(2, "0")
                   ) : (
-                    <Text italic>{t("NOT_ENTERD")}</Text>
+                    <Text italic>{t("NOT_ENTERED")}</Text>
                   )}
                   <Text color={"coolGray.300"}>{" • "}</Text>
                 </HStack>
@@ -95,7 +95,7 @@ const SubCard = ({
               {item?.fullName}
             </>
           ) : (
-            <Text italic>{t("NOT_ENTERD")}</Text>
+            <Text italic>{t("NOT_ENTERED")}</Text>
           )}
         </Text>
         {type === "card" ? (
@@ -103,14 +103,14 @@ const SubCard = ({
             {item?.className ? (
               <Text>{item?.className}</Text>
             ) : (
-              <Text italic>{t("NOT_ENTERD")}</Text>
+              <Text italic>{t("NOT_ENTERED")}</Text>
             )}
             <Text color={"coolGray.400"}>{" • "}</Text>
             <Text>{t("ROLL_NUMBER") + "."} </Text>
             {item.admissionNo ? (
               <Text>{item.admissionNo.toString().padStart(2, "0")}</Text>
             ) : (
-              <Text italic>{t("NOT_ENTERD")}</Text>
+              <Text italic>{t("NOT_ENTERED")}</Text>
             )}
           </HStack>
         ) : (
@@ -123,7 +123,7 @@ const SubCard = ({
                 {item.fathersName ? (
                   <Text>{item.fathersName}</Text>
                 ) : (
-                  <Text italic>{t("NOT_ENTERD")}</Text>
+                  <Text italic>{t("NOT_ENTERED")}</Text>
                 )}
               </HStack>
             )}

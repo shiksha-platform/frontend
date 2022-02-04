@@ -163,16 +163,15 @@ export default function App() {
         _subHeading: { fontWeight: 500, textTransform: "uppercase" },
         avatar: true,
       }}
-      subHeader={
-        <HStack space="4" justifyContent="space-between">
-          <VStack>
-            <Text fontSize={"16px"} fontWeight="600">
-              {t("THE_CLASSES_YOU_TAKE")}
-            </Text>
-          </VStack>
-        </HStack>
-      }
-      _subHeader={{ bg: "classCard.500" }}
+      subHeader={t("THE_CLASSES_YOU_TAKE")}
+      _subHeader={{
+        bg: "classCard.500",
+        _text: {
+          fontSize: "16px",
+          fontWeight: "600",
+          textTransform: "inherit",
+        },
+      }}
     >
       <Box bg="white" p="5" mb="4" roundedBottom={"xl"} shadow={2}>
         <TabView
