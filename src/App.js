@@ -16,6 +16,8 @@ import manifest from "./shiksha-os/manifest.json";
 import AttendanceReport from "./modules/attendance/AttendanceReport";
 i18n.use(initReactI18next).init(init);
 
+const maxWidth = manifest?.maxWidth ? manifest?.maxWidth : "414";
+
 const theme = extendTheme({
   // Make sure values below matches any of the keys in `fontConfig`
   fonts: {
@@ -28,6 +30,12 @@ const theme = extendTheme({
       baseStyle: {
         textTransform: "capitalize",
         fontFamily: "Inter",
+      },
+    },
+    Actionsheet: {
+      baseStyle: {
+        maxW: maxWidth,
+        alignSelf: "center",
       },
     },
   },
@@ -188,7 +196,6 @@ export default function App() {
 
 export function useWindowSize() {
   const [size, setSize] = useState([0, 0]);
-  const maxWidth = manifest?.maxWidth ? manifest?.maxWidth : "414";
   useLayoutEffect(() => {
     function updateSize() {
       setSize([

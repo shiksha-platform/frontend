@@ -132,5 +132,7 @@
   "OFFICAL_VISIT": "Offical visit",
   "SCHOOL_ACTIVITY": "School Activity",
   "SUBSTITUTION": "Substitution",
-  "SPECIAL_DANCE_MID_DROUP": "Special dance Mid group"
+  "SPECIAL_DANCE_MID_DROUP": "Special dance Mid group",
+  "ABSENT_TODAY_POOR_LAST_WEEK": "absent today! Poor than last week",
+  "ATTENDANCE_TAKEN_BY": "Attendance taken by"
 }

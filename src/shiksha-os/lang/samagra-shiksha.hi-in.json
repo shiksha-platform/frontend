@@ -133,5 +133,7 @@
   "OFFICAL_VISIT": "अधिकारिक यात्रा",
   "SCHOOL_ACTIVITY": "स्कूल गतिविधि",
   "SUBSTITUTION": "प्रतिस्थापन",
-  "SPECIAL_DANCE_MID_DROUP": "विशेष नृत्य मध्य समूह"
+  "SPECIAL_DANCE_MID_DROUP": "विशेष नृत्य मध्य समूह",
+  "ABSENT_TODAY_POOR_LAST_WEEK": "अनुपस्थित है आज! पिछले सप्ताह की तुलना में खराब",
+  "ATTENDANCE_TAKEN_BY": "द्वारा ली गई उपस्थिति"
 }

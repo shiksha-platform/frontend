@@ -22,6 +22,7 @@ export default function AttendanceReport() {
   const [datePage, setDatePage] = useState(0);
   const [calsses, setClasses] = useState([]);
   const teacherId = sessionStorage.getItem("id");
+  const fullName = sessionStorage.getItem("fullName");
   const status = manifest?.status ? manifest?.status : [];
 
   useEffect(() => {
@@ -91,12 +92,12 @@ export default function AttendanceReport() {
                       borderColor="coolGray.200"
                       roundedTop={"xl"}
                       p="5"
-                      bg={"yellow.500"}
+                      bg={"button.500"}
                     >
                       <HStack alignItems={"center"} space={2}>
                         <IconByName name="smile" isDisabled color="white" />
                         <Text color="white">
-                          {t("absent_today_Poor_last_week")}
+                          {t("ABSENT_TODAY_POOR_LAST_WEEK")}
                         </Text>
                       </HStack>
                     </Box>
@@ -148,6 +149,19 @@ export default function AttendanceReport() {
                       )}
                       keyExtractor={(item, index) => index}
                     />
+
+                    <Box
+                      borderWidth={1}
+                      borderColor="coolGray.200"
+                      roundedBottom={"xl"}
+                      p="5"
+                      bg={"coolGray.200"}
+                    >
+                      <HStack justifyContent={"space-between"}>
+                        <Text>{t("ATTENDANCE_TAKEN_BY")}</Text>
+                        <Text>{fullName}</Text>
+                      </HStack>
+                    </Box>
                   </Box>
                 </Box>
               }

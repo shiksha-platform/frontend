@@ -115,6 +115,7 @@ export const MultipalAttendance = ({
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const teacherId = sessionStorage.getItem("id");
+  const fullName = sessionStorage.getItem("fullName");
   const status = manifest?.status ? manifest?.status : [];
 
   const getStudentsAttendance = (e) => {
@@ -299,6 +300,18 @@ export const MultipalAttendance = ({
               rounded={"xl"}
               bg={"coolGray.50"}
             >
+              <Box
+                borderWidth={1}
+                borderColor="coolGray.200"
+                roundedTop={"xl"}
+                p="5"
+                bg={"button.500"}
+              >
+                <HStack alignItems={"center"} space={2}>
+                  <IconByName name="smile" isDisabled color="white" />
+                  <Text color="white">{t("ABSENT_TODAY_POOR_LAST_WEEK")}</Text>
+                </HStack>
+              </Box>
               <FlatList
                 data={[t("BOYS"), t("GIRLS"), t("TOTAL")]}
                 renderItem={({ item, index }) => (
@@ -370,6 +383,18 @@ export const MultipalAttendance = ({
                 )}
                 keyExtractor={(item, index) => index}
               />
+              <Box
+                borderWidth={1}
+                borderColor="coolGray.200"
+                roundedBottom={"xl"}
+                p="5"
+                bg={"coolGray.200"}
+              >
+                <HStack justifyContent={"space-between"}>
+                  <Text>{t("ATTENDANCE_TAKEN_BY")}</Text>
+                  <Text>{fullName}</Text>
+                </HStack>
+              </Box>
             </Box>
           </Box>
           <Box bg="white" p={5}>
@@ -433,7 +458,7 @@ export const MultipalAttendance = ({
       {isWithEditButton || !isEditDisabled ? (
         <Stack
           position={"sticky"}
-          bottom={0}
+          bottom={74}
           width={"100%"}
           style={{ boxShadow: "rgb(0 0 0 / 22%) 0px -2px 10px" }}
         >
