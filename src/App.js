@@ -17,19 +17,21 @@ import AttendanceReport from "./modules/attendance/AttendanceReport";
 i18n.use(initReactI18next).init(init);
 
 const maxWidth = manifest?.maxWidth ? manifest?.maxWidth : "414";
+const fontFamily =
+  localStorage.getItem("lang") === "hi" ? "'Baloo 2'" : "Inter";
 
 const theme = extendTheme({
   // Make sure values below matches any of the keys in `fontConfig`
   fonts: {
-    heading: "Inter",
-    body: "Inter",
-    mono: "Inter",
+    heading: fontFamily,
+    body: fontFamily,
+    mono: fontFamily,
   },
   components: {
     Text: {
       baseStyle: {
         textTransform: "capitalize",
-        fontFamily: "Inter",
+        fontFamily: fontFamily,
       },
     },
     Actionsheet: {

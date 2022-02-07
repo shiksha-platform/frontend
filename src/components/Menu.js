@@ -148,7 +148,7 @@ export default function Menu({
                   </HStack>
                   <IconByName
                     name={
-                      item.rightIcon ? item.rightIcon : "angle-double-right"
+                      item.rightIcon ? item.rightIcon : "ArrowRightSLineIcon"
                     }
                     p="0"
                     color="#C1C1DE"

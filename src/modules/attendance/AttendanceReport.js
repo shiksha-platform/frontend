@@ -191,7 +191,7 @@ const Collapsible = ({ header, body, defaultCollapse, isHeaderBold }) => {
               size="sm"
               isDisabled={true}
               color={!collaps ? "coolGray.400" : "coolGray.600"}
-              name={!collaps ? "angle-double-down" : "angle-double-up"}
+              name={!collaps ? "ArrowDownSLineIcon" : "ArrowUpSLineIcon"}
             />
           </HStack>
         </Box>

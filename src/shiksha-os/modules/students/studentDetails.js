@@ -161,7 +161,7 @@ export default function App() {
             <Button
               variant="ghost"
               colorScheme="button"
-              endIcon={<IconByName name={"pencil-alt"} isDisabled />}
+              endIcon={<IconByName name={"PencilLineIcon"} isDisabled />}
               _text={{ fontWeight: "400" }}
             >
               {t("EDIT")}
@@ -200,7 +200,7 @@ export default function App() {
             <Button
               variant="ghost"
               colorScheme="button"
-              endIcon={<IconByName name={"pencil-alt"} isDisabled />}
+              endIcon={<IconByName name={"PencilLineIcon"} isDisabled />}
               _text={{ fontWeight: "400" }}
             >
               {t("EDIT")}
@@ -289,7 +289,7 @@ const Collapsible = ({
               size="sm"
               isDisabled={true}
               color={!collaps ? "coolGray.400" : "coolGray.600"}
-              name={!collaps ? "angle-double-down" : "angle-double-up"}
+              name={!collaps ? "ArrowDownSLineIcon" : "ArrowUpSLineIcon"}
               {..._icon}
             />
           </HStack>

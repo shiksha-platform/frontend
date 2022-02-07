@@ -176,7 +176,7 @@ export default function App() {
               id: classId,
               keyId: 1,
               title: t("TAKE_ATTENDANCE"),
-              icon: "sun",
+              icon: "CalendarCheckLineIcon",
               route: "/attendance/:id",
               boxMinW: "200px",
             },
@@ -204,7 +204,7 @@ export default function App() {
                         alignItems="center"
                       >
                         <Text bold>{t("STATUS")}</Text>
-                        <IconByName name="ellipsis-v" />
+                        <IconByName name="More2LineIcon" />
                       </HStack>
                       <Progress
                         value={17}
@@ -364,7 +364,7 @@ export default function App() {
                                   alignItems="center"
                                 >
                                   <Text bold>{t("CLASS_TEACHER")}</Text>
-                                  <IconByName name="ellipsis-v" />
+                                  <IconByName name="More2LineIcon" />
                                 </HStack>
                                 <Text>{fullName}</Text>
                               </VStack>
@@ -376,7 +376,7 @@ export default function App() {
                                   alignItems="center"
                                 >
                                   <Text bold>{t("CLASS_STRENGTH")}</Text>
-                                  <IconByName name="ellipsis-v" />
+                                  <IconByName name="More2LineIcon" />
                                 </HStack>
                                 <HStack space={6} alignItems="center">
                                   <VStack>
@@ -449,7 +449,7 @@ export default function App() {
                                   alignItems="center"
                                 >
                                   <Text bold>{t("DETAILS")}</Text>
-                                  <IconByName name="ellipsis-v" />
+                                  <IconByName name="More2LineIcon" />
                                 </HStack>
                                 <Text>
                                   <Text bold>{t("MATHS")}: </Text>
@@ -510,7 +510,7 @@ const Collapsible = ({ header, body, defaultCollapse, isHeaderBold }) => {
               size="sm"
               isDisabled={true}
               color={!collaps ? "coolGray.400" : "coolGray.600"}
-              name={!collaps ? "angle-double-down" : "angle-double-up"}
+              name={!collaps ? "ArrowDownSLineIcon" : "ArrowUpSLineIcon"}
             />
           </HStack>
         </Box>

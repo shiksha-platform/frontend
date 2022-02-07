@@ -169,7 +169,7 @@ export default function App() {
                 {t("TOTAL") + " " + students.length + " " + t("STUDENTS")}
               </Text>
             </VStack>
-            <IconByName size="sm" name="angle-double-right" />
+            <IconByName size="sm" name="ArrowRightSLineIcon" />
           </HStack>
         </Link>
       }
@@ -213,7 +213,7 @@ export default function App() {
               colorScheme="button"
               endIcon={
                 <IconByName
-                  name={isEditDisabled ? "pencil-alt" : "check"}
+                  name={isEditDisabled ? "PencilLineIcon" : "CheckLineIcon"}
                   isDisabled
                 />
               }

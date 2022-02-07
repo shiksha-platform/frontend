@@ -142,7 +142,7 @@ export default function App({
           <Button
             variant="ghost"
             colorScheme="button"
-            endIcon={<IconByName name={"pencil-alt"} isDisabled />}
+            endIcon={<IconByName name={"PencilLineIcon"} isDisabled />}
             _text={{ fontWeight: "400" }}
             py={1}
             px={2}

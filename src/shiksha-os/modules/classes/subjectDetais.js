@@ -64,7 +64,7 @@ export default function App() {
               id: classId,
               keyId: 1,
               title: t("TAKE_ATTENDANCE"),
-              icon: "sun",
+              icon: "CalendarCheckLineIcon",
               _text: { fontSize: 12, lineHeight: 15 },
               // route: "/attendance/:id",
             },
@@ -104,7 +104,7 @@ export default function App() {
                 colorScheme="button"
                 rounded={"full"}
                 px="6"
-                endIcon={<IconByName name="caret-down" isDisabled />}
+                endIcon={<IconByName name="ArrowDownSLineIcon" isDisabled />}
               >
                 {t("SCIENCE")}
               </Button>

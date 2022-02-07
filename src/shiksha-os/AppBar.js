@@ -49,7 +49,7 @@ export default function AppBar({
           ) : (
             <IconByName
               size="sm"
-              name="chevron-left"
+              name="ArrowLeftLineIcon"
               color={color ? color : ""}
               onPress={() => navigate(-1)}
             />
@@ -100,7 +100,7 @@ export default function AppBar({
                   >
                     <IconByName
                       size="sm"
-                      name="ellipsis-v"
+                      name="More2LineIcon"
                       isDisabled={true}
                       color={color ? color : ""}
                     />

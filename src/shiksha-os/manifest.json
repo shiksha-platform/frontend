@@ -39,35 +39,35 @@
     "footer": [
       {
         "title": "HOME",
-        "icon": "home",
+        "icon": "Home4LineIcon",
         "module": "Registry",
         "route": "/",
         "routeparameters": {}
       },
       {
         "title": "CLASSES",
-        "icon": "users",
+        "icon": "TeamLineIcon",
         "module": "Registry",
         "route": "/classes",
         "routeparameters": {}
       },
       {
         "title": "SCHOOL",
-        "icon": "school",
+        "icon": "GovernmentLineIcon",
         "module": "Registry",
         "route": "/",
         "routeparameters": {}
       },
       {
         "title": "MATERIALS",
-        "icon": "book",
+        "icon": "BookOpenLineIcon",
         "module": "Registry",
         "route": "/",
         "routeparameters": {}
       },
       {
         "title": "CAREER",
-        "icon": "user",
+        "icon": "UserLineIcon",
         "module": "Registry",
         "route": "/",
         "routeparameters": {}

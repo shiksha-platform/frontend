@@ -53,7 +53,7 @@ const timeTables = [
     to: "11:25 AM",
     title: "SPECIAL_DANCE_MID_DROUP",
     subTitle: "N/A",
-    rightIcon: "ellipsis-v",
+    rightIcon: "More2LineIcon",
     _boxMenu: {
       bg: "timeTableCardOrange.500",
       borderWidth: 1,
@@ -66,7 +66,7 @@ const timeTables = [
     to: "12:25 PM",
     title: "FREE_PERIOD",
     subTitle: "N/A",
-    rightIcon: "ellipsis-v",
+    rightIcon: "More2LineIcon",
     _boxMenu: {
       bg: "timeTableCardOrange.500",
       borderWidth: 1,
@@ -93,7 +93,7 @@ const timeTables = [
     to: "02:25 PM",
     title: "SUBSTITUTION",
     subTitle: "N/A",
-    rightIcon: "ellipsis-v",
+    rightIcon: "More2LineIcon",
   },
   {
     id: "7",
@@ -101,7 +101,7 @@ const timeTables = [
     to: "03:25 PM",
     title: "FREE_PERIOD",
     subTitle: "N/A",
-    rightIcon: "ellipsis-v",
+    rightIcon: "More2LineIcon",
   },
   {
     id: "8",
@@ -215,7 +215,7 @@ const TimeTableRoute = () => {
               colorScheme="button"
               rounded={"full"}
               px="6"
-              endIcon={<IconByName name="caret-down" isDisabled />}
+              endIcon={<IconByName name="ArrowDownSLineIcon" isDisabled />}
               onPress={(e) => setDayView(!dayView)}
             >
               {dayView ? t("TODAY") : t("THIS_WEEK")}
@@ -290,18 +290,18 @@ const TimeTableRoute = () => {
                             >
                               {t(item.title)}
                             </Text>
-                            <IconByName
-                              name={
-                                item?.rightIcon
-                                  ? item?.rightIcon
-                                  : "angle-double-up"
-                              }
-                              isDisabled
-                              {...{
-                                ...item._text,
-                                color: index1 ? "" : item._text?.color,
-                              }}
-                            />
+                            {item?.rightIcon ? (
+                              <IconByName
+                                name={item?.rightIcon}
+                                isDisabled
+                                {...{
+                                  ...item._text,
+                                  color: index1 ? "" : item._text?.color,
+                                }}
+                              />
+                            ) : (
+                              <></>
+                            )}
                           </HStack>
                           <Text
                             fontSize="12px"

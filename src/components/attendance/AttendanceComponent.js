@@ -49,42 +49,42 @@ export const GetIcon = ({ status, _box, color, _icon }) => {
     case "Present":
       icon = (
         <Box {..._box} color={color ? color : "attendancePresent.500"}>
-          <IconByName name="circle" {...iconProps} />
+          <IconByName name="CheckboxCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
     case "Absent":
       icon = (
         <Box {..._box} color={color ? color : "attendanceAbsent.500"}>
-          <IconByName name="circle" {...iconProps} />
+          <IconByName name="CloseCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
     case "Late":
       icon = (
         <Box {..._box} color={color ? color : "yellow.500"}>
-          <IconByName name="circle" {...iconProps} />
+          <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
     case "Holiday":
       icon = (
         <Box {..._box} color={color ? color : "attendanceUnmarked.500"}>
-          <IconByName name="circle" {...iconProps} />
+          <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
     case "Unmarked":
       icon = (
         <Box {..._box} color={color ? color : "attendanceUnmarked.500"}>
-          <IconByName name="circle" {...iconProps} />
+          <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
     case "Today":
       icon = (
         <Box {..._box} color={color ? color : "attendanceUnmarked.100"}>
-          <IconByName name="circle" {...iconProps} />
+          <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
@@ -213,14 +213,21 @@ export const MultipalAttendance = ({
     return (
       <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
         <Actionsheet.Content alignItems={"left"} bg="attendanceCard.500">
-          <Stack p={5} pt={2} pb="25px">
-            <Text color={"white"} fontSize="16px" fontWeight={"600"}>
-              {t("ATTENDANCE_SUMMARY_REPORT")}
-            </Text>
-            <Text color={"white"} fontSize="12px" fontWeight={"400"}>
-              {classObject?.title ?? ""}
-            </Text>
-          </Stack>
+          <HStack justifyContent={"space-between"}>
+            <Stack p={5} pt={2} pb="25px">
+              <Text color={"white"} fontSize="16px" fontWeight={"600"}>
+                {t("ATTENDANCE_SUMMARY_REPORT")}
+              </Text>
+              <Text color={"white"} fontSize="12px" fontWeight={"400"}>
+                {classObject?.title ?? ""}
+              </Text>
+            </Stack>
+            <IconByName
+              name="CloseCircleLineIcon"
+              color="white"
+              onPress={(e) => setShowModal(false)}
+            />
+          </HStack>
         </Actionsheet.Content>
         <Stack width={"100%"} space="1" bg={"gray.200"}>
           <Box bg="white" p={5}>
@@ -242,7 +249,7 @@ export const MultipalAttendance = ({
                   <Text bold>
                     100% {t("ATTENDANCE") + " " + t("THIS_WEEK")}
                   </Text>
-                  <IconByName name="ellipsis-v" isDisabled />
+                  <IconByName name="More2LineIcon" isDisabled />
                 </HStack>
                 <HStack alignItems="center" justifyContent={"space-around"}>
                   {students.map((student, index) =>
@@ -434,11 +441,18 @@ const AttendanceComponent = ({
     return (
       <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
         <Actionsheet.Content alignItems={"left"} bg="purple.500">
-          <Stack p={5} pt={2} pb="25px">
-            <Text color={"white"} fontSize="16px" fontWeight={"600"}>
-              {t("MARK_ATTENDANCE")}
-            </Text>
-          </Stack>
+          <HStack justifyContent={"space-between"}>
+            <Stack p={5} pt={2} pb="25px">
+              <Text color={"white"} fontSize="16px" fontWeight={"600"}>
+                {t("MARK_ATTENDANCE")}
+              </Text>
+            </Stack>
+            <IconByName
+              name="CloseCircleLineIcon"
+              color={"white"}
+              onPress={(e) => setShowModal(false)}
+            />
+          </HStack>
         </Actionsheet.Content>
         <Box w="100%" p={4} justifyContent="center" bg="white">
           {status.map((item) => {
@@ -488,7 +502,7 @@ const AttendanceComponent = ({
       let attendanceIconProp = !isIconSizeSmall
         ? {
             _box: { py: 2, minW: "46px", alignItems: "center" },
-            status: "circle",
+            status: "CheckboxBlankCircleLineIcon",
           }
         : {};
       let attendanceType = "Present";
@@ -593,7 +607,7 @@ const AttendanceComponent = ({
               {loding[dateValue + student.id] ? (
                 <GetIcon
                   {...attendanceIconProp}
-                  status="circle-notch"
+                  status="Loader4LineIcon"
                   color={"button.500"}
                   isDisabled
                   _icon={{ _fontawesome: { spin: true } }}

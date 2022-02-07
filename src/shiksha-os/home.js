@@ -40,7 +40,7 @@ export default function Home() {
         {
           title: t("CLASSES"),
           subTitle: "3 " + t("REMAINING"),
-          icon: "users",
+          icon: "ParentLineIcon",
           _box: {
             bg: "violet.200",
           },
@@ -49,7 +49,7 @@ export default function Home() {
         {
           title: t("ACTIVITY"),
           subTitle: "1 " + t("REMAINING"),
-          icon: "theater-masks",
+          icon: "LightbulbFlashLineIcon",
           _box: {
             bg: "orange.200",
           },
@@ -58,7 +58,7 @@ export default function Home() {
         {
           title: t("HOLIDAYS"),
           subTitle: "2 " + t("THIS_WEEK"),
-          icon: "volleyball-ball",
+          icon: "FootballLineIcon",
           _box: {
             bg: "blue.200",
           },
@@ -69,7 +69,7 @@ export default function Home() {
         {
           title: t("ATTENDANCE"),
           subTitle: "12 " + t("REMAINING"),
-          icon: "suitcase-rolling",
+          icon: "UserFollowLineIcon",
           _box: {
             bg: "green.200",
           },
@@ -83,7 +83,7 @@ export default function Home() {
         {
           title: t("INSPECTION"),
           subTitle: "1 " + t("OFFICAL_VISIT"),
-          icon: "award",
+          icon: "Medal2LineIcon",
           _box: {
             bg: "orange.200",
           },
@@ -92,7 +92,7 @@ export default function Home() {
         {
           title: t("ACTIVITY"),
           subTitle: "1 " + t("SCHOOL_ACTIVITY"),
-          icon: "theater-masks",
+          icon: "LightbulbFlashLineIcon",
           _box: {
             bg: "violet.200",
           },

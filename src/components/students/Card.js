@@ -196,25 +196,31 @@ export default function Card({
               onPress={(e) => handalOpenPoup(item)}
               size="sm"
               color="gray.900"
-              name="angle-double-down"
+              name="ArrowDownSLineIcon"
               {..._arrow}
             />
             <Actionsheet isOpen={open} onClose={(e) => setOpen(false)}>
               <Actionsheet.Content bg="studentCard.500" alignItems="inherit">
-                <Box px="3" py="4" pt="0">
-                  <SubCard
-                    {...{
-                      item,
-                      img,
-                      type,
-                      textTitle,
-                      textSubTitle,
-                      _textTitle,
-                      _textSubTitle,
-                      type: "card",
-                    }}
+                <HStack justifyContent={"space-between"}>
+                  <Box px="3" py="4" pt="0">
+                    <SubCard
+                      {...{
+                        item,
+                        img,
+                        type,
+                        textTitle,
+                        textSubTitle,
+                        _textTitle,
+                        _textSubTitle,
+                        type: "card",
+                      }}
+                    />
+                  </Box>
+                  <IconByName
+                    name="CloseCircleLineIcon"
+                    onPress={(e) => setOpen(false)}
                   />
-                </Box>
+                </HStack>
               </Actionsheet.Content>
               <Box bg="white" width={"100%"}>
                 <Stack space={5}>
@@ -242,7 +248,7 @@ export default function Card({
                           variant="ghost"
                           colorScheme="button"
                           endIcon={
-                            <IconByName name={"pencil-alt"} isDisabled />
+                            <IconByName name={"PencilLineIcon"} isDisabled />
                           }
                           _text={{ fontWeight: "400" }}
                         >

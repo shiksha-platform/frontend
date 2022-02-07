@@ -140,7 +140,7 @@ const Display = ({
                   : "button.500"
                 : "gray.400"
             }
-            name="chevron-left"
+            name="ArrowLeftSLineIcon"
             onPress={(e) => {
               if (leftErrorText) {
                 toast.show(leftErrorText);
@@ -168,7 +168,7 @@ const Display = ({
                   : "button.500"
                 : "gray.400"
             }
-            name="chevron-right"
+            name="ArrowRightSLineIcon"
             onPress={(e) => {
               if (rightErrorText) {
                 toast.show(rightErrorText);
