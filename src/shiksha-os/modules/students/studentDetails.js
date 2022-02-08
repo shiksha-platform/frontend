@@ -103,7 +103,7 @@ export default function App() {
               },
             ]}
           />
-          <Box bg="white" p="5">
+          <Box bg="white" py="5">
             <Collapsible
               defaultCollapse
               header={t("WEEK_ATTENDANCE")}
@@ -113,6 +113,7 @@ export default function App() {
                   studentObject &&
                   studentObject?.id ? (
                     <AttendanceComponent
+                      type="month"
                       weekPage={0}
                       student={studentObject}
                       withDate={true}
@@ -231,7 +232,7 @@ const InfoSection = ({ items, isLastBorderEnable }) => {
   return items.map((item, index) => (
     <VStack
       space="3"
-      p="5"
+      py="5"
       borderBottomWidth={
         items.length - 1 !== index || isLastBorderEnable ? "1" : "0"
       }

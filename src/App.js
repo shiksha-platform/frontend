@@ -19,6 +19,7 @@ i18n.use(initReactI18next).init(init);
 const maxWidth = manifest?.maxWidth ? manifest?.maxWidth : "414";
 const fontFamily =
   localStorage.getItem("lang") === "hi" ? "'Baloo 2'" : "Inter";
+const fontSize = localStorage.getItem("lang") === "hi" ? "20px" : "";
 
 const theme = extendTheme({
   // Make sure values below matches any of the keys in `fontConfig`
@@ -32,6 +33,7 @@ const theme = extendTheme({
       baseStyle: {
         textTransform: "capitalize",
         fontFamily: fontFamily,
+        fontSize: fontSize,
       },
     },
     Actionsheet: {

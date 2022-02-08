@@ -2,7 +2,7 @@ import moment from "moment";
 import { Box, HStack, Text, useToast, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { weekDaysPageWise } from "./attendance/AttendanceComponent";
+import { calendar } from "./attendance/AttendanceComponent";
 import IconByName from "./IconByName";
 
 const FormatDate = ({ date, type }) => {
@@ -84,7 +84,7 @@ export function WeekWiesBar({
   const { t } = useTranslation();
 
   useEffect(() => {
-    setWeekDays(weekDaysPageWise(page));
+    setWeekDays(calendar(page, null, "week"));
     if (setActiveColor) {
       setActiveColor(page === 0 ? "button.500" : "coolGray.500");
     }

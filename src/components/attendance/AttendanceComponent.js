@@ -18,10 +18,24 @@ import Card from "../students/Card";
 import IconByName from "../IconByName";
 import Report from "./Report";
 
-export function weekDaysPageWise(weekPage, today) {
+export function calendar(weekPage, today, type) {
   let date = moment();
-  date.add(weekPage * 7, "days");
-  return weekDates({ today: today }, date);
+  if (type === "month") {
+    let startDate = moment().startOf("month");
+    let endDate = moment(startDate).endOf("month");
+    var weeks = [];
+    weeks.push(weekDates({}, startDate));
+    while (startDate.add(7, "days").diff(endDate) < 8) {
+      weeks.push(weekDates({}, startDate));
+    }
+    return weeks;
+  } else {
+    date.add(weekPage * 7, "days");
+    if (type === "week") {
+      return weekDates({ today: today }, date);
+    }
+    return [weekDates({ today: today }, date)];
+  }
 }
 
 export const weekDates = (filter = {}, currentDate = moment()) => {
@@ -355,7 +369,8 @@ export const MultipalAttendance = ({
   );
 };
 
-const AttendanceComponent = ({
+export default function AttendanceComponent({
+  type,
   today,
   weekPage,
   student,
@@ -364,7 +379,7 @@ const AttendanceComponent = ({
   getAttendance,
   _card,
   isEditDisabled,
-}) => {
+}) {
   const { t } = useTranslation();
   const teacherId = sessionStorage.getItem("id");
   const [attendance, setAttendance] = useState([]);
@@ -375,7 +390,7 @@ const AttendanceComponent = ({
   const status = manifest?.status ? manifest?.status : [];
 
   useEffect(() => {
-    setWeekDays(weekDaysPageWise(weekPage, today));
+    setWeekDays(calendar(weekPage, today, type));
     async function getData() {
       if (attendanceProp) {
         setAttendance(attendanceProp);
@@ -437,138 +452,208 @@ const AttendanceComponent = ({
     }
   };
 
-  const PopupActionSheet = () => {
-    return (
-      <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
-        <Actionsheet.Content alignItems={"left"} bg="purple.500">
-          <HStack justifyContent={"space-between"}>
-            <Stack p={5} pt={2} pb="25px">
-              <Text color={"white"} fontSize="16px" fontWeight={"600"}>
-                {t("MARK_ATTENDANCE")}
-              </Text>
-            </Stack>
-            <IconByName
-              name="CloseCircleLineIcon"
-              color={"white"}
-              onPress={(e) => setShowModal(false)}
-            />
-          </HStack>
-        </Actionsheet.Content>
-        <Box w="100%" p={4} justifyContent="center" bg="white">
-          {status.map((item) => {
-            return (
-              <Pressable
-                key={item}
-                p={3}
-                onPress={(e) => {
-                  if (attendanceObject.attendance !== item) {
-                    markAttendance({
-                      ...attendanceObject,
-                      attendance: item,
-                    });
-                  } else {
-                    setShowModal(false);
-                  }
+  return (
+    <Stack space={!today ? "15px" : ""}>
+      <VStack space={!today ? "15px" : ""}>
+        <Card
+          item={student}
+          _arrow={{ _icon: { fontSize: "large" } }}
+          type="attendance"
+          hidePopUpButton={hidePopUpButton}
+          {...(today ? { _textTitle: { fontSize: "xl" } } : {})}
+          {..._card}
+          rightComponent={
+            today ? (
+              <CalendarComponent
+                weekDays={weekDays}
+                isIconSizeSmall={true}
+                isEditDisabled={isEditDisabled}
+                {...{
+                  attendance,
+                  student,
+                  markAttendance,
+                  setAttendanceObject,
+                  setShowModal,
+                  loding,
+                  type,
                 }}
-              >
-                <HStack alignItems="center" space={2}>
-                  <GetIcon status={item} _box={{ p: 2 }} />
-                  <Text color="coolGray.800" bold fontSize="lg">
-                    {t(item)}
-                  </Text>
-                </HStack>
-              </Pressable>
-            );
-          })}
-        </Box>
-      </Actionsheet>
-    );
-  };
-
-  const WeekDaysComponent = ({
-    weekDays,
-    isIconSizeSmall,
-    isEditDisabled,
-    isShowDate,
-    isShowAttendance,
-  }) => {
-    return weekDays.map((day, subIndex) => {
-      let isToday = moment().format("Y-MM-DD") === day.format("Y-MM-DD");
-      let dateValue = day.format("Y-MM-DD");
-      let attendanceItem = attendance
-        .slice()
-        .reverse()
-        .find((e) => e.date === dateValue && e.studentId === student.id);
-      let attendanceIconProp = !isIconSizeSmall
-        ? {
-            _box: { py: 2, minW: "46px", alignItems: "center" },
-            status: "CheckboxBlankCircleLineIcon",
+              />
+            ) : (
+              false
+            )
           }
-        : {};
-      let attendanceType = "Present";
-      if (
-        attendanceItem?.attendance &&
-        attendanceItem?.attendance === "Present"
-      ) {
-        attendanceIconProp = {
-          ...attendanceIconProp,
-          status: attendanceItem?.attendance,
-        };
-      } else if (
-        attendanceItem?.attendance &&
-        attendanceItem?.attendance === "Absent"
-      ) {
-        attendanceIconProp = {
-          ...attendanceIconProp,
-          status: attendanceItem?.attendance,
-        };
-      } else if (
-        attendanceItem?.attendance &&
-        attendanceItem?.attendance === "Late"
-      ) {
-        attendanceIconProp = {
-          ...attendanceIconProp,
-          status: attendanceItem?.attendance,
-        };
-      } else if (day.day() === 0) {
-        attendanceIconProp = { ...attendanceIconProp, status: "Holiday" };
-      } else if (isToday) {
-        attendanceIconProp = { ...attendanceIconProp, status: "Today" };
-      } else if (moment().diff(day, "days") > 0) {
-        attendanceIconProp = { ...attendanceIconProp, color: "gray.100" };
-      }
+        />
+        {!today ? (
+          <Box borderWidth={1} borderColor={"coolGray.200"} rounded="xl">
+            <CalendarComponent
+              monthDays={weekDays}
+              isEditDisabled={isEditDisabled}
+              {...{
+                attendance,
+                student,
+                markAttendance,
+                setAttendanceObject,
+                setShowModal,
+                loding,
+              }}
+            />
+          </Box>
+        ) : (
+          <></>
+        )}
+        <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
+          <Actionsheet.Content alignItems={"left"} bg="purple.500">
+            <HStack justifyContent={"space-between"}>
+              <Stack p={5} pt={2} pb="25px">
+                <Text color={"white"} fontSize="16px" fontWeight={"600"}>
+                  {t("MARK_ATTENDANCE")}
+                </Text>
+              </Stack>
+              <IconByName
+                name="CloseCircleLineIcon"
+                color={"white"}
+                onPress={(e) => setShowModal(false)}
+              />
+            </HStack>
+          </Actionsheet.Content>
+          <Box w="100%" p={4} justifyContent="center" bg="white">
+            {status.map((item) => {
+              return (
+                <Pressable
+                  key={item}
+                  p={3}
+                  onPress={(e) => {
+                    if (attendanceObject.attendance !== item) {
+                      markAttendance({
+                        ...attendanceObject,
+                        attendance: item,
+                      });
+                    } else {
+                      setShowModal(false);
+                    }
+                  }}
+                >
+                  <HStack alignItems="center" space={2}>
+                    <GetIcon status={item} _box={{ p: 2 }} />
+                    <Text color="coolGray.800" bold fontSize="lg">
+                      {t(item)}
+                    </Text>
+                  </HStack>
+                </Pressable>
+              );
+            })}
+          </Box>
+        </Actionsheet>
+      </VStack>
+      <></>
+    </Stack>
+  );
+}
 
-      if (manifest.status) {
-        const arr = manifest.status;
-        const i = arr.indexOf(attendanceItem?.attendance);
-        if (i === -1) {
-          attendanceType = arr[0];
-        } else {
-          attendanceType = arr[(i + 1) % arr.length];
+const CalendarComponent = ({
+  monthDays,
+  isIconSizeSmall,
+  isEditDisabled,
+  attendance,
+  student,
+  markAttendance,
+  setAttendanceObject,
+  setShowModal,
+  loding,
+}) => {
+  return monthDays.map((week, index) => (
+    <HStack
+      justifyContent="space-around"
+      alignItems="center"
+      key={index}
+      borderBottomWidth={monthDays.length < 2 && index !== 0 ? "0" : "1"}
+      borderBottomColor={"coolGray.300"}
+      p={"2"}
+    >
+      {week.map((day, subIndex) => {
+        let isToday = moment().format("Y-MM-DD") === day.format("Y-MM-DD");
+        let dateValue = day.format("Y-MM-DD");
+        let attendanceItem = attendance
+          .slice()
+          .reverse()
+          .find((e) => e.date === dateValue && e.studentId === student.id);
+        let attendanceIconProp = !isIconSizeSmall
+          ? {
+              _box: { py: 2, minW: "46px", alignItems: "center" },
+              status: "CheckboxBlankCircleLineIcon",
+            }
+          : {};
+        let attendanceType = "Present";
+        if (
+          attendanceItem?.attendance &&
+          attendanceItem?.attendance === "Present"
+        ) {
+          attendanceIconProp = {
+            ...attendanceIconProp,
+            status: attendanceItem?.attendance,
+          };
+        } else if (
+          attendanceItem?.attendance &&
+          attendanceItem?.attendance === "Absent"
+        ) {
+          attendanceIconProp = {
+            ...attendanceIconProp,
+            status: attendanceItem?.attendance,
+          };
+        } else if (
+          attendanceItem?.attendance &&
+          attendanceItem?.attendance === "Late"
+        ) {
+          attendanceIconProp = {
+            ...attendanceIconProp,
+            status: attendanceItem?.attendance,
+          };
+        } else if (day.day() === 0) {
+          attendanceIconProp = { ...attendanceIconProp, status: "Holiday" };
+        } else if (isToday) {
+          attendanceIconProp = { ...attendanceIconProp, status: "Today" };
+        } else if (moment().diff(day, "days") > 0) {
+          attendanceIconProp = { ...attendanceIconProp, color: "gray.100" };
         }
-      }
 
-      return (
-        <VStack
-          key={subIndex}
-          alignItems="center"
-          borderWidth={isToday ? "1" : ""}
-          borderTopWidth={isToday && isShowDate ? "1" : "0"}
-          borderBottomWidth={isToday && isShowAttendance ? "1" : "0"}
-          borderColor={isToday ? "button.500" : ""}
-        >
-          {isShowDate ? (
+        if (manifest.status) {
+          const arr = manifest.status;
+          const i = arr.indexOf(attendanceItem?.attendance);
+          if (i === -1) {
+            attendanceType = arr[0];
+          } else {
+            attendanceType = arr[(i + 1) % arr.length];
+          }
+        }
+
+        return (
+          <VStack
+            key={subIndex}
+            alignItems="center"
+            borderWidth={isToday ? "1" : ""}
+            borderColor={isToday ? "button.500" : ""}
+            rounded="lg"
+            opacity={day.format("M") === moment().format("M") ? 1 : 0.3}
+          >
             <Text
               key={subIndex}
-              py={!isIconSizeSmall ? 2 : 0}
-              minW={"46px"}
+              py={monthDays.length > 1 && index ? 0 : !isIconSizeSmall ? 2 : 0}
               textAlign="center"
               color={day.day() === 0 ? "button.500" : ""}
             >
               {!isIconSizeSmall ? (
                 <VStack alignItems={"center"}>
-                  <Text>{day.format("ddd")}</Text>
-                  <Text color={"coolGray.400"}>{day.format("DD")}</Text>
+                  {index === 0 ? (
+                    <Text
+                      pb="4"
+                      color={day.day() === 0 ? "button.500" : "coolGray.400"}
+                    >
+                      {day.format("ddd")}
+                    </Text>
+                  ) : (
+                    ""
+                  )}
+                  <Text color={"coolGray.900"}>{day.format("DD")}</Text>
                 </VStack>
               ) : (
                 <HStack alignItems={"center"} space={1}>
@@ -577,10 +662,6 @@ const AttendanceComponent = ({
                 </HStack>
               )}
             </Text>
-          ) : (
-            <></>
-          )}
-          {isShowAttendance ? (
             <TouchableHighlight
               onPress={(e) => {
                 if (!isEditDisabled) {
@@ -604,79 +685,23 @@ const AttendanceComponent = ({
                 }
               }}
             >
-              {loding[dateValue + student.id] ? (
-                <GetIcon
-                  {...attendanceIconProp}
-                  status="Loader4LineIcon"
-                  color={"button.500"}
-                  isDisabled
-                  _icon={{ _fontawesome: { spin: true } }}
-                />
-              ) : (
-                <GetIcon {...attendanceIconProp} />
-              )}
+              <Box alignItems="center">
+                {loding[dateValue + student.id] ? (
+                  <GetIcon
+                    {...attendanceIconProp}
+                    status="Loader4LineIcon"
+                    color={"button.500"}
+                    isDisabled
+                    _icon={{ _fontawesome: { spin: true } }}
+                  />
+                ) : (
+                  <GetIcon {...attendanceIconProp} />
+                )}
+              </Box>
             </TouchableHighlight>
-          ) : (
-            <></>
-          )}
-        </VStack>
-      );
-    });
-  };
-
-  return (
-    <Stack space={!today ? "15px" : ""}>
-      <VStack space={!today ? "15px" : ""}>
-        <Card
-          item={student}
-          _arrow={{ _icon: { fontSize: "large" } }}
-          type="attendance"
-          hidePopUpButton={hidePopUpButton}
-          {...(today ? { _textTitle: { fontSize: "xl" } } : {})}
-          {..._card}
-          rightComponent={
-            today ? (
-              <WeekDaysComponent
-                isShowDate
-                isShowAttendance
-                weekDays={weekDays}
-                isIconSizeSmall={true}
-                isEditDisabled={isEditDisabled}
-              />
-            ) : (
-              false
-            )
-          }
-        />
-        {!today ? (
-          <Box borderWidth={1} borderColor={"coolGray.200"} rounded="xl">
-            <Box roundedTop="xl" bg={"coolGray.50"}>
-              <HStack justifyContent="space-around" alignItems="center">
-                <WeekDaysComponent
-                  isShowDate={true}
-                  weekDays={weekDays}
-                  isEditDisabled={isEditDisabled}
-                />
-              </HStack>
-            </Box>
-            <Box>
-              <HStack justifyContent="space-around" alignItems="center">
-                <WeekDaysComponent
-                  isShowAttendance={true}
-                  weekDays={weekDays}
-                  isEditDisabled={isEditDisabled}
-                />
-              </HStack>
-            </Box>
-          </Box>
-        ) : (
-          <></>
-        )}
-        <PopupActionSheet />
-      </VStack>
-      <></>
-    </Stack>
-  );
+          </VStack>
+        );
+      })}
+    </HStack>
+  ));
 };
-
-export default AttendanceComponent;
