@@ -1,9 +1,10 @@
-import { Box, FlatList, HStack, Progress, Text, VStack } from "native-base";
+import { Box, FlatList, HStack, Text, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import IconByName from "../IconByName";
 import manifest from "../../modules/attendance/manifest.json";
 import moment from "moment";
+import ProgressBar from "../ProgressBar";
 
 export default function Report({ students, attendance }) {
   const { t } = useTranslation();
@@ -97,7 +98,7 @@ export default function Report({ students, attendance }) {
         bg={"button.500"}
       >
         <HStack alignItems={"center"} space={2}>
-          <IconByName name="smile" isDisabled color="white" />
+          <IconByName name="UserSmileLineIcon" isDisabled color="white" />
           <Text color="white" textTransform={"inherit"}>
             {t("ABSENT_TODAY_POOR_LAST_WEEK")}
           </Text>
@@ -117,48 +118,26 @@ export default function Report({ students, attendance }) {
               {item}
             </Text>
             <VStack flex="auto" alignContent={"center"}>
-              {status.map((subItem, index) => {
-                let statusCount = countReport({
-                  gender: item,
-                  attendanceType: subItem,
-                });
-                let totalCount = countReport({
-                  gender: t("TOTAL"),
-                  type: "Total",
-                });
-                return statusCount > 0 ? (
-                  <HStack alignItems="center" space={2} mb="2">
-                    <Progress
-                      flex="auto"
-                      max={totalCount}
-                      value={statusCount}
-                      size="md"
-                      colorScheme={
-                        subItem === "Present"
-                          ? "attendancePresent"
-                          : subItem === "Absent"
-                          ? "attendanceAbsent"
-                          : subItem === "Unmarked"
-                          ? "attendanceUnmarked"
-                          : "coolGray"
-                      }
-                      bg="transparent"
-                    >
-                      <Text
-                        fontSize="10px"
-                        fontWeight="700"
-                        color="coolGray.500"
-                        position="absolute"
-                        left={statusCount === totalCount ? "99%" : "100%"}
-                      >
-                        {statusCount}
-                      </Text>
-                    </Progress>
-                  </HStack>
-                ) : (
-                  <></>
-                );
-              })}
+              <ProgressBar
+                data={status.map((subItem, index) => {
+                  let statusCount = countReport({
+                    gender: item,
+                    attendanceType: subItem,
+                  });
+                  return {
+                    name: subItem,
+                    color:
+                      subItem === "Present"
+                        ? "attendancePresent.500"
+                        : subItem === "Absent"
+                        ? "attendanceAbsent.500"
+                        : subItem === "Unmarked"
+                        ? "attendanceUnmarked.500"
+                        : "coolGray.500",
+                    value: statusCount,
+                  };
+                })}
+              />
             </VStack>
           </HStack>
         )}

@@ -5,7 +5,6 @@ import {
   HStack,
   PresenceTransition,
   Pressable,
-  Progress,
   Text,
   VStack,
 } from "native-base";
@@ -16,15 +15,20 @@ import IconByName from "../../components/IconByName";
 import Layout from "../../layout/Layout";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
 import manifest from "../../modules/attendance/manifest.json";
+import ProgressBar from "../../components/ProgressBar";
+import { GetAttendance } from "../../components/attendance/AttendanceComponent";
+import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
+import Report from "../../components/attendance/Report";
 
 export default function AttendanceReport() {
   const { t } = useTranslation();
   const [datePage, setDatePage] = useState(0);
   const [calsses, setClasses] = useState([]);
+  const [calssObject, setClassObject] = useState({});
   const teacherId = sessionStorage.getItem("id");
-  const fullName = sessionStorage.getItem("fullName");
-  const status = manifest?.status ? manifest?.status : [];
-
+  const [students, setStudents] = useState([]);
+  const [attendance, setAttendance] = useState([]);
+  console.log({ calssObject });
   useEffect(() => {
     let ignore = false;
 
@@ -35,12 +39,34 @@ export default function AttendanceReport() {
         },
       });
       if (!ignore) setClasses(responceClass);
+      const studentData = await studentServiceRegistry.getAll({
+        filters: {
+          currentClassID: {
+            eq: calssObject.id,
+          },
+        },
+      });
+      setStudents(studentData);
+      await getAttendance();
     };
     getData();
     return () => {
       ignore = true;
     };
-  }, [teacherId]);
+  }, [teacherId, calssObject]);
+
+  const getAttendance = async (e) => {
+    const attendanceData = await GetAttendance({
+      classId: {
+        eq: calssObject.id,
+      },
+      teacherId: {
+        eq: teacherId,
+      },
+    });
+
+    setAttendance(attendanceData);
+  };
 
   return (
     <Layout
@@ -64,11 +90,12 @@ export default function AttendanceReport() {
         {calsses.map((item, index) => (
           <Box
             key={index}
-            p="5"
+            py="5"
             borderBottomWidth={1}
             borderBottomColor="coolGray.200"
           >
             <Collapsible
+              onPressFuction={(e) => setClassObject(item)}
               header={
                 <VStack>
                   <Text fontSize="16" fontWeight="600">
@@ -79,92 +106,7 @@ export default function AttendanceReport() {
                   </Text>
                 </VStack>
               }
-              body={
-                <Box bg="white">
-                  <Box
-                    borderWidth={1}
-                    borderColor="coolGray.200"
-                    rounded={"xl"}
-                    bg={"coolGray.50"}
-                  >
-                    <Box
-                      borderWidth={1}
-                      borderColor="coolGray.200"
-                      roundedTop={"xl"}
-                      p="5"
-                      bg={"button.500"}
-                    >
-                      <HStack alignItems={"center"} space={2}>
-                        <IconByName name="smile" isDisabled color="white" />
-                        <Text color="white">
-                          {t("ABSENT_TODAY_POOR_LAST_WEEK")}
-                        </Text>
-                      </HStack>
-                    </Box>
-                    <FlatList
-                      data={[t("BOYS"), t("GIRLS"), t("TOTAL")]}
-                      renderItem={({ item, index }) => (
-                        <HStack
-                          alignItems={"center"}
-                          space={2}
-                          justifyContent={"space-around"}
-                          py="5"
-                          px="2"
-                        >
-                          <Text px="2" fontSize="12px" textAlign={"center"}>
-                            {item}
-                          </Text>
-                          <VStack space={2} flex="auto">
-                            {status.map((subItem, index) => {
-                              let value = Math.floor(Math.random() * 11);
-                              return (
-                                <HStack alignItems="center" space={2}>
-                                  {value ? (
-                                    <Progress
-                                      flex="auto"
-                                      max={10}
-                                      value={value}
-                                      size="md"
-                                      colorScheme={
-                                        subItem === "Present"
-                                          ? "attendancePresent"
-                                          : subItem === "Absent"
-                                          ? "attendanceAbsent"
-                                          : subItem === "Unmarked"
-                                          ? "attendanceUnmarked"
-                                          : "coolGray"
-                                      }
-                                      bg="transparent"
-                                    >
-                                      {value}
-                                    </Progress>
-                                  ) : (
-                                    <></>
-                                  )}
-                                </HStack>
-                              );
-                            })}
-                          </VStack>
-                        </HStack>
-                      )}
-                      keyExtractor={(item, index) => index}
-                    />
-
-                    <Box
-                      borderWidth={1}
-                      borderColor="coolGray.200"
-                      roundedBottom={"xl"}
-                      p="5"
-                      bg={"coolGray.200"}
-                    >
-                      <HStack justifyContent={"space-between"}>
-                        <Text>{t("ATTENDANCE_TAKEN_BY")}</Text>
-                        <Text>{fullName}</Text>
-                      </HStack>
-                    </Box>
-                  </Box>
-                </Box>
-              }
+              body={<Report {...{ students, attendance }} />}
             />
           </Box>
         ))}
@@ -173,12 +115,23 @@ export default function AttendanceReport() {
   );
 }
 
-const Collapsible = ({ header, body, defaultCollapse, isHeaderBold }) => {
+const Collapsible = ({
+  header,
+  body,
+  defaultCollapse,
+  isHeaderBold,
+  onPressFuction,
+}) => {
   const [collaps, setCollaps] = useState(defaultCollapse);
 
   return (
     <>
-      <Pressable onPress={() => setCollaps(!collaps)}>
+      <Pressable
+        onPress={() => {
+          setCollaps(!collaps);
+          onPressFuction();
+        }}
+      >
         <Box px={2} py={1}>
           <HStack alignItems={"center"} justifyContent={"space-between"}>
             <Text

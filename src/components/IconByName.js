@@ -23,6 +23,7 @@ import CloseCircleLineIcon from "remixicon-react/CloseCircleLineIcon";
 import CheckboxBlankCircleLineIcon from "remixicon-react/CheckboxBlankCircleLineIcon";
 import CheckLineIcon from "remixicon-react/CheckLineIcon";
 import Loader4LineIcon from "remixicon-react/Loader4LineIcon";
+import UserSmileLineIcon from "remixicon-react/UserSmileLineIcon";
 
 function IconButton({ icon, isDisabled, prefix, _fontawesome, ...props }) {
   if (!isDisabled) {
@@ -105,6 +106,9 @@ export default function IconByName(props) {
       break;
     case "Loader4LineIcon":
       icon = <IconButton {...props} icon={<Loader4LineIcon />} />;
+      break;
+    case "UserSmileLineIcon":
+      icon = <IconButton {...props} icon={<UserSmileLineIcon />} />;
       break;
     default:
       if (props.name !== "Home4LineIcon") {
