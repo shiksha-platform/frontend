@@ -17,6 +17,7 @@
   "CLASSES": "Classes",
   "MY_STUDENTS": "My Students",
   "STUDENTS": "Students",
+  "STUDENT_WISE_ATTENDANCE": "Student Wise Attendance",
   "ATTENDANCE_SHEET": "Attendance Sheet",
   "ATTENDANCE_REPORTS": "Attendance reports",
   "ATTENDANCE_NOTIFICATIONS": "Attendance notifications",
@@ -134,5 +135,10 @@
   "SUBSTITUTION": "Substitution",
   "SPECIAL_DANCE_MID_DROUP": "Special dance Mid group",
   "ABSENT_TODAY_POOR_LAST_WEEK": "absent today! Poor than last week",
-  "ATTENDANCE_TAKEN_BY": "Attendance taken by"
+  "ATTENDANCE_TAKEN_BY": "Attendance taken by",
+  "MONTHLY_REPORT_WILL_GENRRATED_LAST_DAY_EVERY_MONTH": "Monthly Report will be generated on the last day of every month.",
+  "ABSENT_CONSECUTIVE_3_DAYS": "Absent Consecutive 3 Days",
+  "TODAY_VIEW": "Day View",
+  "WEEK_VIEW": "Week View",
+  "MONTH_VIEW": "Month View"
 }

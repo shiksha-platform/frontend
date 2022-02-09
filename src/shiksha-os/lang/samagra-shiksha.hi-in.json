@@ -17,6 +17,7 @@
   "CLASSES": "कक्षाएँ",
   "MY_STUDENTS": "मेरे विद्यार्थी",
   "STUDENTS": "विद्यार्थी",
+  "STUDENT_WISE_ATTENDANCE": "छात्रवार उपस्थिति",
   "ATTENDANCE_SHEET": "उपस्थिति पत्रक",
   "ATTENDANCE_REPORTS": "उपस्थिति रिपोर्ट",
   "ATTENDANCE_NOTIFICATIONS": "उपस्थिति सूचनाएं",
@@ -135,5 +136,10 @@
   "SUBSTITUTION": "प्रतिस्थापन",
   "SPECIAL_DANCE_MID_DROUP": "विशेष नृत्य मध्य समूह",
   "ABSENT_TODAY_POOR_LAST_WEEK": "अनुपस्थित है आज! पिछले सप्ताह की तुलना में खराब",
-  "ATTENDANCE_TAKEN_BY": "द्वारा ली गई उपस्थिति"
+  "ATTENDANCE_TAKEN_BY": "द्वारा ली गई उपस्थिति",
+  "MONTHLY_REPORT_WILL_GENRRATED_LAST_DAY_EVERY_MONTH": "प्रत्येक माह के अंतिम दिन मासिक रिपोर्ट तैयार की जाएगी।",
+  "ABSENT_CONSECUTIVE_3_DAYS": "अनुपस्थित लगातार 3 दिन",
+  "TODAY_VIEW": "आज का दृश्य",
+  "WEEK_VIEW": "सप्ताह का दृश्य",
+  "MONTH_VIEW": "माह दृश्य"
 }

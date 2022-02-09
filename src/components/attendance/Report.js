@@ -84,19 +84,8 @@ export default function Report({ students, attendance }) {
   };
 
   return (
-    <Box
-      borderWidth={1}
-      borderColor="coolGray.200"
-      rounded={"xl"}
-      bg={"coolGray.50"}
-    >
-      <Box
-        borderWidth={1}
-        borderColor="button.500"
-        roundedTop={"xl"}
-        p="5"
-        bg={"button.500"}
-      >
+    <Box rounded={"xl"}>
+      <Box roundedTop={"xl"} p="5" bg={"button.500"}>
         <HStack alignItems={"center"} space={2}>
           <IconByName name="UserSmileLineIcon" isDisabled color="white" />
           <Text color="white" textTransform={"inherit"}>
@@ -104,52 +93,48 @@ export default function Report({ students, attendance }) {
           </Text>
         </HStack>
       </Box>
-      <FlatList
-        data={[t("BOYS"), t("GIRLS"), t("TOTAL")]}
-        renderItem={({ item, index }) => (
-          <HStack
-            alignItems={"center"}
-            space={2}
-            justifyContent={"space-around"}
-            py="5"
-            px="2"
-          >
-            <Text px="2" fontSize="12px" textAlign={"center"}>
-              {item}
-            </Text>
-            <VStack flex="auto" alignContent={"center"}>
-              <ProgressBar
-                data={status.map((subItem, index) => {
-                  let statusCount = countReport({
-                    gender: item,
-                    attendanceType: subItem,
-                  });
-                  return {
-                    name: subItem,
-                    color:
-                      subItem === "Present"
-                        ? "attendancePresent.500"
-                        : subItem === "Absent"
-                        ? "attendanceAbsent.500"
-                        : subItem === "Unmarked"
-                        ? "attendanceUnmarked.500"
-                        : "coolGray.500",
-                    value: statusCount,
-                  };
-                })}
-              />
-            </VStack>
-          </HStack>
-        )}
-        keyExtractor={(item, index) => index}
-      />
-      <Box
-        borderWidth={1}
-        borderColor="coolGray.200"
-        roundedBottom={"xl"}
-        p="5"
-        bg={"coolGray.200"}
-      >
+      <Box bg={"reportBoxBg.400"}>
+        <FlatList
+          data={[t("BOYS"), t("GIRLS"), t("TOTAL")]}
+          renderItem={({ item, index }) => (
+            <HStack
+              alignItems={"center"}
+              space={2}
+              justifyContent={"space-around"}
+              py="5"
+              px="2"
+            >
+              <Text px="2" fontSize="12px" textAlign={"center"}>
+                {item}
+              </Text>
+              <VStack flex="auto" alignContent={"center"}>
+                <ProgressBar
+                  data={status.map((subItem, index) => {
+                    let statusCount = countReport({
+                      gender: item,
+                      attendanceType: subItem,
+                    });
+                    return {
+                      name: subItem,
+                      color:
+                        subItem === "Present"
+                          ? "attendancePresent.500"
+                          : subItem === "Absent"
+                          ? "attendanceAbsent.500"
+                          : subItem === "Unmarked"
+                          ? "attendanceUnmarked.500"
+                          : "coolGray.500",
+                      value: statusCount,
+                    };
+                  })}
+                />
+              </VStack>
+            </HStack>
+          )}
+          keyExtractor={(item, index) => index}
+        />
+      </Box>
+      <Box roundedBottom={"xl"} p="5" bg={"reportBoxBg.500"}>
         <HStack justifyContent={"space-between"}>
           <Text>{t("ATTENDANCE_TAKEN_BY")}</Text>
           <Text>{fullName}</Text>

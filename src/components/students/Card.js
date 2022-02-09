@@ -33,6 +33,7 @@ const SubCard = ({
           size="40px"
           bg={item?.avatarUrl ? "" : "amber.500"}
           {...(item?.avatarUrl ? { source: { uri: item.avatarUrl } } : {})}
+          rounded="lg"
         >
           {item?.avatarUrl ? "" : item?.fullName?.toUpperCase().substr(0, 2)}
         </Avatar>
@@ -68,6 +69,7 @@ const SubCard = ({
           size="40px"
           bg={item?.avatarUrl ? "" : "amber.500"}
           {...(item?.avatarUrl ? { source: { uri: item.avatarUrl } } : {})}
+          rounded="lg"
         >
           {item?.avatarUrl ? "" : item?.fullName?.toUpperCase().substr(0, 2)}
         </Avatar>

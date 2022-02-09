@@ -13,7 +13,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./shiksha-os/Login";
 import { useLayoutEffect, useState } from "react";
 import manifest from "./shiksha-os/manifest.json";
-import AttendanceReport from "./modules/attendance/AttendanceReport";
+import ClassReport from "./shiksha-os/modules/reports/ClassReport";
+import ClassReportDetail from "./shiksha-os/modules/reports/ClassReportDetail";
 i18n.use(initReactI18next).init(init);
 
 const maxWidth = manifest?.maxWidth ? manifest?.maxWidth : "414";
@@ -55,6 +56,18 @@ const theme = extendTheme({
     },
     reportCard: {
       500: "#FFCAAC",
+    },
+    presentCardBg: {
+      500: "#DFFDE2",
+      600: "#cae3ce",
+    },
+    apsentCardBg: {
+      500: "#FDE7E7",
+      600: "#dfcbcb",
+    },
+    reportBoxBg: {
+      400: "#FFF8F7",
+      500: "#FEF1EE",
     },
     button: {
       50: "#fcf1ee",
@@ -188,7 +201,15 @@ export default function App() {
           path="/classes/attendance/report"
           element={
             <SubApp>
-              <AttendanceReport />
+              <ClassReport />
+            </SubApp>
+          }
+        />
+        <Route
+          path="/classes/attendance/report/:classId"
+          element={
+            <SubApp>
+              <ClassReportDetail />
             </SubApp>
           }
         />
