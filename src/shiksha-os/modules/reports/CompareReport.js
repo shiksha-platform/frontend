@@ -142,8 +142,14 @@ export default function ClassReportDetail() {
                     <Report
                       {...{
                         students,
-                        attendance,
-                        compareAttendance,
+                        title: [
+                          { name: t("THIS_WEEK") },
+                          {
+                            name: t("LAST_WEEK"),
+                            _text: { color: "presentCardCompareText.500" },
+                          },
+                        ],
+                        attendance: [attendance, compareAttendance],
                       }}
                     />
                     <Text py="5" px="10px" fontSize={12} color={"gray.400"}>
@@ -274,8 +280,8 @@ export default function ClassReportDetail() {
                         renderItem={({ item }) => (
                           <Box
                             borderWidth="1"
-                            borderColor="apsentCardCompareBg.600"
-                            bg="apsentCardCompareBg.500"
+                            borderColor="absentCardCompareBg.600"
+                            bg="absentCardCompareBg.500"
                             p="10px"
                             rounded="lg"
                             my="10px"
@@ -290,14 +296,14 @@ export default function ClassReportDetail() {
                                     <Text
                                       fontSize="14"
                                       fontWeight="500"
-                                      color="apsentCardText.500"
+                                      color="absentCardText.500"
                                     >
                                       100%
                                     </Text>
                                     <Text
                                       fontSize="10"
                                       fontWeight="400"
-                                      color="apsentCardText.500"
+                                      color="absentCardText.500"
                                     >
                                       {t("THIS_WEEK")}
                                     </Text>
@@ -306,14 +312,14 @@ export default function ClassReportDetail() {
                                     <Text
                                       fontSize="14"
                                       fontWeight="500"
-                                      color="apsentCardCompareText.500"
+                                      color="absentCardCompareText.500"
                                     >
                                       97%
                                     </Text>
                                     <Text
                                       fontSize="10"
                                       fontWeight="400"
-                                      color="apsentCardCompareText.500"
+                                      color="absentCardCompareText.500"
                                     >
                                       {t("LAST_WEEK")}
                                     </Text>
@@ -362,14 +368,15 @@ export default function ClassReportDetail() {
                     data={students}
                     renderItem={({ item, index }) => (
                       <AttendanceComponent
+                        isEditDisabled
                         type="weeks"
+                        _weekBox={[{}, { bg: "weekCardCompareBg.500" }]}
                         weekPage={0}
                         student={item}
                         withDate={1}
                         attendanceProp={attendance}
                         getAttendance={getAttendance}
                         _card={{ hidePopUpButton: true }}
-                        _weekNameText={{ pb: "1" }}
                       />
                     )}
                     keyExtractor={(item) => item.id}

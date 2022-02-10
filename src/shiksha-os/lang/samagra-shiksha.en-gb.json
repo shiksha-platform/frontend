@@ -148,5 +148,11 @@
   "BEST_PERFORMANCE": "Best Performance",
   "ANOTHER_SCHOOL": "Another School",
   "DONT_SHOW_COMPARISON": "Don't show comparison",
-  "DAYS": "Days"
+  "DAYS": "Days",
+  "CHOOSE_STUDENTS_FOR_ATTENDANCE_SMS": "Choose students for attendance SMS",
+  "STUDENTS_ABSENT": "Students absent",
+  "SEND_MESSAGE": "Send Message",
+  "SMS_WILL_AUTOMATICALLY_SENT": "SMS will automatically be sent from the system by 9:30 am.",
+  "SELECT_ALL": "Select all",
+  "SEND": "Send"
 }

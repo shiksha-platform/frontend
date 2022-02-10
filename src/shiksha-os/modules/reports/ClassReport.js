@@ -151,7 +151,7 @@ export default function ClassReport() {
                     {...{
                       students: students[item.id] ? students[item.id] : [],
                       attendance: attendance[item.id]
-                        ? attendance[item.id]
+                        ? [attendance[item.id]]
                         : [],
                     }}
                   />

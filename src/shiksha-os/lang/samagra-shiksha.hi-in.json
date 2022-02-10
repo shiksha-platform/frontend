@@ -149,5 +149,11 @@
   "BEST_PERFORMANCE": "सबसे अच्छा प्रदर्शन",
   "ANOTHER_SCHOOL": "दूसरा स्कूल",
   "DONT_SHOW_COMPARISON": "तुलना न दिखाएं",
-  "DAYS": "दिन"
+  "DAYS": "दिन",
+  "CHOOSE_STUDENTS_FOR_ATTENDANCE_SMS": "उपस्थिति एसएमएस के लिए छात्रों को चुनें",
+  "STUDENTS_ABSENT": "छात्र अनुपस्थित",
+  "SEND_MESSAGE": "संदेश भेजें",
+  "SMS_WILL_AUTOMATICALLY_SENT": "सिस्टम से सुबह 9:30 बजे तक एसएमएस अपने आप भेज दिया जाएगा।",
+  "SELECT_ALL": "सबका चयन करें",
+  "SEND": "भेजना"
 }

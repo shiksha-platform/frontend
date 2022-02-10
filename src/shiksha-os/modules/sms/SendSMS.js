@@ -1,7 +1,10 @@
-import moment from "moment";
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 import {
   Box,
   Button,
+  Checkbox,
   FlatList,
   HStack,
   PresenceTransition,
@@ -10,21 +13,15 @@ import {
   Text,
   VStack,
 } from "native-base";
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import DayWiesBar from "../../../components/CalendarBar";
-import IconByName from "../../../components/IconByName";
-import Layout from "../../../layout/Layout";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
-import AttendanceComponent, {
-  GetAttendance,
-} from "../../../components/attendance/AttendanceComponent";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
-import Report from "../../../components/attendance/Report";
-import { Link, useParams } from "react-router-dom";
+import { GetAttendance } from "../../../components/attendance/AttendanceComponent";
+import Layout from "../../../layout/Layout";
+import DayWiesBar from "../../../components/CalendarBar";
 import Card from "../../../components/students/Card";
+import IconByName from "../../../components/IconByName";
 
-export default function ClassReportDetail() {
+export default function SendSMS() {
   const { t } = useTranslation();
   const [datePage, setDatePage] = useState(0);
   const { classId } = useParams();
@@ -71,38 +68,24 @@ export default function ClassReportDetail() {
   return (
     <Layout
       _header={{
-        title: t("MY_CLASSES"),
-        icon: "Group",
-        subHeading: moment().format("hh:mm a"),
+        title: t("SEND_MESSAGE"),
+        subHeading: classObject.className,
         _subHeading: { fontWeight: 500 },
-        iconComponent: (
-          <Link
-            to={"/classes/attendance/reportCompare/" + classId}
-            style={{ textDecoration: "none" }}
-          >
-            <Box
-              rounded={"full"}
-              px="5"
-              py="2"
-              borderColor="button.500"
-              borderWidth={1}
-            >
-              <HStack space="2">
-                <Text color="button.500" fontSize="14" fontWeight="500">
-                  {t("COMPARE")}
-                </Text>
-                <IconByName
-                  color="button.500"
-                  name="ArrowDownSLineIcon"
-                  isDisabled
-                />
-              </HStack>
-            </Box>
-          </Link>
-        ),
       }}
       subHeader={
-        <Stack>
+        <HStack space="4" justifyContent="space-between" alignItems="center">
+          <DayWiesBar
+            activeColor="gray.900"
+            _box={{ p: 0, bg: "transparent" }}
+            {...{ page: datePage, setPage: setDatePage }}
+          />
+          <IconByName name={"ListUnorderedIcon"} isDisabled />
+        </HStack>
+      }
+      _subHeader={{ bg: "attendanceCard.500", mb: 1 }}
+    >
+      <VStack space="1">
+        <Box bg="white" p="5">
           <Text fontSize="16" fontWeight="600">
             {classObject.className}
           </Text>
@@ -110,52 +93,6 @@ export default function ClassReportDetail() {
             {t("TOTAL")}: {students.length} {t("PRESENT")}:
             {attendance.filter((e) => e.attendance === "Present").length}
           </Text>
-        </Stack>
-      }
-      _subHeader={{ bg: "reportCard.500", mb: 1 }}
-    >
-      <VStack space="1">
-        <Box bg="white" p="5">
-          <HStack space="4" justifyContent="space-between" alignItems="center">
-            <DayWiesBar
-              _box={{ p: 0 }}
-              {...{ page: datePage, setPage: setDatePage }}
-            />
-            <IconByName name={"ListUnorderedIcon"} isDisabled />
-          </HStack>
-        </Box>
-        <Box bg="white" p="5">
-          <Box borderBottomWidth={1} borderBottomColor="coolGray.200">
-            <Collapsible
-              defaultCollapse={true}
-              header={
-                <VStack>
-                  <Text fontSize="16" fontWeight="600">
-                    {t("SUMMARY")}
-                  </Text>
-                  <Text fontSize="10" fontWeight="300">
-                    {t("TOTAL")}: {students.length} {t("PRESENT")}:
-                    {
-                      attendance.filter((e) => e.attendance === "Present")
-                        .length
-                    }
-                  </Text>
-                </VStack>
-              }
-              body={
-                <VStack pt="5">
-                  <Report {...{ students, attendance: [attendance] }} />
-                  <Text py="5" px="10px" fontSize={12} color={"gray.400"}>
-                    <Text bold color={"gray.700"}>
-                      {t("NOTES")}
-                      {": "}
-                    </Text>
-                    {t("MONTHLY_REPORT_WILL_GENRRATED_LAST_DAY_EVERY_MONTH")}
-                  </Text>
-                </VStack>
-              }
-            />
-          </Box>
         </Box>
         <Box bg="white" p={4}>
           <Stack space={2}>
@@ -191,6 +128,7 @@ export default function ClassReportDetail() {
                           <Card
                             item={item}
                             type="rollFather"
+                            hidePopUpButton
                             textTitle={
                               <VStack alignItems="center">
                                 <Text fontSize="14" fontWeight="500">
@@ -200,29 +138,25 @@ export default function ClassReportDetail() {
                                 </Text>
                               </VStack>
                             }
-                            href={"/students/" + item.id}
-                            hidePopUpButton
+                            rightComponent={
+                              <Checkbox
+                                value="test"
+                                accessibilityLabel="This is a dummy checkbox"
+                              />
+                            }
                           />
                         </Box>
                       )}
                       keyExtractor={(item) => item.id}
                     />
                   </Box>
-                  <Button
-                    mt="2"
-                    variant="outline"
-                    colorScheme="button"
-                    rounded="lg"
-                  >
-                    {t("SEE_MORE")}
-                  </Button>
                 </VStack>
               }
             />
           </Stack>
         </Box>
 
-        <Box bg="white" p={4}>
+        <Box bg="white" p={4} mb="4" roundedBottom={"2xl"}>
           <Stack space={2}>
             <Collapsible
               defaultCollapse={true}
@@ -256,6 +190,7 @@ export default function ClassReportDetail() {
                           <Card
                             item={item}
                             type="rollFather"
+                            hidePopUpButton
                             textTitle={
                               <VStack alignItems="center">
                                 <Text fontSize="14" fontWeight="500">
@@ -267,64 +202,44 @@ export default function ClassReportDetail() {
                                 </Text>
                               </VStack>
                             }
-                            href={"/students/" + item.id}
-                            hidePopUpButton
+                            rightComponent={
+                              <Checkbox
+                                value="test"
+                                accessibilityLabel="This is a dummy checkbox"
+                              />
+                            }
                           />
                         </Box>
                       )}
                       keyExtractor={(item) => item.id}
                     />
                   </Box>
-                  <Button
-                    mt="2"
-                    variant="outline"
-                    colorScheme="button"
-                    rounded="lg"
-                  >
-                    {t("SEE_MORE")}
-                  </Button>
                 </VStack>
               }
             />
           </Stack>
         </Box>
-
-        <Box bg="white" p={4}>
-          <Stack space={2}>
-            <Collapsible
-              defaultCollapse={true}
-              isHeaderBold={false}
-              header={
-                <>
-                  <VStack>
-                    <Text bold fontSize={"md"}>
-                      {t("STUDENT_WISE_ATTENDANCE")}
-                    </Text>
-                    <Text fontSize={"xs"}>
-                      {students?.length + " " + t("STUDENTS")}
-                    </Text>
-                  </VStack>
-                </>
-              }
-              body={
-                <FlatList
-                  data={students}
-                  renderItem={({ item, index }) => (
-                    <AttendanceComponent
-                      isEditDisabled
-                      weekPage={0}
-                      student={item}
-                      withDate={1}
-                      attendanceProp={attendance}
-                      getAttendance={getAttendance}
-                      _card={{ hidePopUpButton: true }}
-                    />
-                  )}
-                  keyExtractor={(item) => item.id}
-                />
-              }
-            />
-          </Stack>
+        <Box p="2" py="5" bg="white" mb="1">
+          <VStack space={"15px"} alignItems={"center"}>
+            <Text
+              textAlign={"center"}
+              fontSize="10px"
+              textTransform={"inherit"}
+            >
+              <Text bold color={"gray.700"}>
+                {t("NOTES") + ": "}
+              </Text>
+              {t("SMS_WILL_AUTOMATICALLY_SENT")}
+            </Text>
+            <Button.Group>
+              <Button variant="outline" colorScheme="button">
+                {t("SELECT_ALL")}
+              </Button>
+              <Button colorScheme="button" _text={{ color: "white" }}>
+                {t("SEND")}
+              </Button>
+            </Button.Group>
+          </VStack>
         </Box>
       </VStack>
     </Layout>

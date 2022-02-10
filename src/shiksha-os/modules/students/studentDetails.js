@@ -30,6 +30,7 @@ export default function App() {
   const { studentId } = useParams();
   const [attendance, setAttendance] = useState([]);
   const teacherId = sessionStorage.getItem("id");
+  const [attendanceView, setAttendanceView] = useState("month");
 
   useEffect(() => {
     let ignore = false;
@@ -106,6 +107,11 @@ export default function App() {
           <Box bg="white" py="5">
             <Collapsible
               defaultCollapse
+              isDisableCollapse
+              onPressFuction={(e) => {
+                setAttendanceView(attendanceView === "month" ? "" : "month");
+              }}
+              collapsButton={attendanceView === "month" ? false : true}
               header={t("WEEK_ATTENDANCE")}
               body={
                 <>
@@ -113,7 +119,7 @@ export default function App() {
                   studentObject &&
                   studentObject?.id ? (
                     <AttendanceComponent
-                      type="month"
+                      type={attendanceView}
                       weekPage={0}
                       student={studentObject}
                       withDate={true}
@@ -268,6 +274,9 @@ const Collapsible = ({
   body,
   defaultCollapse,
   isHeaderBold,
+  isDisableCollapse,
+  onPressFuction,
+  collapsButton,
   _header,
   _icon,
   _box,
@@ -276,7 +285,16 @@ const Collapsible = ({
 
   return (
     <>
-      <Pressable onPress={() => setCollaps(!collaps)}>
+      <Pressable
+        onPress={() => {
+          if (onPressFuction) {
+            onPressFuction();
+          }
+          if (!isDisableCollapse) {
+            setCollaps(!collaps);
+          }
+        }}
+      >
         <Box>
           <HStack alignItems={"center"} justifyContent={"space-between"}>
             <Text
@@ -289,8 +307,14 @@ const Collapsible = ({
             <IconByName
               size="sm"
               isDisabled={true}
-              color={!collaps ? "coolGray.400" : "coolGray.600"}
-              name={!collaps ? "ArrowDownSLineIcon" : "ArrowUpSLineIcon"}
+              color={
+                !collaps || collapsButton ? "coolGray.400" : "coolGray.600"
+              }
+              name={
+                !collaps || collapsButton
+                  ? "ArrowDownSLineIcon"
+                  : "ArrowUpSLineIcon"
+              }
               {..._icon}
             />
           </HStack>

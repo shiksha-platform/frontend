@@ -16,6 +16,7 @@ import manifest from "./shiksha-os/manifest.json";
 import ClassReport from "./shiksha-os/modules/reports/ClassReport";
 import ClassReportDetail from "./shiksha-os/modules/reports/ClassReportDetail";
 import CompareReport from "./shiksha-os/modules/reports/CompareReport";
+import SendSMS from "./shiksha-os/modules/sms/SendSMS";
 
 i18n.use(initReactI18next).init(init);
 
@@ -25,7 +26,6 @@ const fontFamily =
 const fontSize = localStorage.getItem("lang") === "hi" ? "20px" : "";
 
 const theme = extendTheme({
-  // Make sure values below matches any of the keys in `fontConfig`
   fonts: {
     heading: fontFamily,
     body: fontFamily,
@@ -56,6 +56,10 @@ const theme = extendTheme({
     attendanceCard: {
       500: "#C9AFF4",
     },
+    attendanceCardText: {
+      400: "#9C9EA0",
+      500: "#373839",
+    },
     reportCard: {
       500: "#FFCAAC",
     },
@@ -73,19 +77,22 @@ const theme = extendTheme({
     presentCardCompareText: {
       500: "#FA8129",
     },
-    apsentCardBg: {
+    absentCardBg: {
       500: "#FDE7E7",
       600: "#dfcbcb",
     },
-    apsentCardCompareBg: {
+    absentCardCompareBg: {
       500: "#FFF6F6",
       600: "#dfcbcb",
     },
-    apsentCardText: {
+    absentCardText: {
       500: "#F57B7B",
     },
-    apsentCardCompareText: {
+    absentCardCompareText: {
       500: "#FA8129",
+    },
+    weekCardCompareBg: {
+      500: "#FFF8F7",
     },
     reportBoxBg: {
       400: "#FFF8F7",
@@ -112,6 +119,7 @@ const theme = extendTheme({
     attendanceUnmarked: {
       600: "#C4C4D4",
       500: "#C4C4D4",
+      400: "#d3d3e5",
       100: "#F0F0F4",
     },
     timeTableCardOrange: {
@@ -241,6 +249,14 @@ export default function App() {
           element={
             <SubApp>
               <CompareReport />
+            </SubApp>
+          }
+        />
+        <Route
+          path="/classes/attendance/sendSms/:classId"
+          element={
+            <SubApp>
+              <SendSMS />
             </SubApp>
           }
         />

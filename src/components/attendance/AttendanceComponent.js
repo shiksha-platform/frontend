@@ -17,6 +17,7 @@ import moment from "moment";
 import Card from "../students/Card";
 import IconByName from "../IconByName";
 import Report from "./Report";
+import { Link } from "react-router-dom";
 
 export function calendar(weekPage, today, type) {
   let date = moment();
@@ -35,8 +36,8 @@ export function calendar(weekPage, today, type) {
       return weekDates({ today: today }, date);
     } else if (type === "weeks") {
       return [
-        weekDates({ today: today }, date.clone().add(-1 * 7, "days")),
         weekDates({ today: today }, date),
+        weekDates({ today: today }, date.clone().add(-1 * 7, "days")),
       ];
     }
     return [weekDates({ today: today }, date)];
@@ -102,14 +103,14 @@ export const GetIcon = ({ status, _box, color, _icon }) => {
       break;
     case "Today":
       icon = (
-        <Box {..._box} color={color ? color : "attendanceUnmarked.100"}>
+        <Box {..._box} color={color ? color : "attendanceUnmarked.500"}>
           <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
         </Box>
       );
       break;
     default:
       icon = (
-        <Box {..._box} color={color ? color : "attendanceUnmarked.100"}>
+        <Box {..._box} color={color ? color : "attendanceUnmarked.400"}>
           <IconByName name={status} {...iconProps} />
         </Box>
       );
@@ -228,95 +229,6 @@ export const MultipalAttendance = ({
     }
   };
 
-  const PopupActionSheet = () => {
-    return (
-      <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
-        <Actionsheet.Content alignItems={"left"} bg="attendanceCard.500">
-          <HStack justifyContent={"space-between"}>
-            <Stack p={5} pt={2} pb="25px">
-              <Text color={"white"} fontSize="16px" fontWeight={"600"}>
-                {t("ATTENDANCE_SUMMARY_REPORT")}
-              </Text>
-              <Text color={"white"} fontSize="12px" fontWeight={"400"}>
-                {classObject?.title ?? ""}
-              </Text>
-            </Stack>
-            <IconByName
-              name="CloseCircleLineIcon"
-              color="white"
-              onPress={(e) => setShowModal(false)}
-            />
-          </HStack>
-        </Actionsheet.Content>
-        <Stack width={"100%"} space="1" bg={"gray.200"}>
-          <Box bg="white" p={5}>
-            <HStack justifyContent="space-between" alignItems="center" pb={5}>
-              <Text fontSize={"16px"} fontWeight={"600"}>
-                {t("ATTENDANCE_SUMMARY")}
-              </Text>
-              <Text fontSize={"14px"}>
-                {t("TODAY") + ": "}
-                <Text fontWeight={"600"}>{moment().format("DD MMM, Y")}</Text>
-              </Text>
-            </HStack>
-            <Report {...{ students, attendance }} />
-          </Box>
-          <Box bg="white" p={5}>
-            <Box bg={"gray.100"} rounded={"md"} p="4">
-              <VStack space={5}>
-                <HStack justifyContent={"space-between"} alignItems="center">
-                  <Text bold>
-                    100% {t("ATTENDANCE") + " " + t("THIS_WEEK")}
-                  </Text>
-                  <IconByName name="More2LineIcon" isDisabled />
-                </HStack>
-                <HStack alignItems="center" justifyContent={"space-around"}>
-                  {students.map((student, index) =>
-                    index < 3 ? (
-                      <Stack key={index}>
-                        <Card
-                          item={student}
-                          hidePopUpButton={true}
-                          type="veritical"
-                        />
-                      </Stack>
-                    ) : (
-                      <div key={index}></div>
-                    )
-                  )}
-                </HStack>
-                <Button colorScheme="button" variant="outline">
-                  {(students?.length > 3 ? "+ " + (students.length - 3) : "") +
-                    " " +
-                    t("MORE")}
-                </Button>
-              </VStack>
-            </Box>
-          </Box>
-          <Box p="2" py="5" bg="white">
-            <VStack space={"15px"} alignItems={"center"}>
-              <Text textAlign={"center"} fontSize="10px">
-                {t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
-              </Text>
-              <HStack alignItems={"center"} space={4}>
-                <Button
-                  variant="outline"
-                  colorScheme="button"
-                  onPress={(e) => setShowModal(false)}
-                >
-                  {t("CLOSE")}
-                </Button>
-                <Button colorScheme="button" _text={{ color: "white" }}>
-                  {t("SEE_FULL_REPORT")}
-                </Button>
-              </HStack>
-            </VStack>
-          </Box>
-        </Stack>
-      </Actionsheet>
-    );
-  };
-
   return (
     <>
       {isWithEditButton || !isEditDisabled ? (
@@ -365,11 +277,132 @@ export const MultipalAttendance = ({
               )}
             </VStack>
           </Box>
+          <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
+            <Actionsheet.Content alignItems={"left"} bg="attendanceCard.500">
+              <HStack justifyContent={"space-between"}>
+                <Stack p={5} pt={2} pb="25px">
+                  <Text color={"white"} fontSize="16px" fontWeight={"600"}>
+                    {t("ATTENDANCE_SUMMARY_REPORT")}
+                  </Text>
+                  <Text color={"white"} fontSize="12px" fontWeight={"400"}>
+                    {classObject?.title ?? ""}
+                  </Text>
+                </Stack>
+                <IconByName
+                  name="CloseCircleLineIcon"
+                  color="white"
+                  onPress={(e) => setShowModal(false)}
+                />
+              </HStack>
+            </Actionsheet.Content>
+            <Stack width={"100%"} space="1" bg={"gray.200"}>
+              <Box bg="reportBoxBg.500" p="5" textAlign={"center"}>
+                <VStack space={2}>
+                  <Text fontSize="14px" fontWeight="500">
+                    {t("CHOOSE_STUDENTS_FOR_ATTENDANCE_SMS")}
+                  </Text>
+                  <Text fontSize="10px" fontWeight="300">
+                    {t("STUDENTS_ABSENT")}
+                  </Text>
+                  <Link
+                    style={{
+                      textDecoration: "none",
+                    }}
+                    to={"/classes/attendance/sendSms/" + classObject.id}
+                  >
+                    <Button variant="outline" colorScheme="button" rounded="lg">
+                      {t("SEND_MESSAGE")}
+                    </Button>
+                  </Link>
+                </VStack>
+              </Box>
+              <Box bg="white" p={5}>
+                <HStack
+                  justifyContent="space-between"
+                  alignItems="center"
+                  pb={5}
+                >
+                  <Text fontSize={"16px"} fontWeight={"600"}>
+                    {t("ATTENDANCE_SUMMARY")}
+                  </Text>
+                  <Text fontSize={"14px"}>
+                    {t("TODAY") + ": "}
+                    <Text fontWeight={"600"}>
+                      {moment().format("DD MMM, Y")}
+                    </Text>
+                  </Text>
+                </HStack>
+                <Report {...{ students, attendance: [attendance] }} />
+              </Box>
+              <Box bg="white" p={5}>
+                <Box bg={"gray.100"} rounded={"md"} p="4">
+                  <VStack space={5}>
+                    <HStack
+                      justifyContent={"space-between"}
+                      alignItems="center"
+                    >
+                      <Text bold>
+                        100% {t("ATTENDANCE") + " " + t("THIS_WEEK")}
+                      </Text>
+                      <IconByName name="More2LineIcon" isDisabled />
+                    </HStack>
+                    <HStack alignItems="center" justifyContent={"space-around"}>
+                      {students.map((student, index) =>
+                        index < 3 ? (
+                          <Stack key={index}>
+                            <Card
+                              item={student}
+                              hidePopUpButton={true}
+                              type="veritical"
+                            />
+                          </Stack>
+                        ) : (
+                          <div key={index}></div>
+                        )
+                      )}
+                    </HStack>
+                    <Button colorScheme="button" variant="outline">
+                      {(students?.length > 3
+                        ? "+ " + (students.length - 3)
+                        : "") +
+                        " " +
+                        t("MORE")}
+                    </Button>
+                  </VStack>
+                </Box>
+              </Box>
+              <Box p="2" py="5" bg="white">
+                <VStack space={"15px"} alignItems={"center"}>
+                  <Text textAlign={"center"} fontSize="10px">
+                    {t("ATTENDANCE_WILL_AUTOMATICALLY_SUBMIT")}
+                  </Text>
+                  <HStack alignItems={"center"} space={4}>
+                    <Button
+                      variant="outline"
+                      colorScheme="button"
+                      onPress={(e) => setShowModal(false)}
+                    >
+                      {t("CLOSE")}
+                    </Button>
+                    <Link
+                      style={{
+                        textDecoration: "none",
+                      }}
+                      to={"/classes/attendance/report/" + classObject.id}
+                    >
+                      <Button colorScheme="button" _text={{ color: "white" }}>
+                        {t("SEE_FULL_REPORT")}
+                      </Button>
+                    </Link>
+                  </HStack>
+                </VStack>
+              </Box>
+            </Stack>
+          </Actionsheet>
         </Stack>
       ) : (
         <></>
       )}
-      <PopupActionSheet />
     </>
   );
 };
@@ -384,7 +417,7 @@ export default function AttendanceComponent({
   getAttendance,
   _card,
   isEditDisabled,
-  _weekNameText,
+  _weekBox,
 }) {
   const { t } = useTranslation();
   const teacherId = sessionStorage.getItem("id");
@@ -404,7 +437,7 @@ export default function AttendanceComponent({
       setLoding({});
     }
     getData();
-  }, [weekPage, attendanceProp, today]);
+  }, [weekPage, attendanceProp, today, type]);
 
   const markAttendance = async (dataObject) => {
     setLoding({
@@ -482,7 +515,7 @@ export default function AttendanceComponent({
                   setShowModal,
                   loding,
                   type,
-                  _weekNameText,
+                  _weekBox,
                 }}
               />
             ) : (
@@ -502,7 +535,8 @@ export default function AttendanceComponent({
                 setAttendanceObject,
                 setShowModal,
                 loding,
-                _weekNameText,
+                type,
+                _weekBox,
               }}
             />
           </Box>
@@ -560,6 +594,7 @@ export default function AttendanceComponent({
 
 const CalendarComponent = ({
   monthDays,
+  type,
   isIconSizeSmall,
   isEditDisabled,
   attendance,
@@ -568,16 +603,19 @@ const CalendarComponent = ({
   setAttendanceObject,
   setShowModal,
   loding,
-  _weekNameText,
+  _weekBox,
 }) => {
   return monthDays.map((week, index) => (
     <HStack
       justifyContent="space-around"
       alignItems="center"
       key={index}
-      borderBottomWidth={monthDays.length < 2 && index !== 0 ? "0" : "1"}
+      borderBottomWidth={
+        monthDays.length > 1 && monthDays.length - 1 !== index ? "1" : "0"
+      }
       borderBottomColor={"coolGray.300"}
       p={"2"}
+      {...(_weekBox?.[index] ? _weekBox[index] : {})}
     >
       {week.map((day, subIndex) => {
         let isToday = moment().format("Y-MM-DD") === day.format("Y-MM-DD");
@@ -622,7 +660,7 @@ const CalendarComponent = ({
         } else if (isToday) {
           attendanceIconProp = { ...attendanceIconProp, status: "Today" };
         } else if (moment().diff(day, "days") > 0) {
-          attendanceIconProp = { ...attendanceIconProp, color: "gray.100" };
+          attendanceIconProp = { ...attendanceIconProp, status: "Unmarked" };
         }
 
         if (manifest.status) {
@@ -642,28 +680,33 @@ const CalendarComponent = ({
             borderWidth={isToday ? "1" : ""}
             borderColor={isToday ? "button.500" : ""}
             rounded="lg"
-            opacity={day.format("M") === moment().format("M") ? 1 : 0.3}
+            opacity={
+              type !== "month" && day.day() !== 0
+                ? 1
+                : day.day() === 0
+                ? 0.3
+                : day.format("M") !== moment().format("M")
+                ? 0.3
+                : 1
+            }
           >
             <Text
               key={subIndex}
-              py={monthDays.length > 1 && index ? 0 : !isIconSizeSmall ? 2 : 0}
+              pt={monthDays.length > 1 && index ? 0 : !isIconSizeSmall ? 2 : 0}
               textAlign="center"
-              color={day.day() === 0 ? "button.500" : ""}
             >
               {!isIconSizeSmall ? (
                 <VStack alignItems={"center"}>
                   {index === 0 ? (
-                    <Text
-                      pb="4"
-                      color={day.day() === 0 ? "button.500" : "coolGray.400"}
-                      {..._weekNameText}
-                    >
+                    <Text pb="1" color={"attendanceCardText.400"}>
                       {day.format("ddd")}
                     </Text>
                   ) : (
                     ""
                   )}
-                  <Text color={"coolGray.900"}>{day.format("DD")}</Text>
+                  <Text color={"attendanceCardText.500"}>
+                    {day.format("DD")}
+                  </Text>
                 </VStack>
               ) : (
                 <HStack alignItems={"center"} space={1}>
@@ -674,7 +717,11 @@ const CalendarComponent = ({
             </Text>
             <TouchableHighlight
               onPress={(e) => {
-                if (!isEditDisabled) {
+                if (
+                  !isEditDisabled &&
+                  day.format("M") === moment().format("M") &&
+                  day.day() !== 0
+                ) {
                   markAttendance({
                     attendanceId: attendanceItem?.id ? attendanceItem.id : null,
                     date: dateValue,
@@ -684,7 +731,11 @@ const CalendarComponent = ({
                 }
               }}
               onLongPress={(event) => {
-                if (!isEditDisabled) {
+                if (
+                  !isEditDisabled &&
+                  day.format("M") === moment().format("M") &&
+                  day.day() !== 0
+                ) {
                   setAttendanceObject({
                     attendanceId: attendanceItem?.id ? attendanceItem.id : null,
                     date: dateValue,
