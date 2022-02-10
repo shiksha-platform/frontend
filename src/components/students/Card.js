@@ -115,6 +115,27 @@ const SubCard = ({
               <Text italic>{t("NOT_ENTERED")}</Text>
             )}
           </HStack>
+        ) : type === "rollFather" ? (
+          <Text color="coolGray.400" fontSize={"xs"} {..._textSubTitle}>
+            {textSubTitle ? (
+              textSubTitle
+            ) : (
+              <HStack space={1}>
+                <Text>{t("ROLL_NUMBER") + "."}</Text>
+                {item.admissionNo ? (
+                  <Text>{item.admissionNo.toString().padStart(2, "0")}</Text>
+                ) : (
+                  <Text italic>{t("NOT_ENTERED")}</Text>
+                )}
+                <Text>{t("FATHERS_NAME")}:</Text>
+                {item.fathersName ? (
+                  <Text>{item.fathersName}</Text>
+                ) : (
+                  <Text italic>{t("NOT_ENTERED")}</Text>
+                )}
+              </HStack>
+            )}
+          </Text>
         ) : (
           <Text color="coolGray.400" fontSize={"xs"} {..._textSubTitle}>
             {textSubTitle ? (
@@ -176,7 +197,7 @@ export default function Card({
 
   return (
     <>
-      <HStack justifyContent="space-between" width={"100%"}>
+      <HStack justifyContent="space-between" width={"100%"} alignItems="center">
         <PressableNew href={href ? href : null}>
           <SubCard
             {...{

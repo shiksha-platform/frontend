@@ -24,10 +24,10 @@ export default function ClassReport() {
   const { t } = useTranslation();
   const [datePage, setDatePage] = useState(0);
   const [calsses, setClasses] = useState([]);
-  const [calssObject, setClassObject] = useState({});
+  const [classObject, setClassObject] = useState({});
   const teacherId = sessionStorage.getItem("id");
   const [students, setStudents] = useState([]);
-  const [attendance, setAttendance] = useState([]);
+  const [attendance, setAttendance] = useState({});
   const [calendarView, setCalendarView] = useState("T");
 
   useEffect(() => {
@@ -40,33 +40,32 @@ export default function ClassReport() {
         },
       });
       if (!ignore) setClasses(responceClass);
-      const studentData = await studentServiceRegistry.getAll({
-        filters: {
-          currentClassID: {
-            eq: calssObject.id,
-          },
-        },
-      });
-      setStudents(studentData);
-      await getAttendance();
     };
     getData();
     return () => {
       ignore = true;
     };
-  }, [teacherId, calssObject]);
+  }, [teacherId]);
 
-  const getAttendance = async (e) => {
+  const getAttendance = async (classId) => {
     const attendanceData = await GetAttendance({
       classId: {
-        eq: calssObject.id,
+        eq: classId,
       },
       teacherId: {
         eq: teacherId,
       },
     });
 
-    setAttendance(attendanceData);
+    setAttendance({ ...attendance, [classId]: attendanceData });
+    const studentData = await studentServiceRegistry.getAll({
+      filters: {
+        currentClassID: {
+          eq: classId,
+        },
+      },
+    });
+    setStudents({ ...students, [classId]: studentData });
   };
 
   return (
@@ -135,7 +134,7 @@ export default function ClassReport() {
             borderBottomColor="coolGray.200"
           >
             <Collapsible
-              onPressFuction={(e) => setClassObject(item)}
+              onPressFuction={(e) => getAttendance(item.id)}
               header={
                 <VStack>
                   <Text fontSize="16" fontWeight="600">
@@ -148,7 +147,14 @@ export default function ClassReport() {
               }
               body={
                 <VStack>
-                  <Report {...{ students, attendance }} />
+                  <Report
+                    {...{
+                      students: students[item.id] ? students[item.id] : [],
+                      attendance: attendance[item.id]
+                        ? attendance[item.id]
+                        : [],
+                    }}
+                  />
                   <Text py="5" px="10px" fontSize={12} color={"gray.400"}>
                     <Text bold color={"gray.700"}>
                       {t("NOTES")}

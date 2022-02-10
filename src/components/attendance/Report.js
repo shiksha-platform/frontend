@@ -1,4 +1,4 @@
-import { Box, FlatList, HStack, Text, VStack } from "native-base";
+import { Box, FlatList, HStack, Stack, Text, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import IconByName from "../IconByName";
@@ -6,12 +6,12 @@ import manifest from "../../modules/attendance/manifest.json";
 import moment from "moment";
 import ProgressBar from "../ProgressBar";
 
-export default function Report({ students, attendance }) {
+export default function Report({ students, attendance, compareAttendance }) {
   const { t } = useTranslation();
   const fullName = sessionStorage.getItem("fullName");
   const status = manifest?.status ? manifest?.status : [];
 
-  const getStudentsAttendance = (e) => {
+  const getStudentsAttendance = (attendance) => {
     return students
       .map((item) => {
         return attendance
@@ -25,8 +25,13 @@ export default function Report({ students, attendance }) {
       .filter((e) => e);
   };
 
-  const countReport = ({ gender, attendanceType, type }) => {
-    let attendanceAll = getStudentsAttendance();
+  const countReport = ({ gender, compare, attendanceType, type }) => {
+    let attendanceAll;
+    if (!compare) {
+      attendanceAll = getStudentsAttendance(attendance);
+    } else {
+      attendanceAll = getStudentsAttendance(compareAttendance);
+    }
 
     let studentIds = students.map((e) => e.id);
     if (gender && [t("BOYS"), t("GIRLS")].includes(gender)) {
@@ -96,41 +101,128 @@ export default function Report({ students, attendance }) {
       <Box bg={"reportBoxBg.400"}>
         <FlatList
           data={[t("BOYS"), t("GIRLS"), t("TOTAL")]}
-          renderItem={({ item, index }) => (
-            <HStack
-              alignItems={"center"}
-              space={2}
-              justifyContent={"space-around"}
-              py="5"
-              px="2"
-            >
-              <Text px="2" fontSize="12px" textAlign={"center"}>
-                {item}
-              </Text>
-              <VStack flex="auto" alignContent={"center"}>
-                <ProgressBar
-                  data={status.map((subItem, index) => {
-                    let statusCount = countReport({
-                      gender: item,
-                      attendanceType: subItem,
-                    });
-                    return {
-                      name: subItem,
-                      color:
-                        subItem === "Present"
-                          ? "attendancePresent.500"
-                          : subItem === "Absent"
-                          ? "attendanceAbsent.500"
-                          : subItem === "Unmarked"
-                          ? "attendanceUnmarked.500"
-                          : "coolGray.500",
-                      value: statusCount,
-                    };
-                  })}
-                />
+          renderItem={({ item, index }) =>
+            compareAttendance && compareAttendance.length ? (
+              <VStack
+                p="5"
+                space={3}
+                borderBottomWidth="1"
+                borderBottomColor={"reportBoxBg.600"}
+              >
+                <Text fontSize="12px" fontWeight="600">
+                  {item}
+                </Text>
+                <VStack space={3}>
+                  <HStack alignItems={"center"} space={3}>
+                    <VStack alignItems={"center"}>
+                      {t("THIS_WEEK")
+                        .split(" ")
+                        .map((item, index) => (
+                          <Text fontSize="10px" fontWeight="400">
+                            {item}
+                          </Text>
+                        ))}
+                    </VStack>
+
+                    <VStack flex="auto" alignContent={"center"}>
+                      <ProgressBar
+                        data={status.map((subItem, index) => {
+                          let statusCount = countReport({
+                            gender: item,
+                            attendanceType: subItem,
+                          });
+                          return {
+                            name: subItem,
+                            color:
+                              subItem === "Present"
+                                ? "attendancePresent.500"
+                                : subItem === "Absent"
+                                ? "attendanceAbsent.500"
+                                : subItem === "Unmarked"
+                                ? "attendanceUnmarked.500"
+                                : "coolGray.500",
+                            value: statusCount,
+                          };
+                        })}
+                      />
+                    </VStack>
+                  </HStack>
+                  <HStack alignItems={"center"} space={3}>
+                    <VStack alignItems="center">
+                      {t("LAST_WEEK")
+                        .split(" ")
+                        .map((item, index) => (
+                          <Text
+                            fontSize="10px"
+                            fontWeight="400"
+                            color="presentCardCompareText.500"
+                          >
+                            {item}
+                          </Text>
+                        ))}
+                    </VStack>
+                    <VStack flex="auto" alignContent={"center"}>
+                      <ProgressBar
+                        data={status.map((subItem, index) => {
+                          let statusCount = countReport({
+                            gender: item,
+                            attendanceType: subItem,
+                            compare: true,
+                          });
+                          return {
+                            name: subItem,
+                            color:
+                              subItem === "Present"
+                                ? "attendancePresent.500"
+                                : subItem === "Absent"
+                                ? "attendanceAbsent.500"
+                                : subItem === "Unmarked"
+                                ? "attendanceUnmarked.500"
+                                : "coolGray.500",
+                            value: statusCount,
+                          };
+                        })}
+                      />
+                    </VStack>
+                  </HStack>
+                </VStack>
               </VStack>
-            </HStack>
-          )}
+            ) : (
+              <HStack
+                alignItems={"center"}
+                space={2}
+                justifyContent={"space-around"}
+                py="5"
+                px="2"
+              >
+                <Text px="2" fontSize="12px" textAlign={"center"}>
+                  {item}
+                </Text>
+                <VStack flex="auto" alignContent={"center"}>
+                  <ProgressBar
+                    data={status.map((subItem, index) => {
+                      let statusCount = countReport({
+                        gender: item,
+                        attendanceType: subItem,
+                      });
+                      return {
+                        name: subItem,
+                        color:
+                          subItem === "Present"
+                            ? "attendancePresent.500"
+                            : subItem === "Absent"
+                            ? "attendanceAbsent.500"
+                            : subItem === "Unmarked"
+                            ? "attendanceUnmarked.500"
+                            : "coolGray.500",
+                        value: statusCount,
+                      };
+                    })}
+                  />
+                </VStack>
+              </HStack>
+            )
+          }
           keyExtractor={(item, index) => index}
         />
       </Box>

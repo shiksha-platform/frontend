@@ -1,5 +1,6 @@
 import moment from "moment";
 import {
+  Actionsheet,
   Box,
   Button,
   FlatList,
@@ -28,7 +29,7 @@ export default function ClassReportDetail() {
   const { t } = useTranslation();
   const [datePage, setDatePage] = useState(0);
   const { classId } = useParams();
-  const [calssObject, setClassObject] = useState({});
+  const [classObject, setClassObject] = useState({});
   const teacherId = sessionStorage.getItem("id");
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
@@ -75,12 +76,36 @@ export default function ClassReportDetail() {
         icon: "Group",
         subHeading: moment().format("hh:mm a"),
         _subHeading: { fontWeight: 500 },
-        avatar: true,
+        iconComponent: (
+          <Link
+            to={"/classes/attendance/reportCompare/" + classId}
+            style={{ textDecoration: "none" }}
+          >
+            <Box
+              rounded={"full"}
+              px="5"
+              py="2"
+              borderColor="button.500"
+              borderWidth={1}
+            >
+              <HStack space="2">
+                <Text color="button.500" fontSize="14" fontWeight="500">
+                  {t("COMPARE")}
+                </Text>
+                <IconByName
+                  color="button.500"
+                  name="ArrowDownSLineIcon"
+                  isDisabled
+                />
+              </HStack>
+            </Box>
+          </Link>
+        ),
       }}
       subHeader={
         <Stack>
           <Text fontSize="16" fontWeight="600">
-            {calssObject.className}
+            {classObject.className}
           </Text>
           <Text fontSize="10" fontWeight="300">
             {t("TOTAL")}: {students.length} {t("PRESENT")}:
@@ -166,6 +191,16 @@ export default function ClassReportDetail() {
                         >
                           <Card
                             item={item}
+                            type="rollFather"
+                            textTitle={
+                              <VStack alignItems="center">
+                                <Text fontSize="14" fontWeight="500">
+                                  <Text>{item.fullName}</Text>
+                                  <Text color="gray.300"> • </Text>
+                                  <Text color="presentCardText.500">100%</Text>
+                                </Text>
+                              </VStack>
+                            }
                             href={"/students/" + item.id}
                             hidePopUpButton
                           />
@@ -221,6 +256,18 @@ export default function ClassReportDetail() {
                         >
                           <Card
                             item={item}
+                            type="rollFather"
+                            textTitle={
+                              <VStack alignItems="center">
+                                <Text fontSize="14" fontWeight="500">
+                                  <Text>{item.fullName}</Text>
+                                  <Text color="gray.300"> • </Text>
+                                  <Text color="apsentCardText.500">
+                                    3 {t("DAYS")}
+                                  </Text>
+                                </Text>
+                              </VStack>
+                            }
                             href={"/students/" + item.id}
                             hidePopUpButton
                           />

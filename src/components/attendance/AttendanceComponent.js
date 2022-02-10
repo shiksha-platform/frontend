@@ -33,6 +33,11 @@ export function calendar(weekPage, today, type) {
     date.add(weekPage * 7, "days");
     if (type === "week") {
       return weekDates({ today: today }, date);
+    } else if (type === "weeks") {
+      return [
+        weekDates({ today: today }, date.clone().add(-1 * 7, "days")),
+        weekDates({ today: today }, date),
+      ];
     }
     return [weekDates({ today: today }, date)];
   }
@@ -83,7 +88,7 @@ export const GetIcon = ({ status, _box, color, _icon }) => {
       break;
     case "Holiday":
       icon = (
-        <Box {..._box} color={color ? color : "attendanceUnmarked.500"}>
+        <Box {..._box} color={color ? color : "attendanceUnmarked.100"}>
           <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
         </Box>
       );
@@ -379,6 +384,7 @@ export default function AttendanceComponent({
   getAttendance,
   _card,
   isEditDisabled,
+  _weekNameText,
 }) {
   const { t } = useTranslation();
   const teacherId = sessionStorage.getItem("id");
@@ -476,6 +482,7 @@ export default function AttendanceComponent({
                   setShowModal,
                   loding,
                   type,
+                  _weekNameText,
                 }}
               />
             ) : (
@@ -495,6 +502,7 @@ export default function AttendanceComponent({
                 setAttendanceObject,
                 setShowModal,
                 loding,
+                _weekNameText,
               }}
             />
           </Box>
@@ -560,6 +568,7 @@ const CalendarComponent = ({
   setAttendanceObject,
   setShowModal,
   loding,
+  _weekNameText,
 }) => {
   return monthDays.map((week, index) => (
     <HStack
@@ -647,6 +656,7 @@ const CalendarComponent = ({
                     <Text
                       pb="4"
                       color={day.day() === 0 ? "button.500" : "coolGray.400"}
+                      {..._weekNameText}
                     >
                       {day.format("ddd")}
                     </Text>

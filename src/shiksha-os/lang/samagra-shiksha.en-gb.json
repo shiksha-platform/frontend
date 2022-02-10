@@ -140,5 +140,13 @@
   "ABSENT_CONSECUTIVE_3_DAYS": "Absent Consecutive 3 Days",
   "TODAY_VIEW": "Day View",
   "WEEK_VIEW": "Week View",
-  "MONTH_VIEW": "Month View"
+  "MONTH_VIEW": "Month View",
+  "COMPARE": "Compare",
+  "LAST_WEEK": "Last week",
+  "PREVIOUS_WEEK": "Previous week",
+  "PREVIOUS_MONTH": "Previous Month",
+  "BEST_PERFORMANCE": "Best Performance",
+  "ANOTHER_SCHOOL": "Another School",
+  "DONT_SHOW_COMPARISON": "Don't show comparison",
+  "DAYS": "Days"
 }

@@ -141,5 +141,13 @@
   "ABSENT_CONSECUTIVE_3_DAYS": "अनुपस्थित लगातार 3 दिन",
   "TODAY_VIEW": "आज का दृश्य",
   "WEEK_VIEW": "सप्ताह का दृश्य",
-  "MONTH_VIEW": "माह दृश्य"
+  "MONTH_VIEW": "माह दृश्य",
+  "COMPARE": "तुलना करना",
+  "LAST_WEEK": "पिछले सप्ताह",
+  "PREVIOUS_WEEK": "पिछला सप्ताह",
+  "PREVIOUS_MONTH": "पिछला महीना",
+  "BEST_PERFORMANCE": "सबसे अच्छा प्रदर्शन",
+  "ANOTHER_SCHOOL": "दूसरा स्कूल",
+  "DONT_SHOW_COMPARISON": "तुलना न दिखाएं",
+  "DAYS": "दिन"
 }

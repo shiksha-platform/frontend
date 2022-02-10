@@ -15,6 +15,8 @@ import { useLayoutEffect, useState } from "react";
 import manifest from "./shiksha-os/manifest.json";
 import ClassReport from "./shiksha-os/modules/reports/ClassReport";
 import ClassReportDetail from "./shiksha-os/modules/reports/ClassReportDetail";
+import CompareReport from "./shiksha-os/modules/reports/CompareReport";
+
 i18n.use(initReactI18next).init(init);
 
 const maxWidth = manifest?.maxWidth ? manifest?.maxWidth : "414";
@@ -61,13 +63,34 @@ const theme = extendTheme({
       500: "#DFFDE2",
       600: "#cae3ce",
     },
+    presentCardCompareBg: {
+      500: "#ECFBF2",
+      600: "#cae3ce",
+    },
+    presentCardText: {
+      500: "#07C71B",
+    },
+    presentCardCompareText: {
+      500: "#FA8129",
+    },
     apsentCardBg: {
       500: "#FDE7E7",
       600: "#dfcbcb",
     },
+    apsentCardCompareBg: {
+      500: "#FFF6F6",
+      600: "#dfcbcb",
+    },
+    apsentCardText: {
+      500: "#F57B7B",
+    },
+    apsentCardCompareText: {
+      500: "#FA8129",
+    },
     reportBoxBg: {
       400: "#FFF8F7",
       500: "#FEF1EE",
+      600: "#ede7e6",
     },
     button: {
       50: "#fcf1ee",
@@ -210,6 +233,14 @@ export default function App() {
           element={
             <SubApp>
               <ClassReportDetail />
+            </SubApp>
+          }
+        />
+        <Route
+          path="/classes/attendance/reportCompare/:classId"
+          element={
+            <SubApp>
+              <CompareReport />
             </SubApp>
           }
         />
