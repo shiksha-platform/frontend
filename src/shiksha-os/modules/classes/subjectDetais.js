@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { HStack, Text, Stack, Box, VStack, Button } from "native-base";
 import Menu from "../../../components/Menu";
-import Icon from "../../../components/IconByName";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import Layout from "../../../layout/Layout";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DayWiesBar from "../../../components/CalendarBar";
 import IconByName from "../../../components/IconByName";
@@ -15,7 +14,7 @@ export default function App() {
   const [datePage, setDatePage] = useState(0);
   const [classObject, setClassObject] = useState({});
   const { classId } = useParams();
-  const [activeColor, setActiveColor] = useState("primary.500");
+  const [activeColor] = useState("primary.500");
 
   useEffect(() => {
     let ignore = false;

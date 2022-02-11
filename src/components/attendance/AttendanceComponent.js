@@ -308,7 +308,10 @@ export const MultipalAttendance = ({
                     style={{
                       textDecoration: "none",
                     }}
-                    to={"/classes/attendance/sendSms/" + classObject.id}
+                    to={
+                      "/classes/attendance/sendSms/" +
+                      classObject.id.replace("1-", "")
+                    }
                   >
                     <Button variant="outline" colorScheme="button" rounded="lg">
                       {t("SEND_MESSAGE")}
@@ -388,7 +391,10 @@ export const MultipalAttendance = ({
                       style={{
                         textDecoration: "none",
                       }}
-                      to={"/classes/attendance/report/" + classObject.id}
+                      to={
+                        "/classes/attendance/report/" +
+                        classObject.id.replace("1-", "")
+                      }
                     >
                       <Button colorScheme="button" _text={{ color: "white" }}>
                         {t("SEE_FULL_REPORT")}

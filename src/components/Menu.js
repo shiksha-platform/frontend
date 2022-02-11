@@ -1,7 +1,6 @@
 import React from "react";
 
 import { HStack, Text, VStack, Box, FlatList, Pressable } from "native-base";
-import Icon from "./IconByName";
 import { generatePath } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";

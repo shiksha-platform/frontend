@@ -1,4 +1,4 @@
-import { Box, FlatList, HStack, Stack, Text, VStack } from "native-base";
+import { Box, FlatList, HStack, Text, VStack } from "native-base";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import IconByName from "../IconByName";
@@ -87,7 +87,7 @@ export default function Report({ students, attendance, title }) {
     <Box rounded={"xl"}>
       <Box roundedTop={"xl"} p="5" bg={"button.500"}>
         <HStack alignItems={"center"} space={2}>
-          <IconByName name="UserSmileLineIcon" isDisabled color="white" />
+          <IconByName name="EmotionUnhappyLineIcon" isDisabled color="white" />
           <Text color="white" textTransform={"inherit"}>
             {t("ABSENT_TODAY_POOR_LAST_WEEK")}
           </Text>

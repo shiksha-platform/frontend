@@ -70,13 +70,13 @@ export default function ProgressBar({ data, isTextShow, ...props }) {
   return (
     <Stack {...props}>
       <VStack>
-        <HStack>{values == "" ? "" : values}</HStack>
+        <HStack>{values === "" ? "" : values}</HStack>
         <HStack overflow="hidden" rounded="xl">
-          {bars == "" ? "" : bars}
+          {bars === "" ? "" : bars}
         </HStack>
         {isTextShow ? (
           <HStack alignSelf="center" space={1}>
-            {legends == "" ? "" : legends}
+            {legends === "" ? "" : legends}
           </HStack>
         ) : (
           ""

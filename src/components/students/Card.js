@@ -230,12 +230,11 @@ export default function Card({
                       {...{
                         item,
                         img,
-                        type,
+                        type: type ? type : "card",
                         textTitle,
                         textSubTitle,
                         _textTitle,
                         _textSubTitle,
-                        type: "card",
                       }}
                     />
                   </Box>

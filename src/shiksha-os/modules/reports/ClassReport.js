@@ -1,7 +1,6 @@
 import moment from "moment";
 import {
   Box,
-  FlatList,
   HStack,
   Menu,
   PresenceTransition,
@@ -24,7 +23,6 @@ export default function ClassReport() {
   const { t } = useTranslation();
   const [datePage, setDatePage] = useState(0);
   const [calsses, setClasses] = useState([]);
-  const [classObject, setClassObject] = useState({});
   const teacherId = sessionStorage.getItem("id");
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
@@ -167,7 +165,9 @@ export default function ClassReport() {
                       color: "rgb(63, 63, 70)",
                       textDecoration: "none",
                     }}
-                    to={"/classes/attendance/report/" + item.id}
+                    to={
+                      "/classes/attendance/report/" + item.id.replace("1-", "")
+                    }
                   >
                     <Box
                       rounded="lg"

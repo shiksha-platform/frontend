@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, Box, Stack, VStack } from "native-base";
+import { Box, Stack, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import Layout from "../layout/Layout";
 import Widget from "../components/Widget";

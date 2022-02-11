@@ -283,7 +283,7 @@ export function useWindowSize() {
 }
 
 export function SubApp({ children }) {
-  const [width, height] = useWindowSize();
+  const [width] = useWindowSize();
 
   return (
     <NativeBaseProvider theme={theme}>

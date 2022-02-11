@@ -1,11 +1,4 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
-const Logout = (e) => {
-  const navigate = useNavigate();
-  sessionStorage.setItem("token", null);
-  return navigate("/");
-};
 
 export async function get(url, headers = {}) {
   return await axios.get(url, {

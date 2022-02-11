@@ -22,7 +22,7 @@ import AttendanceComponent, {
 } from "../../../components/attendance/AttendanceComponent";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import Report from "../../../components/attendance/Report";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Card from "../../../components/students/Card";
 
 export default function ClassReportDetail() {

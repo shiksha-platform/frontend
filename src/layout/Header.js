@@ -1,5 +1,5 @@
 import React from "react";
-import { HStack, Text, Stack, Box, VStack, Avatar } from "native-base";
+import { HStack, Text, Box, VStack, Avatar } from "native-base";
 
 export default function Header({
   iconComponent,

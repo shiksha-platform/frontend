@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
   HStack,
-  Text,
-  VStack,
   Box,
   StatusBar,
   Pressable,

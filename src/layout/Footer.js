@@ -10,7 +10,7 @@ export default function Footer({ routeDynamics }) {
   const [selected, setSelected] = React.useState(0);
   const { t } = useTranslation();
   const [refFoot, serRefFoot] = React.useState({});
-  const [width, height] = useWindowSize();
+  const [width] = useWindowSize();
 
   const footerMenus = manifest.menus.footer;
 
