@@ -17,6 +17,7 @@ import ClassReport from "./shiksha-os/modules/reports/ClassReport";
 import ClassReportDetail from "./shiksha-os/modules/reports/ClassReportDetail";
 import CompareReport from "./shiksha-os/modules/reports/CompareReport";
 import SendSMS from "./shiksha-os/modules/sms/SendSMS";
+import MessageHistory from "./shiksha-os/modules/sms/MessageHistory";
 
 i18n.use(initReactI18next).init(init);
 
@@ -63,6 +64,14 @@ const theme = extendTheme({
     reportCard: {
       500: "#FFCAAC",
     },
+    present: {
+      100: "#f3faf4",
+      200: "#0D921B",
+      300: "#0D921B",
+      400: "#0D921B",
+      500: "#0D921B",
+      600: "#0D921B",
+    },
     presentCardBg: {
       500: "#DFFDE2",
       600: "#cae3ce",
@@ -76,6 +85,13 @@ const theme = extendTheme({
     },
     presentCardCompareText: {
       500: "#FA8129",
+    },
+    absent: {
+      100: "#fef8f8",
+      200: "#F57B7B",
+      300: "#F57B7B",
+      400: "#F57B7B",
+      500: "#F57B7B",
     },
     absentCardBg: {
       500: "#FDE7E7",
@@ -200,6 +216,14 @@ export default function App() {
           element={
             <SubApp>
               <StudentDetails />
+            </SubApp>
+          }
+        />
+        <Route
+          path="/students/sendSms/:studentId"
+          element={
+            <SubApp>
+              <MessageHistory />
             </SubApp>
           }
         />

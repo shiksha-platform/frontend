@@ -20,12 +20,16 @@ import CalendarCheckLineIcon from "remixicon-react/CalendarCheckLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
 import CheckboxCircleLineIcon from "remixicon-react/CheckboxCircleLineIcon";
 import CloseCircleLineIcon from "remixicon-react/CloseCircleLineIcon";
+import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import CheckboxBlankCircleLineIcon from "remixicon-react/CheckboxBlankCircleLineIcon";
 import CheckLineIcon from "remixicon-react/CheckLineIcon";
 import Loader4LineIcon from "remixicon-react/Loader4LineIcon";
 import UserSmileLineIcon from "remixicon-react/UserSmileLineIcon";
 import ListUnorderedIcon from "remixicon-react/ListUnorderedIcon";
 import EmotionUnhappyLineIcon from "remixicon-react/EmotionUnhappyLineIcon";
+import SearchLineIcon from "remixicon-react/SearchLineIcon";
+import MenuLineIcon from "remixicon-react/MenuLineIcon";
+import CheckDoubleLineIcon from "remixicon-react/CheckDoubleLineIcon";
 
 function IconButton({ icon, isDisabled, prefix, _fontawesome, ...props }) {
   if (!isDisabled) {
@@ -100,6 +104,9 @@ export default function IconByName(props) {
     case "CloseCircleLineIcon":
       icon = <IconButton {...props} icon={<CloseCircleLineIcon />} />;
       break;
+    case "CloseLineIcon":
+      icon = <IconButton {...props} icon={<CloseLineIcon />} />;
+      break;
     case "CheckboxBlankCircleLineIcon":
       icon = <IconButton {...props} icon={<CheckboxBlankCircleLineIcon />} />;
       break;
@@ -117,6 +124,15 @@ export default function IconByName(props) {
       break;
     case "EmotionUnhappyLineIcon":
       icon = <IconButton {...props} icon={<EmotionUnhappyLineIcon />} />;
+      break;
+    case "SearchLineIcon":
+      icon = <IconButton {...props} icon={<SearchLineIcon />} />;
+      break;
+    case "MenuLineIcon":
+      icon = <IconButton {...props} icon={<MenuLineIcon />} />;
+      break;
+    case "CheckDoubleLineIcon":
+      icon = <IconButton {...props} icon={<CheckDoubleLineIcon />} />;
       break;
     default:
       if (props.name !== "Home4LineIcon") {

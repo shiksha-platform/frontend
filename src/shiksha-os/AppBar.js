@@ -43,7 +43,11 @@ export default function AppBar({
       >
         <HStack space="4" alignItems="center">
           {isEnableHamburgerMenuButton ? (
-            <IconByName size="sm" name="bars" color={color ? color : ""} />
+            <IconByName
+              size="sm"
+              name="MenuLineIcon"
+              color={color ? color : ""}
+            />
           ) : (
             <IconByName
               size="sm"
@@ -61,7 +65,7 @@ export default function AppBar({
                   size="sm"
                   color="coolGray.500"
                   w="1/8"
-                  name="times"
+                  name="CloseLineIcon"
                   pl="0"
                   onPress={(e) => setSearchInput(false)}
                 />
@@ -81,7 +85,7 @@ export default function AppBar({
             <IconByName
               color={color ? color : ""}
               size="sm"
-              name="search"
+              name="SearchLineIcon"
               onPress={(e) => setSearchInput(true)}
             />
           ) : (

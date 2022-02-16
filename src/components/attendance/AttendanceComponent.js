@@ -8,6 +8,7 @@ import {
   Actionsheet,
   Stack,
   Button,
+  Badge,
 } from "native-base";
 import * as attendanceServiceRegistry from "../../services/attendanceServiceRegistry";
 import manifest from "../../modules/attendance/manifest.json";
@@ -421,6 +422,7 @@ export default function AttendanceComponent({
   attendanceProp,
   hidePopUpButton,
   getAttendance,
+  sms,
   _card,
   isEditDisabled,
   _weekBox,
@@ -535,6 +537,7 @@ export default function AttendanceComponent({
               monthDays={weekDays}
               isEditDisabled={isEditDisabled}
               {...{
+                sms,
                 attendance,
                 student,
                 markAttendance,
@@ -603,6 +606,7 @@ const CalendarComponent = ({
   type,
   isIconSizeSmall,
   isEditDisabled,
+  sms,
   attendance,
   student,
   markAttendance,
@@ -624,6 +628,9 @@ const CalendarComponent = ({
       {...(_weekBox?.[index] ? _weekBox[index] : {})}
     >
       {week.map((day, subIndex) => {
+        let smsDay = sms?.find(
+          (e) => e.date === day.format("Y-MM-DD") && e.studentId === student.id
+        );
         let isToday = moment().format("Y-MM-DD") === day.format("Y-MM-DD");
         let dateValue = day.format("Y-MM-DD");
         let attendanceItem = attendance
@@ -695,7 +702,22 @@ const CalendarComponent = ({
                 ? 0.3
                 : 1
             }
+            bg={smsDay?.type ? smsDay?.type.toLowerCase() + ".100" : ""}
           >
+            {smsDay?.type ? (
+              <Badge
+                colorScheme={smsDay?.type.toLowerCase()}
+                rounded="full"
+                p="0"
+                w="2"
+                h="2"
+                position="absolute"
+                right="0"
+                top="0"
+              ></Badge>
+            ) : (
+              ""
+            )}
             <Text
               key={subIndex}
               pt={monthDays.length > 1 && index ? 0 : !isIconSizeSmall ? 2 : 0}

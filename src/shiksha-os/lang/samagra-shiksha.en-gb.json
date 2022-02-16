@@ -154,5 +154,7 @@
   "SEND_MESSAGE": "Send Message",
   "SMS_WILL_AUTOMATICALLY_SENT": "SMS will automatically be sent from the system by 9:30 am.",
   "SELECT_ALL": "Select all",
-  "SEND": "Send"
+  "SEND": "Send",
+  "MESSAGE_HISTORY": "Message history",
+  "SENT": "Sent"
 }

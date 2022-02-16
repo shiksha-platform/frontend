@@ -23,6 +23,7 @@ import AttendanceComponent, {
 import manifest from "./manifest.json";
 import { WeekWiesBar } from "../../components/CalendarBar";
 import IconByName from "../../components/IconByName";
+import moment from "moment";
 
 // Start editing here, save and see your changes.
 export default function App() {
@@ -38,6 +39,7 @@ export default function App() {
   const [attendance, setAttendance] = useState([]);
   const [search, setSearch] = useState();
   const [isEditDisabled, setIsEditDisabled] = useState(true);
+  const [sms, setSms] = useState([]);
 
   useEffect(() => {
     const filterStudent = students.filter((e) =>
@@ -61,6 +63,14 @@ export default function App() {
       await getAttendance();
       if (!ignore)
         setClassObject(await classServiceRegistry.getOne({ id: classId }));
+
+      setSms(
+        studentData.map((e, index) => ({
+          type: index % 2 === 0 ? "Absent" : "Present",
+          date: moment().add(-1, "days").format("Y-MM-DD"),
+          studentId: e.id,
+        }))
+      );
     }
     getData();
     return () => {
@@ -132,10 +142,12 @@ export default function App() {
 
   return (
     <Layout
-      _header={{
-        title: classObject?.title ? classObject?.title : "",
+      _appBar={{
         isEnableSearchBtn: true,
         setSearch: setSearch,
+      }}
+      _header={{
+        title: classObject?.title ? classObject?.title : "",
         subHeading: t("ATTENDANCE_REGISTER"),
         iconComponent: (
           <Link
@@ -232,6 +244,7 @@ export default function App() {
             <AttendanceComponent
               weekPage={weekPage}
               student={item}
+              sms={sms.filter((e) => e.studentId === item.id)}
               withDate={1}
               attendanceProp={attendance}
               getAttendance={getAttendance}

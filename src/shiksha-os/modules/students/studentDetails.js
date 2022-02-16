@@ -112,7 +112,7 @@ export default function App() {
                 setAttendanceView(attendanceView === "month" ? "" : "month");
               }}
               collapsButton={attendanceView === "month" ? false : true}
-              header={t("WEEK_ATTENDANCE")}
+              header={t("ATTENDANCE")}
               body={
                 <>
                   {manifest.showOnStudentProfile &&
@@ -153,6 +153,26 @@ export default function App() {
                         py={2}
                       >
                         {t("FULL_CLASS_ATTENDANCE")}
+                      </Box>
+                    </Link>
+                    <Link
+                      to={"/students/sendSms/" + studentObject.id}
+                      style={{
+                        textDecoration: "none",
+                        flex: "auto",
+                        textAlign: "center",
+                      }}
+                    >
+                      <Box
+                        rounded="lg"
+                        bg="button.500"
+                        borderColor="button.500"
+                        borderWidth="1"
+                        _text={{ color: "white" }}
+                        px={4}
+                        py={2}
+                      >
+                        {t("MESSAGE_HISTORY")}
                       </Box>
                     </Link>
                   </HStack>

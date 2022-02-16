@@ -155,5 +155,7 @@
   "SEND_MESSAGE": "संदेश भेजें",
   "SMS_WILL_AUTOMATICALLY_SENT": "सिस्टम से सुबह 9:30 बजे तक एसएमएस अपने आप भेज दिया जाएगा।",
   "SELECT_ALL": "सबका चयन करें",
-  "SEND": "भेजना"
+  "SEND": "भेजना",
+  "MESSAGE_HISTORY": "पिछले संदेश",
+  "SENT": "भेज दिया"
 }
