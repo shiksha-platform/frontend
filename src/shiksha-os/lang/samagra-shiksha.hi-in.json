@@ -155,7 +155,14 @@
   "SEND_MESSAGE": "संदेश भेजें",
   "SMS_WILL_AUTOMATICALLY_SENT": "सिस्टम से सुबह 9:30 बजे तक एसएमएस अपने आप भेज दिया जाएगा।",
   "SELECT_ALL": "सबका चयन करें",
+  "SELECT_VIEW": "दृश्य चुनें",
   "SEND": "भेजना",
   "MESSAGE_HISTORY": "पिछले संदेश",
-  "SENT": "भेज दिया"
+  "SENT": "भेज दिया",
+  "FAILED": "अनुत्तीर्ण होना",
+  "RETRY": "पुन: प्रयास करें",
+  "CHOOSE_DATE": "तिथि चुनें",
+  "MESSAGE_SENT": "संदेश भेजा गया",
+  "MESSAGE_FAILED": "संदेश विफल",
+  "RESEND": "पुन: भेजें"
 }

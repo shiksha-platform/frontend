@@ -30,6 +30,7 @@ import EmotionUnhappyLineIcon from "remixicon-react/EmotionUnhappyLineIcon";
 import SearchLineIcon from "remixicon-react/SearchLineIcon";
 import MenuLineIcon from "remixicon-react/MenuLineIcon";
 import CheckDoubleLineIcon from "remixicon-react/CheckDoubleLineIcon";
+import SpamLineIcon from "remixicon-react/SpamLineIcon";
 
 function IconButton({ icon, isDisabled, prefix, _fontawesome, ...props }) {
   if (!isDisabled) {
@@ -133,6 +134,9 @@ export default function IconByName(props) {
       break;
     case "CheckDoubleLineIcon":
       icon = <IconButton {...props} icon={<CheckDoubleLineIcon />} />;
+      break;
+    case "SpamLineIcon":
+      icon = <IconButton {...props} icon={<SpamLineIcon />} />;
       break;
     default:
       if (props.name !== "Home4LineIcon") {

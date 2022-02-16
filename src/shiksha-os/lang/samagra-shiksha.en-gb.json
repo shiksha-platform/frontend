@@ -154,7 +154,14 @@
   "SEND_MESSAGE": "Send Message",
   "SMS_WILL_AUTOMATICALLY_SENT": "SMS will automatically be sent from the system by 9:30 am.",
   "SELECT_ALL": "Select all",
+  "SELECT_VIEW": "Select view",
   "SEND": "Send",
   "MESSAGE_HISTORY": "Message history",
-  "SENT": "Sent"
+  "SENT": "Sent",
+  "FAILED": "Failed",
+  "RETRY": "Retry",
+  "CHOOSE_DATE": "Choose a date",
+  "MESSAGE_SENT": "Message Sent",
+  "MESSAGE_FAILED": "Message Failed",
+  "RESEND": "Resend"
 }
