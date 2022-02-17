@@ -4,13 +4,15 @@ import manifest from "../manifest.json";
 
 const interfaceData = {
   id: "osid",
+  fullName: "teacherFullName",
   refId: "teacherRefId",
   highestQualification: "highestQualification",
-  firstName: "firstName",
-  lastName: "lastName",
+  firstName: "teacherFirstName",
+  lastName: "teacherLastName",
+  currentServiceType: "currentServiceType",
   email: "email",
   mergeParameterWithValue: {
-    title: "firstName",
+    title: "teacherFullName",
   },
 };
 
@@ -20,7 +22,7 @@ export const getAll = async (
   }
 ) => {
   const result = await generalServices.post(
-    manifest.api_url + "teacher/search",
+    manifest.api_url + "Teacher/search",
     filters
   );
   if (result.data) {
@@ -32,7 +34,7 @@ export const getAll = async (
 
 export const getOne = async (filters = {}, headers = {}) => {
   const result = await generalServices
-    .get(manifest.api_url + "Teacher", {
+    .get(manifest.api_url + "Teacher/edccc63f-fcc7-4529-80b7-feea3fee0f3c", {
       headers: headers,
     })
     .catch((error) => error);
