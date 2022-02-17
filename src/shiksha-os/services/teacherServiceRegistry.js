@@ -32,7 +32,7 @@ export const getAll = async (
 
 export const getOne = async (filters = {}, headers = {}) => {
   const result = await generalServices
-    .get(manifest.api_url + "teacher/" + filters.id, {
+    .get(manifest.api_url + "Teacher/" + filters.id, {
       headers: headers,
     })
     .catch((error) => error);
