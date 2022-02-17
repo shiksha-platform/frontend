@@ -11,11 +11,13 @@ import {
 } from "native-base";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { TouchableHighlight } from "react-native-web";
 import { useParams } from "react-router-dom";
-import { WeekWiesBar } from "../../../components/CalendarBar";
+import DayWiesBar, { WeekWiesBar } from "../../../components/CalendarBar";
 import IconByName from "../../../components/IconByName";
 import Layout from "../../../layout/Layout";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
+import { calendar } from "../../../components/attendance/AttendanceComponent";
 
 export default function App() {
   const { t } = useTranslation();
@@ -27,10 +29,20 @@ export default function App() {
   const [searchSms, setSearchSms] = useState([]);
   const [smsObject, setSmsObject] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [weekDays, setWeekDays] = useState([]);
 
   useEffect(() => {
     let ignore = false;
+    const getData = async () => {
+      if (!ignore) {
+        setWeekDays(calendar(weekPage, "", calendarView));
+      }
+    };
+    getData();
+  }, [weekPage, calendarView]);
 
+  useEffect(() => {
+    let ignore = false;
     const getData = async () => {
       let student = await studentServiceRegistry.getOne({ id: studentId });
       if (!ignore) {
@@ -38,7 +50,8 @@ export default function App() {
         setSearchSms([
           {
             status: "Send",
-            date: moment().format("Do MMM, hh:ssa"),
+            type: "Present",
+            date: moment().add(-1, "days").format("Y-MM-DD"),
             message:
               "Hello Mr. " +
               student.fathersName +
@@ -48,7 +61,8 @@ export default function App() {
           },
           {
             status: "Failed",
-            date: moment().format("Do MMM, hh:ssa"),
+            type: "Present",
+            date: moment().add(-2, "days").format("Y-MM-DD"),
             message:
               "Hello Mr. " +
               student.fathersName +
@@ -58,7 +72,8 @@ export default function App() {
           },
           {
             status: "Failed",
-            date: moment().format("Do MMM, hh:ssa"),
+            type: "Absent",
+            date: moment().add(-3, "days").format("Y-MM-DD"),
             message:
               "Hello Mr. " +
               student.fathersName +
@@ -68,7 +83,8 @@ export default function App() {
           },
           {
             status: "Send",
-            date: moment().format("Do MMM, hh:ssa"),
+            type: "Absent",
+            date: moment().add(-6, "days").format("Y-MM-DD"),
             message:
               "Hello Mr. " +
               student.fathersName +
@@ -93,12 +109,23 @@ export default function App() {
       }}
       subHeader={
         <HStack space="4" justifyContent="space-between" alignItems="center">
-          <WeekWiesBar
-            activeColor="gray.900"
-            setPage={setWeekPage}
-            page={weekPage}
-            _box={{ p: 0, bg: "transparent" }}
-          />
+          {calendarView === "week" ? (
+            <WeekWiesBar
+              activeColor="gray.900"
+              setPage={setWeekPage}
+              page={weekPage}
+              _box={{ p: 0, bg: "transparent" }}
+            />
+          ) : calendarView === "month" ? (
+            ""
+          ) : (
+            <DayWiesBar
+              activeColor="gray.900"
+              setPage={setWeekPage}
+              page={weekPage}
+              _box={{ p: 0, bg: "transparent" }}
+            />
+          )}
           <Stack>
             <Button
               rounded={"full"}
@@ -153,10 +180,10 @@ export default function App() {
                 ].map((item, index) => {
                   return (
                     <Pressable
+                      key={index}
                       p="5"
                       borderBottomWidth={1}
                       borderBottomColor="coolGray.100"
-                      key={index}
                       onPress={(e) => {
                         setCalendarView(item.value);
                         setShowModal(false);
@@ -190,11 +217,13 @@ export default function App() {
             </Box>
           </HStack>
           <VStack>
-            {searchSms.map((item, index) => (
-              <Pressable onPress={(e) => setSmsObject(item)}>
-                <Massage item={item} key={index} />
-              </Pressable>
-            ))}
+            <CalendarComponent
+              monthDays={weekDays}
+              student={studentObject}
+              type={calendarView}
+              sms={searchSms}
+              setSmsObject={setSmsObject}
+            />
           </VStack>
           <Actionsheet
             isOpen={smsObject?.status}
@@ -250,12 +279,11 @@ export default function App() {
 
 const Massage = ({ item, isDisableRetry }) => {
   const { t } = useTranslation();
-
   return (
     <Box p="5" borderBottomWidth="1" borderBottomColor="gray.100">
       <VStack space="2">
         <HStack space="1" justifyContent="space-between">
-          <HStack space="1">
+          <HStack space="1" alignItems="center">
             <IconByName
               isDisabled
               name={
@@ -268,7 +296,7 @@ const Massage = ({ item, isDisableRetry }) => {
             </Text>
           </HStack>
           {item.status !== "Send" && !isDisableRetry ? (
-            <Button variant="ghost" colorScheme="button">
+            <Button variant="ghost" colorScheme="button" py="0">
               {t("RETRY")}
             </Button>
           ) : (
@@ -276,7 +304,7 @@ const Massage = ({ item, isDisableRetry }) => {
           )}
         </HStack>
         <Text fontSize="12px" fontWeight="500" color="#B5B5C8">
-          {item.date}
+          {moment(item.date).format("Do MMM, hh:ssa")}
         </Text>
         <Text fontSize="14px" fontWeight="400">
           {item.message}
@@ -284,4 +312,203 @@ const Massage = ({ item, isDisableRetry }) => {
       </VStack>
     </Box>
   );
+};
+
+const CalendarComponent = ({
+  monthDays,
+  type,
+  isIconSizeSmall,
+  sms,
+  setSmsObject,
+  student,
+  loding,
+  _weekBox,
+}) => {
+  if (type === "month") {
+    return monthDays.map((week, index) => (
+      <HStack
+        key={index}
+        justifyContent="space-around"
+        alignItems="center"
+        borderBottomWidth={
+          monthDays.length > 1 && monthDays.length - 1 !== index ? "1" : "0"
+        }
+        borderBottomColor={"coolGray.300"}
+        p={"2"}
+        {...(_weekBox?.[index] ? _weekBox[index] : {})}
+      >
+        {week.map((day, subIndex) => {
+          let isToday = moment().format("Y-MM-DD") === day.format("Y-MM-DD");
+          let dateValue = day.format("Y-MM-DD");
+          let smsItem = sms
+            .slice()
+            .reverse()
+            .find((e) => e.date === dateValue);
+          let smsIconProp = !isIconSizeSmall
+            ? {
+                _box: { py: 2, minW: "46px", alignItems: "center" },
+                status: "CheckboxBlankCircleLineIcon",
+              }
+            : {};
+          let smsType = "Present";
+          if (smsItem?.type && smsItem?.type === "Present") {
+            smsIconProp = {
+              ...smsIconProp,
+              status: smsItem?.type,
+              type: smsItem?.status,
+            };
+          } else if (smsItem?.type && smsItem?.type === "Absent") {
+            smsIconProp = {
+              ...smsIconProp,
+              status: smsItem?.type,
+              type: smsItem?.status,
+            };
+          } else if (day.day() === 0) {
+            smsIconProp = { ...smsIconProp, status: "Holiday" };
+          } else if (isToday) {
+            smsIconProp = { ...smsIconProp, status: "Today" };
+          } else if (moment().diff(day, "days") > 0) {
+            smsIconProp = { ...smsIconProp, status: "Unmarked" };
+          }
+
+          return (
+            <VStack
+              key={subIndex}
+              alignItems="center"
+              borderWidth={isToday ? "1" : ""}
+              borderColor={isToday ? "button.500" : ""}
+              rounded="lg"
+              opacity={
+                type !== "month" && day.day() !== 0
+                  ? 1
+                  : day.day() === 0
+                  ? 0.3
+                  : day.format("M") !== moment().format("M")
+                  ? 0.3
+                  : 1
+              }
+            >
+              <Text
+                key={subIndex}
+                pt={
+                  monthDays.length > 1 && index ? 0 : !isIconSizeSmall ? 2 : 0
+                }
+                textAlign="center"
+              >
+                {!isIconSizeSmall ? (
+                  <VStack alignItems={"center"}>
+                    {index === 0 ? (
+                      <Text pb="1" color={"attendanceCardText.400"}>
+                        {day.format("ddd")}
+                      </Text>
+                    ) : (
+                      ""
+                    )}
+                    <Text color={"attendanceCardText.500"}>
+                      {day.format("DD")}
+                    </Text>
+                  </VStack>
+                ) : (
+                  <HStack alignItems={"center"} space={1}>
+                    <Text>{day.format("dd")}</Text>
+                    <Text>{day.format("D")}</Text>
+                  </HStack>
+                )}
+              </Text>
+              <TouchableHighlight
+                onPress={(e) => setSmsObject(smsItem)}
+                // onLongPress={(e) => {
+                //   console.log({ e });
+                // }}
+              >
+                <Box alignItems="center">
+                  {loding && loding[dateValue + student.id] ? (
+                    <GetIcon
+                      {...smsIconProp}
+                      status="Loader4LineIcon"
+                      color={"button.500"}
+                      isDisabled
+                      _icon={{ _fontawesome: { spin: true } }}
+                    />
+                  ) : (
+                    <GetIcon {...smsIconProp} />
+                  )}
+                </Box>
+              </TouchableHighlight>
+            </VStack>
+          );
+        })}
+      </HStack>
+    ));
+  } else {
+    return sms.map((item, index) => (
+      <Pressable key={index} onPress={(e) => setSmsObject(item)}>
+        <Massage key={index} item={item} />
+      </Pressable>
+    ));
+  }
+};
+
+export const GetIcon = ({ status, _box, color, _icon, type }) => {
+  let icon = <></>;
+  let iconProps = { fontSize: "xl", isDisabled: true, ..._icon };
+  switch (status) {
+    case "Present":
+      icon = (
+        <Box {..._box} color={color ? color : "present.500"}>
+          <IconByName
+            name={type === "Send" ? "MailFillIcon" : "MailForbidFillIcon"}
+            p="5px"
+            rounded="full"
+            _icon={{ size: "14" }}
+            bg={status.toLowerCase() + ".100"}
+            {...iconProps}
+          />
+        </Box>
+      );
+      break;
+    case "Absent":
+      icon = (
+        <Box {..._box} color={color ? color : "absent.500"}>
+          <IconByName
+            name={type === "Send" ? "MailFillIcon" : "MailForbidFillIcon"}
+            p="5px"
+            rounded="full"
+            _icon={{ size: "14" }}
+            bg={status.toLowerCase() + ".100"}
+            {...iconProps}
+          />
+        </Box>
+      );
+      break;
+    case "Holiday":
+      icon = (
+        <Box {..._box} color={color ? color : "attendanceUnmarked.100"}>
+          <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
+        </Box>
+      );
+      break;
+    case "Unmarked":
+      icon = (
+        <Box {..._box} color={color ? color : "attendanceUnmarked.500"}>
+          <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
+        </Box>
+      );
+      break;
+    case "Today":
+      icon = (
+        <Box {..._box} color={color ? color : "attendanceUnmarked.500"}>
+          <IconByName name="CheckboxBlankCircleLineIcon" {...iconProps} />
+        </Box>
+      );
+      break;
+    default:
+      icon = (
+        <Box {..._box} color={color ? color : "attendanceUnmarked.400"}>
+          <IconByName name={status} {...iconProps} />
+        </Box>
+      );
+      break;
+  }
+  return icon;
 };

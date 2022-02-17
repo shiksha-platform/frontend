@@ -311,7 +311,7 @@ export const MultipalAttendance = ({
                     }}
                     to={
                       "/classes/attendance/sendSms/" +
-                      classObject.id.replace("1-", "")
+                      classObject?.id?.replace("1-", "")
                     }
                   >
                     <Button variant="outline" colorScheme="button" rounded="lg">
@@ -394,7 +394,7 @@ export const MultipalAttendance = ({
                       }}
                       to={
                         "/classes/attendance/report/" +
-                        classObject.id.replace("1-", "")
+                        classObject?.id?.replace("1-", "")
                       }
                     >
                       <Button colorScheme="button" _text={{ color: "white" }}>
@@ -702,11 +702,15 @@ const CalendarComponent = ({
                 ? 0.3
                 : 1
             }
-            bg={smsDay?.type ? smsDay?.type.toLowerCase() + ".100" : ""}
+            bg={
+              smsDay?.type && isEditDisabled
+                ? smsDay?.type.toLowerCase() + ".50"
+                : ""
+            }
           >
-            {smsDay?.type ? (
+            {smsDay?.type && isEditDisabled ? (
               <Badge
-                colorScheme={smsDay?.type.toLowerCase()}
+                bg={smsDay?.type.toLowerCase() + ".500"}
                 rounded="full"
                 p="0"
                 w="2"
@@ -788,6 +792,20 @@ const CalendarComponent = ({
                 )}
               </Box>
             </TouchableHighlight>
+            {!isEditDisabled && smsDay?.type ? (
+              <IconByName
+                mt="1"
+                p="5px"
+                rounded="full"
+                name="MailFillIcon"
+                bg={smsDay?.type.toLowerCase() + ".100"}
+                colorScheme={smsDay?.type.toLowerCase()}
+                color={smsDay?.type.toLowerCase() + ".500"}
+                _icon={{ size: "14" }}
+              />
+            ) : (
+              <Box p="3" mt="1"></Box>
+            )}
           </VStack>
         );
       })}

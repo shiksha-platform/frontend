@@ -26,6 +26,50 @@ const fontFamily =
   localStorage.getItem("lang") === "hi" ? "'Baloo 2'" : "Inter";
 const fontSize = localStorage.getItem("lang") === "hi" ? "20px" : "";
 
+let red = {
+  50: "rgba(245, 123, 123, 0.05)",
+  100: "rgba(245, 123, 123, 0.20)",
+  150: "rgba(245, 123, 123, 0.30)",
+  200: "rgba(245, 123, 123, 0.40)",
+  250: "rgba(245, 123, 123, 0.50)",
+  300: "rgba(245, 123, 123, 0.60)",
+  350: "rgba(245, 123, 123, 0.70)",
+  400: "rgba(245, 123, 123, 0.80)",
+  450: "rgba(245, 123, 123, 0.90)",
+  500: "rgba(245, 123, 123, 1)",
+  550: "rgba(245, 123, 123, 1.10)",
+  600: "rgba(245, 123, 123, 1.20)",
+  650: "rgba(245, 123, 123, 1.30)",
+  700: "rgba(245, 123, 123, 1.40)",
+  750: "rgba(245, 123, 123, 1.50)",
+  800: "rgba(245, 123, 123, 1.60)",
+  850: "rgba(245, 123, 123, 1.70)",
+  900: "rgba(245, 123, 123, 1.80)",
+  950: "rgba(245, 123, 123, 1.90)",
+};
+
+let green = {
+  50: "rgba(13, 146, 27, 0.05)",
+  100: "rgba(13, 146, 27, 0.20)",
+  150: "rgba(13, 146, 27, 0.30)",
+  200: "rgba(13, 146, 27, 0.40)",
+  250: "rgba(13, 146, 27, 0.50)",
+  300: "rgba(13, 146, 27, 0.60)",
+  350: "rgba(13, 146, 27, 0.70)",
+  400: "rgba(13, 146, 27, 0.80)",
+  450: "rgba(13, 146, 27, 0.90)",
+  500: "rgba(13, 146, 27, 1)",
+  550: "rgba(13, 146, 27, 1.10)",
+  600: "rgba(13, 146, 27, 1.20)",
+  650: "rgba(13, 146, 27, 1.30)",
+  700: "rgba(13, 146, 27, 1.40)",
+  750: "rgba(13, 146, 27, 1.50)",
+  800: "rgba(13, 146, 27, 1.60)",
+  850: "rgba(13, 146, 27, 1.70)",
+  900: "rgba(13, 146, 27, 1.80)",
+  950: "rgba(13, 146, 27, 1.90)",
+};
+
 const theme = extendTheme({
   fonts: {
     heading: fontFamily,
@@ -64,14 +108,7 @@ const theme = extendTheme({
     reportCard: {
       500: "#FFCAAC",
     },
-    present: {
-      100: "#f3faf4",
-      200: "#0D921B",
-      300: "#0D921B",
-      400: "#0D921B",
-      500: "#0D921B",
-      600: "#0D921B",
-    },
+    present: green,
     presentCardBg: {
       500: "#DFFDE2",
       600: "#cae3ce",
@@ -86,13 +123,7 @@ const theme = extendTheme({
     presentCardCompareText: {
       500: "#FA8129",
     },
-    absent: {
-      100: "#fef8f8",
-      200: "#F57B7B",
-      300: "#F57B7B",
-      400: "#F57B7B",
-      500: "#F57B7B",
-    },
+    absent: red,
     absentCardBg: {
       500: "#FDE7E7",
       600: "#dfcbcb",
@@ -101,9 +132,7 @@ const theme = extendTheme({
       500: "#FFF6F6",
       600: "#dfcbcb",
     },
-    absentCardText: {
-      500: "#F57B7B",
-    },
+    absentCardText: red,
     absentCardCompareText: {
       500: "#FA8129",
     },
@@ -128,10 +157,7 @@ const theme = extendTheme({
       600: "#2BB639",
       500: "#2BB639",
     },
-    attendanceAbsent: {
-      600: "#F57B7B",
-      500: "#F57B7B",
-    },
+    attendanceAbsent: red,
     attendanceUnmarked: {
       600: "#C4C4D4",
       500: "#C4C4D4",

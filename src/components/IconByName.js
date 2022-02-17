@@ -31,8 +31,11 @@ import SearchLineIcon from "remixicon-react/SearchLineIcon";
 import MenuLineIcon from "remixicon-react/MenuLineIcon";
 import CheckDoubleLineIcon from "remixicon-react/CheckDoubleLineIcon";
 import SpamLineIcon from "remixicon-react/SpamLineIcon";
+import MailLineIcon from "remixicon-react/MailLineIcon";
+import MailFillIcon from "remixicon-react/MailFillIcon";
+import MailForbidFillIcon from "remixicon-react/MailForbidFillIcon";
 
-function IconButton({ icon, isDisabled, prefix, _fontawesome, ...props }) {
+function IconButton({ icon, isDisabled, ...props }) {
   if (!isDisabled) {
     return (
       <IconButtonCustom
@@ -41,7 +44,7 @@ function IconButton({ icon, isDisabled, prefix, _fontawesome, ...props }) {
       />
     );
   } else {
-    return <Stack {...props}>{icon}</Stack>;
+    return <Stack {...props}>{React.cloneElement(icon, props._icon)}</Stack>;
   }
 }
 
@@ -49,101 +52,110 @@ export default function IconByName(props) {
   let icon = <></>;
   switch (props.name) {
     case "ParentLineIcon":
-      icon = <IconButton {...props} icon={<ParentLineIcon />} />;
+      icon = <ParentLineIcon />;
       break;
     case "LightbulbFlashLineIcon":
-      icon = <IconButton {...props} icon={<LightbulbFlashLineIcon />} />;
+      icon = <LightbulbFlashLineIcon />;
       break;
     case "FootballLineIcon":
-      icon = <IconButton {...props} icon={<FootballLineIcon />} />;
+      icon = <FootballLineIcon />;
       break;
     case "UserFollowLineIcon":
-      icon = <IconButton {...props} icon={<UserFollowLineIcon />} />;
+      icon = <UserFollowLineIcon />;
       break;
     case "Medal2LineIcon":
-      icon = <IconButton {...props} icon={<Medal2LineIcon />} />;
+      icon = <Medal2LineIcon />;
       break;
     case "ArrowLeftLineIcon":
-      icon = <IconButton {...props} icon={<ArrowLeftLineIcon />} />;
+      icon = <ArrowLeftLineIcon />;
       break;
     case "More2LineIcon":
-      icon = <IconButton {...props} icon={<More2LineIcon />} />;
+      icon = <More2LineIcon />;
       break;
     case "TeamLineIcon":
-      icon = <IconButton {...props} icon={<TeamLineIcon />} />;
+      icon = <TeamLineIcon />;
       break;
     case "GovernmentLineIcon":
-      icon = <IconButton {...props} icon={<GovernmentLineIcon />} />;
+      icon = <GovernmentLineIcon />;
       break;
     case "BookOpenLineIcon":
-      icon = <IconButton {...props} icon={<BookOpenLineIcon />} />;
+      icon = <BookOpenLineIcon />;
       break;
     case "UserLineIcon":
-      icon = <IconButton {...props} icon={<UserLineIcon />} />;
+      icon = <UserLineIcon />;
       break;
     case "ArrowLeftSLineIcon":
-      icon = <IconButton {...props} icon={<ArrowLeftSLineIcon />} />;
+      icon = <ArrowLeftSLineIcon />;
       break;
     case "ArrowRightSLineIcon":
-      icon = <IconButton {...props} icon={<ArrowRightSLineIcon />} />;
+      icon = <ArrowRightSLineIcon />;
       break;
     case "ArrowDownSLineIcon":
-      icon = <IconButton {...props} icon={<ArrowDownSLineIcon />} />;
+      icon = <ArrowDownSLineIcon />;
       break;
     case "ArrowUpSLineIcon":
-      icon = <IconButton {...props} icon={<ArrowUpSLineIcon />} />;
+      icon = <ArrowUpSLineIcon />;
       break;
     case "CalendarCheckLineIcon":
-      icon = <IconButton {...props} icon={<CalendarCheckLineIcon />} />;
+      icon = <CalendarCheckLineIcon />;
       break;
     case "PencilLineIcon":
-      icon = <IconButton {...props} icon={<PencilLineIcon />} />;
+      icon = <PencilLineIcon />;
       break;
     case "CheckboxCircleLineIcon":
-      icon = <IconButton {...props} icon={<CheckboxCircleLineIcon />} />;
+      icon = <CheckboxCircleLineIcon />;
       break;
     case "CloseCircleLineIcon":
-      icon = <IconButton {...props} icon={<CloseCircleLineIcon />} />;
+      icon = <CloseCircleLineIcon />;
       break;
     case "CloseLineIcon":
-      icon = <IconButton {...props} icon={<CloseLineIcon />} />;
+      icon = <CloseLineIcon />;
       break;
     case "CheckboxBlankCircleLineIcon":
-      icon = <IconButton {...props} icon={<CheckboxBlankCircleLineIcon />} />;
+      icon = <CheckboxBlankCircleLineIcon />;
       break;
     case "CheckLineIcon":
-      icon = <IconButton {...props} icon={<CheckLineIcon />} />;
+      icon = <CheckLineIcon />;
       break;
     case "Loader4LineIcon":
-      icon = <IconButton {...props} icon={<Loader4LineIcon />} />;
+      icon = <Loader4LineIcon />;
       break;
     case "UserSmileLineIcon":
-      icon = <IconButton {...props} icon={<UserSmileLineIcon />} />;
+      icon = <UserSmileLineIcon />;
       break;
     case "ListUnorderedIcon":
-      icon = <IconButton {...props} icon={<ListUnorderedIcon />} />;
+      icon = <ListUnorderedIcon />;
       break;
     case "EmotionUnhappyLineIcon":
-      icon = <IconButton {...props} icon={<EmotionUnhappyLineIcon />} />;
+      icon = <EmotionUnhappyLineIcon />;
       break;
     case "SearchLineIcon":
-      icon = <IconButton {...props} icon={<SearchLineIcon />} />;
+      icon = <SearchLineIcon />;
       break;
     case "MenuLineIcon":
-      icon = <IconButton {...props} icon={<MenuLineIcon />} />;
+      icon = <MenuLineIcon />;
       break;
     case "CheckDoubleLineIcon":
-      icon = <IconButton {...props} icon={<CheckDoubleLineIcon />} />;
+      icon = <CheckDoubleLineIcon />;
       break;
     case "SpamLineIcon":
-      icon = <IconButton {...props} icon={<SpamLineIcon />} />;
+      icon = <SpamLineIcon />;
+      break;
+    case "MailLineIcon":
+      icon = <MailLineIcon />;
+      break;
+    case "MailFillIcon":
+      icon = <MailFillIcon />;
+      break;
+    case "MailForbidFillIcon":
+      icon = <MailForbidFillIcon />;
       break;
     default:
       if (props.name !== "Home4LineIcon") {
         console.warn(props.name);
       }
-      icon = <IconButton {...props} icon={<Home4LineIcon />} />;
+      icon = <Home4LineIcon />;
       break;
   }
-  return icon;
+  return <IconButton {...props} icon={icon} />;
 }
