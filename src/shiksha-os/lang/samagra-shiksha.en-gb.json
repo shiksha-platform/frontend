@@ -12,7 +12,7 @@
   "THIS_WEEK_TASKS": "This week's tasks",
   "WEEK_STARTING": "Week starting",
   "2_SCHOOL_ACTIVITIES_1_OFFICIAL_VISIT": "2 school activities, 1 official visit",
-  "MY_SCHOOL_APP": "Ananya",
+  "MY_SCHOOL_APP": "Shiksha",
   "MY_CLASSES": "My Classes",
   "CLASSES": "Classes",
   "MY_STUDENTS": "My Students",
@@ -163,5 +163,7 @@
   "CHOOSE_DATE": "Choose a date",
   "MESSAGE_SENT": "Message Sent",
   "MESSAGE_FAILED": "Message Failed",
-  "RESEND": "Resend"
+  "RESEND": "Resend",
+  "VIEW_ALL_STUDENTS": "View all students",
+  "SEE_ALL_STUDENTS": "See All Students"
 }

@@ -101,3 +101,57 @@ export default function Widget({ data, title }) {
     </Stack>
   );
 }
+
+const Vector1 = (props) => (
+  <Box {...props}>
+    <svg
+      width="180"
+      height="114"
+      viewBox="0 0 120 76"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M134.5 165.5C128.5 134.5 66.5001 121.5 100.5 66.5C127.7 22.5 45.5 -8.83333 1 -19"
+        stroke="white"
+        stroke-width="2"
+      />
+    </svg>
+  </Box>
+);
+
+const Vector2 = (props) => (
+  <Box {...props}>
+    <svg
+      width="71"
+      height="76"
+      viewBox="0 0 71 76"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1.60307 -31C0.936401 -25.5 7.50307 -11.6 39.1031 0C70.7031 11.6 71.603 57.1667 68.103 78.5"
+        stroke="white"
+        stroke-width="2"
+      />
+    </svg>
+  </Box>
+);
+
+const Vector3 = (props) => (
+  <Box {...props}>
+    <svg
+      width="180"
+      height="114"
+      viewBox="0 0 120 76"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M134.5 165.5C128.5 134.5 66.5001 121.5 100.5 66.5C127.7 22.5 45.5 -8.83333 1 -19"
+        stroke="white"
+        stroke-width="2"
+      />
+    </svg>
+  </Box>
+);

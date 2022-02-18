@@ -164,5 +164,7 @@
   "CHOOSE_DATE": "तिथि चुनें",
   "MESSAGE_SENT": "संदेश भेजा गया",
   "MESSAGE_FAILED": "संदेश विफल",
-  "RESEND": "पुन: भेजें"
+  "RESEND": "पुन: भेजें",
+  "VIEW_ALL_STUDENTS": "सभी छात्र देखें",
+  "SEE_ALL_STUDENTS": "सभी छात्र देखें"
 }

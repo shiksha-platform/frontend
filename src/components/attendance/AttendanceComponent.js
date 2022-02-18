@@ -433,6 +433,7 @@ export default function AttendanceComponent({
   const [attendanceObject, setAttendanceObject] = useState([]);
   const [weekDays, setWeekDays] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [smsShowModal, setSmsShowModal] = useState(false);
   const [loding, setLoding] = useState({});
   const status = manifest?.status ? manifest?.status : [];
 
@@ -521,6 +522,7 @@ export default function AttendanceComponent({
                   markAttendance,
                   setAttendanceObject,
                   setShowModal,
+                  setSmsShowModal,
                   loding,
                   type,
                   _weekBox,
@@ -543,6 +545,7 @@ export default function AttendanceComponent({
                 markAttendance,
                 setAttendanceObject,
                 setShowModal,
+                setSmsShowModal,
                 loding,
                 type,
                 _weekBox,
@@ -595,6 +598,43 @@ export default function AttendanceComponent({
             })}
           </Box>
         </Actionsheet>
+        <Actionsheet
+          isOpen={smsShowModal}
+          onClose={() => setSmsShowModal(false)}
+        >
+          <Actionsheet.Content alignItems={"left"}>
+            {/* <HStack justifyContent={"end"}>
+              <IconByName
+                name="CloseCircleLineIcon"
+                onPress={(e) => setSmsShowModal(false)}
+              />
+            </HStack> */}
+            <VStack space={5} alignItems="center" p="5">
+              <Text fontWeight={500} fontSize="12px" color={"#B1B1BF"}>
+                Message Sent to Parent
+              </Text>
+              <Text fontWeight={600} fontSize="16px" color={"#373839"}>
+                Absent alert
+              </Text>
+              <Text
+                fontWeight={600}
+                fontSize="14px"
+                color={"#7C7E82"}
+                textAlign="center"
+              >
+                Hello Mr. B.K. Chaudhary, this is to inform you that your ward
+                Sheetal is absent in school on Wednesday, 12th of January 2022.
+              </Text>
+              <Button
+                variant="outline"
+                colorScheme="button"
+                onPress={(e) => setSmsShowModal(false)}
+              >
+                {t("CLOSE")}
+              </Button>
+            </VStack>
+          </Actionsheet.Content>
+        </Actionsheet>
       </VStack>
       <></>
     </Stack>
@@ -612,6 +652,7 @@ const CalendarComponent = ({
   markAttendance,
   setAttendanceObject,
   setShowModal,
+  setSmsShowModal,
   loding,
   _weekBox,
 }) => {
@@ -792,19 +833,24 @@ const CalendarComponent = ({
                 )}
               </Box>
             </TouchableHighlight>
-            {!isEditDisabled && smsDay?.type ? (
-              <IconByName
-                mt="1"
-                p="5px"
-                rounded="full"
-                name="MailFillIcon"
-                bg={smsDay?.type.toLowerCase() + ".100"}
-                colorScheme={smsDay?.type.toLowerCase()}
-                color={smsDay?.type.toLowerCase() + ".500"}
-                _icon={{ size: "14" }}
-              />
+            {!isEditDisabled ? (
+              smsDay?.type ? (
+                <IconByName
+                  mt="1"
+                  p="5px"
+                  rounded="full"
+                  name="MailFillIcon"
+                  bg={smsDay?.type.toLowerCase() + ".100"}
+                  colorScheme={smsDay?.type.toLowerCase()}
+                  color={smsDay?.type.toLowerCase() + ".500"}
+                  _icon={{ size: "14" }}
+                  onPress={(e) => setSmsShowModal(true)}
+                />
+              ) : (
+                <Box p="3" mt="1"></Box>
+              )
             ) : (
-              <Box p="3" mt="1"></Box>
+              ""
             )}
           </VStack>
         );

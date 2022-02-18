@@ -311,9 +311,16 @@ export default function App() {
                       keyExtractor={(item) => item.id}
                     />
                   </Box>
-                  <Button mt="2" variant="outline" colorScheme="button">
-                    {t("SHOW_ALL_STUDENTS")}
-                  </Button>
+                  <Link
+                    style={{
+                      textDecoration: "none",
+                    }}
+                    to={"/class/students/" + classObject?.id?.replace("1-", "")}
+                  >
+                    <Button mt="2" variant="outline" colorScheme="button">
+                      {t("SHOW_ALL_STUDENTS")}
+                    </Button>
+                  </Link>
                 </VStack>
               }
             />

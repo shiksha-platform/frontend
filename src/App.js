@@ -2,6 +2,7 @@ import { Box, Center, extendTheme, NativeBaseProvider } from "native-base";
 import Home from "./shiksha-os/home";
 import ClassDetails from "./shiksha-os/modules/classes/classDetails";
 import StudentDetails from "./shiksha-os/modules/students/studentDetails";
+import Student from "./shiksha-os/modules/students/student";
 import Classes from "./shiksha-os/modules/classes/classes";
 import Attendance from "./modules/attendance/Attendance";
 import ClassAttendance from "./modules/attendance/ClassAttendance";
@@ -230,10 +231,10 @@ export default function App() {
           }
         />
         <Route
-          path="/students/class/:classId"
+          path="/class/students/:classId"
           element={
             <SubApp>
-              <ClassDetails />
+              <Student />
             </SubApp>
           }
         />
@@ -242,6 +243,14 @@ export default function App() {
           element={
             <SubApp>
               <StudentDetails />
+            </SubApp>
+          }
+        />
+        <Route
+          path="/students/class/:classId"
+          element={
+            <SubApp>
+              <ClassDetails />
             </SubApp>
           }
         />
