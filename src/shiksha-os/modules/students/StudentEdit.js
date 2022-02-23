@@ -76,11 +76,17 @@ export default function App({
 
   const validate = () => {
     let arr = {};
-    if (!studentObject?.phoneNumber || studentObject?.phoneNumber === "") {
+    if (
+      (onlyParameter.includes("phoneNumber") && !studentObject?.phoneNumber) ||
+      studentObject?.phoneNumber === ""
+    ) {
       arr = { ...arr, phoneNumber: "Phone Number is invalid" };
     }
 
-    if (!studentObject?.email || studentObject?.email === "") {
+    if (
+      (onlyParameter.includes("email") && !studentObject?.email) ||
+      studentObject?.email === ""
+    ) {
       arr = { ...arr, email: "email is invalid" };
     }
 

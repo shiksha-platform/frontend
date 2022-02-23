@@ -6,7 +6,9 @@ import { calendar } from "./attendance/AttendanceComponent";
 import IconByName from "./IconByName";
 
 const FormatDate = ({ date, type }) => {
-  if (type === "Week") {
+  if (type === "Month") {
+    return moment(date[0]).format("MMMM Y");
+  } else if (type === "Week") {
     return (
       moment(date[0]).format("D MMM") +
       " - " +
@@ -109,6 +111,50 @@ export function WeekWiesBar({
         <Text fontSize="10" fontWeight="300">
           {t("THIS_WEEK")}
         </Text>
+      </VStack>
+    </Display>
+  );
+}
+
+export function MonthWiesBar({
+  activeColor,
+  setActiveColor,
+  page,
+  setPage,
+  _box,
+  nextDisabled,
+  previousDisabled,
+  rightErrorText,
+  leftErrorText,
+}) {
+  const [monthDays, setMonthDays] = useState([]);
+
+  useEffect(() => {
+    setMonthDays(calendar(page, null, "monthInDays"));
+    if (setActiveColor) {
+      setActiveColor(page === 0 ? "button.500" : "coolGray.500");
+    }
+  }, [page]);
+
+  return (
+    <Display
+      {...{
+        activeColor,
+        setActiveColor,
+        page,
+        setPage,
+        _box,
+        nextDisabled,
+        previousDisabled,
+        rightErrorText,
+        leftErrorText,
+      }}
+    >
+      <VStack>
+        <FormatDate date={monthDays} type="Month" />
+        {/* <Text fontSize="10" fontWeight="300">
+          {t("THIS_MONTH")}
+        </Text> */}
       </VStack>
     </Display>
   );

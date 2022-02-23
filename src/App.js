@@ -7,6 +7,7 @@ import Classes from "./shiksha-os/modules/classes/classes";
 import Attendance from "./modules/attendance/Attendance";
 import ClassAttendance from "./modules/attendance/ClassAttendance";
 import SubjectDetails from "./shiksha-os/modules/classes/subjectDetais";
+import Profile from "./shiksha-os/modules/teachers/Profile";
 import i18n from "i18next";
 import { useTranslation, initReactI18next } from "react-i18next";
 import init from "./shiksha-os/lang/init";
@@ -19,6 +20,7 @@ import ClassReportDetail from "./shiksha-os/modules/reports/ClassReportDetail";
 import CompareReport from "./shiksha-os/modules/reports/CompareReport";
 import SendSMS from "./shiksha-os/modules/sms/SendSMS";
 import MessageHistory from "./shiksha-os/modules/sms/MessageHistory";
+import TeacherAttendance from "./shiksha-os/modules/teachers/Attendance";
 
 i18n.use(initReactI18next).init(init);
 
@@ -28,47 +30,47 @@ const fontFamily =
 const fontSize = localStorage.getItem("lang") === "hi" ? "20px" : "";
 
 let red = {
-  50: "rgba(245, 123, 123, 0.05)",
-  100: "rgba(245, 123, 123, 0.20)",
-  150: "rgba(245, 123, 123, 0.30)",
-  200: "rgba(245, 123, 123, 0.40)",
-  250: "rgba(245, 123, 123, 0.50)",
-  300: "rgba(245, 123, 123, 0.60)",
-  350: "rgba(245, 123, 123, 0.70)",
-  400: "rgba(245, 123, 123, 0.80)",
-  450: "rgba(245, 123, 123, 0.90)",
-  500: "rgba(245, 123, 123, 1)",
-  550: "rgba(245, 123, 123, 1.10)",
-  600: "rgba(245, 123, 123, 1.20)",
-  650: "rgba(245, 123, 123, 1.30)",
-  700: "rgba(245, 123, 123, 1.40)",
-  750: "rgba(245, 123, 123, 1.50)",
-  800: "rgba(245, 123, 123, 1.60)",
-  850: "rgba(245, 123, 123, 1.70)",
-  900: "rgba(245, 123, 123, 1.80)",
-  950: "rgba(245, 123, 123, 1.90)",
+  50: "#fef2f2",
+  100: "#fde5e5",
+  150: "#fcd7d7",
+  200: "#fbcaca",
+  250: "#fabdbd",
+  300: "#f9b0b0",
+  350: "#f8a3a3",
+  400: "#f79595",
+  450: "#f68888",
+  500: "#f57b7b",
+  550: "#dd6f6f",
+  600: "#c46262",
+  650: "#ac5656",
+  700: "#934a4a",
+  750: "#7b3e3e",
+  800: "#623131",
+  850: "#492525",
+  900: "#311919",
+  950: "#180c0c",
 };
 
 let green = {
-  50: "rgba(13, 146, 27, 0.05)",
-  100: "rgba(13, 146, 27, 0.20)",
-  150: "rgba(13, 146, 27, 0.30)",
-  200: "rgba(13, 146, 27, 0.40)",
-  250: "rgba(13, 146, 27, 0.50)",
-  300: "rgba(13, 146, 27, 0.60)",
-  350: "rgba(13, 146, 27, 0.70)",
-  400: "rgba(13, 146, 27, 0.80)",
-  450: "rgba(13, 146, 27, 0.90)",
-  500: "rgba(13, 146, 27, 1)",
-  550: "rgba(13, 146, 27, 1.10)",
-  600: "rgba(13, 146, 27, 1.20)",
-  650: "rgba(13, 146, 27, 1.30)",
-  700: "rgba(13, 146, 27, 1.40)",
-  750: "rgba(13, 146, 27, 1.50)",
-  800: "rgba(13, 146, 27, 1.60)",
-  850: "rgba(13, 146, 27, 1.70)",
-  900: "rgba(13, 146, 27, 1.80)",
-  950: "rgba(13, 146, 27, 1.90)",
+  50: "#e7f4e8",
+  100: "#cfe9d1",
+  150: "#b6debb",
+  200: "#9ed3a4",
+  250: "#86c98d",
+  300: "#6ebe76",
+  350: "#56b35f",
+  400: "#3da849",
+  450: "#259d32",
+  500: "#0d921b",
+  550: "#0c8318",
+  600: "#0a7516",
+  650: "#096613",
+  700: "#085810",
+  750: "#07490e",
+  800: "#053a0b",
+  850: "#042c08",
+  900: "#031d05",
+  950: "#010f03",
 };
 
 const theme = extendTheme({
@@ -91,6 +93,14 @@ const theme = extendTheme({
         alignSelf: "center",
       },
     },
+    Button: {
+      baseStyle: {
+        rounded: "lg",
+      },
+      defaultProps: {
+        colorScheme: "button",
+      },
+    },
   },
   colors: {
     studentCard: {
@@ -111,6 +121,7 @@ const theme = extendTheme({
     },
     present: green,
     presentCardBg: {
+      400: "#CEEED1",
       500: "#DFFDE2",
       600: "#cae3ce",
     },
@@ -137,6 +148,7 @@ const theme = extendTheme({
     absentCardCompareText: {
       500: "#FA8129",
     },
+    special_duty: { 500: "#06D6A0" },
     weekCardCompareBg: {
       500: "#FFF8F7",
     },
@@ -160,10 +172,11 @@ const theme = extendTheme({
     },
     attendanceAbsent: red,
     attendanceUnmarked: {
-      600: "#C4C4D4",
-      500: "#C4C4D4",
-      400: "#d3d3e5",
       100: "#F0F0F4",
+      300: "#B5B5C8",
+      400: "#d3d3e5",
+      500: "#C4C4D4",
+      600: "#C4C4D4",
     },
     timeTableCardOrange: {
       500: "#FFF7F5",
@@ -211,6 +224,22 @@ export default function App() {
           element={
             <SubApp>
               <Home />
+            </SubApp>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <SubApp>
+              <Profile />
+            </SubApp>
+          }
+        />
+        <Route
+          path="/profile/attendance"
+          element={
+            <SubApp>
+              <TeacherAttendance />
             </SubApp>
           }
         />

@@ -24,7 +24,6 @@ export default function App() {
   const [students, setStudents] = useState([]);
   const [classObject, setClassObject] = useState({});
   const { classId } = useParams();
-  const fullName = sessionStorage.getItem("fullName");
 
   useEffect(() => {
     let ignore = false;

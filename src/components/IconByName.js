@@ -19,6 +19,7 @@ import ArrowDownSLineIcon from "remixicon-react/ArrowDownSLineIcon";
 import CalendarCheckLineIcon from "remixicon-react/CalendarCheckLineIcon";
 import PencilLineIcon from "remixicon-react/PencilLineIcon";
 import CheckboxCircleLineIcon from "remixicon-react/CheckboxCircleLineIcon";
+import CheckboxCircleFillIcon from "remixicon-react/CheckboxCircleFillIcon";
 import CloseCircleLineIcon from "remixicon-react/CloseCircleLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import CheckboxBlankCircleLineIcon from "remixicon-react/CheckboxBlankCircleLineIcon";
@@ -27,6 +28,7 @@ import Loader4LineIcon from "remixicon-react/Loader4LineIcon";
 import UserSmileLineIcon from "remixicon-react/UserSmileLineIcon";
 import ListUnorderedIcon from "remixicon-react/ListUnorderedIcon";
 import EmotionUnhappyLineIcon from "remixicon-react/EmotionUnhappyLineIcon";
+import EmotionHappyLineIcon from "remixicon-react/EmotionHappyLineIcon";
 import SearchLineIcon from "remixicon-react/SearchLineIcon";
 import MenuLineIcon from "remixicon-react/MenuLineIcon";
 import CheckDoubleLineIcon from "remixicon-react/CheckDoubleLineIcon";
@@ -34,6 +36,15 @@ import SpamLineIcon from "remixicon-react/SpamLineIcon";
 import MailLineIcon from "remixicon-react/MailLineIcon";
 import MailFillIcon from "remixicon-react/MailFillIcon";
 import MailForbidFillIcon from "remixicon-react/MailForbidFillIcon";
+import AwardLineIcon from "remixicon-react/AwardLineIcon";
+import RefreshLineIcon from "remixicon-react/RefreshLineIcon";
+import UserStarLineIcon from "remixicon-react/UserStarLineIcon";
+import BookMarkLineIcon from "remixicon-react/BookMarkLineIcon";
+import SearchEyeLineIcon from "remixicon-react/SearchEyeLineIcon";
+import StarLineIcon from "remixicon-react/StarLineIcon";
+import SpyLineIcon from "remixicon-react/SpyLineIcon";
+import CameraLineIcon from "remixicon-react/CameraLineIcon";
+import ShareLineIcon from "remixicon-react/ShareLineIcon";
 
 function IconButton({ icon, isDisabled, ...props }) {
   if (!isDisabled) {
@@ -105,6 +116,9 @@ export default function IconByName(props) {
     case "CheckboxCircleLineIcon":
       icon = <CheckboxCircleLineIcon />;
       break;
+    case "CheckboxCircleFillIcon":
+      icon = <CheckboxCircleFillIcon />;
+      break;
     case "CloseCircleLineIcon":
       icon = <CloseCircleLineIcon />;
       break;
@@ -129,6 +143,9 @@ export default function IconByName(props) {
     case "EmotionUnhappyLineIcon":
       icon = <EmotionUnhappyLineIcon />;
       break;
+    case "EmotionHappyLineIcon":
+      icon = <EmotionHappyLineIcon />;
+      break;
     case "SearchLineIcon":
       icon = <SearchLineIcon />;
       break;
@@ -149,6 +166,33 @@ export default function IconByName(props) {
       break;
     case "MailForbidFillIcon":
       icon = <MailForbidFillIcon />;
+      break;
+    case "AwardLineIcon":
+      icon = <AwardLineIcon />;
+      break;
+    case "RefreshLineIcon":
+      icon = <RefreshLineIcon />;
+      break;
+    case "UserStarLineIcon":
+      icon = <UserStarLineIcon />;
+      break;
+    case "BookMarkLineIcon":
+      icon = <BookMarkLineIcon />;
+      break;
+    case "SearchEyeLineIcon":
+      icon = <SearchEyeLineIcon />;
+      break;
+    case "StarLineIcon":
+      icon = <StarLineIcon />;
+      break;
+    case "SpyLineIcon":
+      icon = <SpyLineIcon />;
+      break;
+    case "CameraLineIcon":
+      icon = <CameraLineIcon />;
+      break;
+    case "ShareLineIcon":
+      icon = <ShareLineIcon />;
       break;
     default:
       if (props.name !== "Home4LineIcon") {

@@ -55,6 +55,19 @@ export default function Widget({ data, title }) {
                 overflow={"hidden"}
                 {...item?._box}
               >
+                {/* <Vector1
+                  position="absolute"
+                  right="-100"
+                  top="-10"
+                  style={{ transform: "matrix(-1, 0, 1, 1, 0, 0)" }}
+                />
+                <Vector2 position="absolute" right="10px" top="5px" />
+                <Vector3
+                  position="absolute"
+                  right="30"
+                  top="0"
+                  style={{ transform: "matrix(1, 0, 0, -1, 0, 0)" }}
+                /> */}
                 <PressableNew route={item.link}>
                   <Text
                     {...{

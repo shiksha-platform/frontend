@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, Stack, VStack } from "native-base";
+import React, { useState } from "react";
+import { Actionsheet, Box, Button, Stack, Text, VStack } from "native-base";
 import { useTranslation } from "react-i18next";
 import Layout from "../layout/Layout";
 import Widget from "../components/Widget";
@@ -7,6 +7,7 @@ import Widget from "../components/Widget";
 export default function Home() {
   const { t } = useTranslation();
   const firstName = sessionStorage.getItem("firstName");
+  const [showModal, setShowModal] = useState(true);
 
   const widgetData = [
     {
@@ -108,7 +109,7 @@ export default function Home() {
         title: firstName,
         isEnableHamburgerMenuButton: true,
         isEnableLanguageMenu: true,
-        avatar: firstName,
+        avatar: true,
         heading: firstName,
         subHeading: t("GOOD_MORNING"),
         _box: { backgroundColor: "transparent" },
@@ -128,6 +129,39 @@ export default function Home() {
           </VStack>
         </Stack>
       </Box>
+
+      <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
+        <Actionsheet.Content>
+          {/* <Text>Tap here to mark your attendance</Text> */}
+          <VStack space={5} p="5">
+            <Text fontWeight={700} fontSize="22px">
+              How to mark your own attendance?
+            </Text>
+            <Text fontWeight={500} fontSize="14px">
+              To mark your own attendance, tap on your profile picture, select
+              an option according to your choice and mark attendance.
+            </Text>
+            <Button.Group>
+              <Button
+                flex="1"
+                variant="outline"
+                colorScheme="button"
+                onPress={(e) => setShowModal(false)}
+              >
+                {t("SKIP")}
+              </Button>
+              <Button
+                flex="1"
+                colorScheme="button"
+                _text={{ color: "white" }}
+                onPress={(e) => setShowModal(false)}
+              >
+                {t("NEXT")}
+              </Button>
+            </Button.Group>
+          </VStack>
+        </Actionsheet.Content>
+      </Actionsheet>
     </Layout>
   );
 }

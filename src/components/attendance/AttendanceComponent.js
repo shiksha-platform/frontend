@@ -20,10 +20,10 @@ import IconByName from "../IconByName";
 import Report from "./Report";
 import { Link } from "react-router-dom";
 
-export function calendar(weekPage, today, type) {
+export function calendar(page, today, type) {
   let date = moment();
   if (type === "month") {
-    let startDate = moment().startOf("month");
+    let startDate = moment().add(page, "months").startOf("month");
     let endDate = moment(startDate).endOf("month");
     var weeks = [];
     weeks.push(weekDates({}, startDate));
@@ -31,8 +31,17 @@ export function calendar(weekPage, today, type) {
       weeks.push(weekDates({}, startDate));
     }
     return weeks;
+  } else if (type === "monthInDays") {
+    let startDate = moment().add(page, "months").startOf("month");
+    let endDate = moment(startDate).endOf("month");
+    var days = [];
+    days.push(startDate.clone());
+    while (startDate.add(1, "days").diff(endDate) < 1) {
+      days.push(startDate.clone());
+    }
+    return days;
   } else {
-    date.add(weekPage * 7, "days");
+    date.add(page * 7, "days");
     if (type === "week") {
       return weekDates({ today: today }, date);
     } else if (type === "weeks") {

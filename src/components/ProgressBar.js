@@ -1,7 +1,7 @@
 import { Box, HStack, Stack, Text, VStack } from "native-base";
 import React from "react";
 
-export default function ProgressBar({ data, isTextShow, ...props }) {
+export default function ProgressBar({ data, isTextShow, h, ...props }) {
   let total = data.reduce((a, b) => a + b["value"], 0);
 
   let values =
@@ -42,7 +42,7 @@ export default function ProgressBar({ data, isTextShow, ...props }) {
         return (
           <Box
             key={i}
-            h="10px"
+            h={h ? h : "5px"}
             bg={item.color}
             w={(item.value / total) * 100 + "%"}
           />

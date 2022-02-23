@@ -103,6 +103,7 @@ export default function App() {
       _appBar={{
         isEnableSearchBtn: true,
         setSearch: setSearch,
+        search: search,
       }}
       _header={{
         title: t("MESSAGE_HISTORY"),
@@ -350,7 +351,6 @@ const CalendarComponent = ({
                 status: "CheckboxBlankCircleLineIcon",
               }
             : {};
-          let smsType = "Present";
           if (smsItem?.type && smsItem?.type === "Present") {
             smsIconProp = {
               ...smsIconProp,
