@@ -4,7 +4,7 @@ import IconByName from "../components/IconByName";
 import manifest from "../shiksha-os/manifest.json";
 import { useTranslation } from "react-i18next";
 import { Link, generatePath } from "react-router-dom";
-import { useWindowSize } from "../App";
+import { useWindowSize } from "../components/helper";
 
 export default function Footer({ routeDynamics }) {
   const [selected, setSelected] = React.useState(0);

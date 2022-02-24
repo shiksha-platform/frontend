@@ -188,7 +188,11 @@
   "MY_MONTHLY_ATTENDANCE": "My Monthly Attendance",
   "MY_ATTENDANCE": "My Attendance",
   "ATTENDANCE_DETAILS": "Attendance Details",
+  "ATTENDANCE_MARKED": "Attendance Marked",
   "MORNING_SCHOOL": "Morning school",
   "EVENING_SCHOOL": "Evening school",
-  "CONTINUE": "Continue"
+  "CONTINUE": "Continue",
+  "CAPTURE": "Capture",
+  "YOU_SUCCESS_UPLOAD_IMAGE_ATTENDANCE": "You have successfully uploaded your image and marked your attendance for the day.",
+  "BACK_TO_HOME": "Back to Home"
 }

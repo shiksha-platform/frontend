@@ -6,14 +6,17 @@ import {
   Box,
   Button,
   HStack,
+  Modal,
   Pressable,
   Stack,
   Text,
+  VStack,
 } from "native-base";
 import AppBar from "../shiksha-os/AppBar";
 import { useTranslation } from "react-i18next";
 import IconByName from "../components/IconByName";
 import { Link } from "react-router-dom";
+import Camera from "../components/Camera";
 
 export default function Layout({
   isDisabledAppBar,
@@ -94,6 +97,9 @@ const AttendanceMarkSheet = ({ showModal, setShowModal, selfAttendance }) => {
   const [markAttendance, setMarkAttendance] = React.useState(selfAttendance);
   const [markList, setMarkList] = React.useState([]);
   const [specialDutyList, setSpecialDutyList] = React.useState([]);
+  const [cameraModal, setCameraModal] = React.useState(false);
+  const [locationModal, setLocationModal] = React.useState(false);
+  const [cameraUrl, setCameraUrl] = React.useState();
 
   const markSelfAttendance = () => {
     if (markAttendance) {
@@ -102,6 +108,7 @@ const AttendanceMarkSheet = ({ showModal, setShowModal, selfAttendance }) => {
       localStorage.removeItem("selfAttendance");
     }
     setShowModal(false);
+    setLocationModal(true);
   };
 
   React.useEffect(() => {
@@ -155,6 +162,52 @@ const AttendanceMarkSheet = ({ showModal, setShowModal, selfAttendance }) => {
 
   return (
     <>
+      <Camera {...{ cameraModal, setCameraModal, cameraUrl, setCameraUrl }} />
+      <Modal isOpen={locationModal} onClose={() => setLocationModal(false)}>
+        <Modal.Content maxWidth="400px">
+          <Modal.Body>
+            <VStack space="6" textAlign="center" py="20px" px="30px">
+              <IconByName
+                alignSelf="center"
+                name="MapPinLineIcon"
+                isDisabled
+                color="button.500"
+                _icon={{
+                  size: "60px",
+                }}
+              />
+              <Text fontSize="18px" fontWeight={"600"}>
+                Turn on device location.
+              </Text>
+              <Text fontSize="14px" fontWeight={"500"}>
+                Attendance marking requires to log in your device location.
+                Without location, the app can't mark your attendance.
+              </Text>
+              <Button.Group space={2}>
+                <Button
+                  flex={1}
+                  variant="outline"
+                  onPress={() => {
+                    setLocationModal(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  flex={1}
+                  _text={{ color: "white" }}
+                  onPress={() => {
+                    setLocationModal(false);
+                    setCameraModal(true);
+                  }}
+                >
+                  Turn On
+                </Button>
+              </Button.Group>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
       <Actionsheet isOpen={showModal} onClose={() => setShowModal(false)}>
         <Actionsheet.Content alignItems={"left"} bg="classCard.500">
           <HStack justifyContent={"space-between"}>

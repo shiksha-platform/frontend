@@ -83,8 +83,6 @@ export default function App() {
     getData();
   }, [weekPage, teacherId, token]);
 
-  console.log({ attendance });
-
   return (
     <Layout
       _header={{

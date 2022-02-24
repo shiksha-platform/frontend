@@ -45,6 +45,11 @@ import StarLineIcon from "remixicon-react/StarLineIcon";
 import SpyLineIcon from "remixicon-react/SpyLineIcon";
 import CameraLineIcon from "remixicon-react/CameraLineIcon";
 import ShareLineIcon from "remixicon-react/ShareLineIcon";
+import RecordCircleFillIcon from "remixicon-react/RecordCircleFillIcon";
+import FlashlightLineIcon from "remixicon-react/FlashlightLineIcon";
+import CameraSwitchLineIcon from "remixicon-react/CameraSwitchLineIcon";
+import Settings4LineIcon from "remixicon-react/Settings4LineIcon";
+import MapPinLineIcon from "remixicon-react/MapPinLineIcon";
 
 function IconButton({ icon, isDisabled, ...props }) {
   if (!isDisabled) {
@@ -193,6 +198,21 @@ export default function IconByName(props) {
       break;
     case "ShareLineIcon":
       icon = <ShareLineIcon />;
+      break;
+    case "RecordCircleFillIcon":
+      icon = <RecordCircleFillIcon />;
+      break;
+    case "FlashlightLineIcon":
+      icon = <FlashlightLineIcon />;
+      break;
+    case "CameraSwitchLineIcon":
+      icon = <CameraSwitchLineIcon />;
+      break;
+    case "Settings4LineIcon":
+      icon = <Settings4LineIcon />;
+      break;
+    case "MapPinLineIcon":
+      icon = <MapPinLineIcon />;
       break;
     default:
       if (props.name !== "Home4LineIcon") {

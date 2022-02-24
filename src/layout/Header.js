@@ -1,5 +1,13 @@
 import React from "react";
-import { HStack, Text, Box, VStack, Avatar, Pressable } from "native-base";
+import {
+  HStack,
+  Text,
+  Box,
+  VStack,
+  Avatar,
+  Pressable,
+  Image,
+} from "native-base";
 import IconByName from "../components/IconByName";
 
 export default function Header({
@@ -17,8 +25,17 @@ export default function Header({
   isDisabledHeader,
   fullRightComponent,
 }) {
+  const myRef = React.useRef(null);
   let newAvatar = sessionStorage.getItem("firstName");
   let selfAttendance = localStorage.getItem("selfAttendance");
+  let cameraUrl = localStorage.getItem("cameraUrl");
+  let avatarUrlObject = cameraUrl
+    ? {
+        source: {
+          uri: cameraUrl,
+        },
+      }
+    : {};
   return !isDisabledHeader ? (
     !fullRightComponent ? (
       <Box {..._box} py={7} px={5}>
@@ -44,23 +61,33 @@ export default function Header({
           ) : avatar ? (
             <>
               <Pressable onPress={(e) => setShowModal(true)}>
-                <Avatar bg="amber.500" rounded="lg">
-                  {newAvatar?.toUpperCase().substr(0, 2)}
-                  {selfAttendance ? (
-                    <IconByName
-                      name="CheckboxCircleFillIcon"
-                      isDisabled
-                      color="present.500"
-                      position="absolute"
-                      bottom="-5px"
-                      right="-5px"
-                      bg="white"
-                      rounded="full"
-                    />
-                  ) : (
-                    ""
-                  )}
-                </Avatar>
+                {cameraUrl ? (
+                  <Image
+                    ref={myRef}
+                    {...avatarUrlObject}
+                    rounded="lg"
+                    alt="Profile"
+                    size="50px"
+                  />
+                ) : (
+                  <Avatar bg="amber.500" rounded="lg">
+                    {newAvatar?.toUpperCase().substr(0, 2)}
+                  </Avatar>
+                )}
+                {selfAttendance ? (
+                  <IconByName
+                    name="CheckboxCircleFillIcon"
+                    isDisabled
+                    color="present.500"
+                    position="absolute"
+                    bottom="-5px"
+                    right="-5px"
+                    bg="white"
+                    rounded="full"
+                  />
+                ) : (
+                  ""
+                )}
               </Pressable>
             </>
           ) : (

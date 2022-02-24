@@ -13,18 +13,16 @@ import { useTranslation, initReactI18next } from "react-i18next";
 import init from "./shiksha-os/lang/init";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./shiksha-os/Login";
-import { useLayoutEffect, useState } from "react";
-import manifest from "./shiksha-os/manifest.json";
 import ClassReport from "./shiksha-os/modules/reports/ClassReport";
 import ClassReportDetail from "./shiksha-os/modules/reports/ClassReportDetail";
 import CompareReport from "./shiksha-os/modules/reports/CompareReport";
 import SendSMS from "./shiksha-os/modules/sms/SendSMS";
 import MessageHistory from "./shiksha-os/modules/sms/MessageHistory";
 import TeacherAttendance from "./shiksha-os/modules/teachers/Attendance";
+import { useWindowSize, maxWidth } from "./components/helper";
 
 i18n.use(initReactI18next).init(init);
 
-const maxWidth = manifest?.maxWidth ? manifest?.maxWidth : "414";
 const fontFamily =
   localStorage.getItem("lang") === "hi" ? "'Baloo 2'" : "Inter";
 const fontSize = localStorage.getItem("lang") === "hi" ? "20px" : "";
@@ -352,22 +350,6 @@ export default function App() {
       </Routes>
     </Router>
   );
-}
-
-export function useWindowSize() {
-  const [size, setSize] = useState([0, 0]);
-  useLayoutEffect(() => {
-    function updateSize() {
-      setSize([
-        window.outerWidth > maxWidth ? maxWidth : window.outerWidth,
-        window.innerHeight,
-      ]);
-    }
-    window.addEventListener("resize", updateSize);
-    updateSize();
-    return () => window.removeEventListener("resize", updateSize);
-  }, []);
-  return size;
 }
 
 export function SubApp({ children }) {
