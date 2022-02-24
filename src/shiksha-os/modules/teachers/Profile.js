@@ -23,6 +23,7 @@ export default function App() {
   const [teacherObject, setTeacherObject] = useState({});
   const teacherId = sessionStorage.getItem("id");
   const token = sessionStorage.getItem("token");
+  const [showModal, setShowModal] = React.useState(false);
 
   useEffect(() => {
     let ignore = false;
@@ -41,6 +42,7 @@ export default function App() {
 
   return (
     <Layout
+      {...{ showModal, setShowModal }}
       imageUrl={window.location.origin + "/class.png"}
       _header={{
         title: t("MY_CLASSES"),
@@ -77,12 +79,11 @@ export default function App() {
           routeDynamics={true}
           items={[
             {
-              id: 1,
               keyId: 1,
               title: t("TAKE_ATTENDANCE"),
               icon: "CalendarCheckLineIcon",
-              route: "/attendance/:id",
               boxMinW: "200px",
+              onPress: (e) => setShowModal(!showModal),
             },
           ]}
           type={"veritical"}
