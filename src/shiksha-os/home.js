@@ -6,7 +6,7 @@ import Widget from "../components/Widget";
 
 export default function Home() {
   const { t } = useTranslation();
-  const firstName = sessionStorage.getItem("firstName");
+  const firstName = localStorage.getItem("firstName");
   const [showModal, setShowModal] = useState(true);
 
   const widgetData = [

@@ -3,33 +3,30 @@ import mapInterfaceData from "../shiksha-os/services/mapInterfaceData";
 import manifest from "../shiksha-os/manifest.json";
 
 const interfaceData = {
-  id: "osid",
-  studentId: "studentId",
+  id: "id",
+  studentId: "userId",
+  topicId: "topicId",
   attendance: "attendance",
   date: "date",
-  classId: "classId",
+  classId: "groupId",
   teacherId: "teacherId",
   admissionNo: "admissionNo",
-  currentClassID: "currentClassID",
+  currentClassID: "groupId",
   email: "email",
-  osOwner: "osOwner",
 };
 
-export const getAll = async (
-  filters = {
-    filters: {
-      filters: {
-        classId: {
-          eq: "CLAS001",
-        },
-      },
-    },
-  }
-) => {
-  const result = await generalServices.post(
-    manifest.api_url + "Attendance/search",
-    filters
-  );
+let only = Object.keys(interfaceData);
+
+export const getAll = async (params = {}, header = {}) => {
+  let headers = {
+    ...header,
+    Authorization: "Bearer " + localStorage.getItem("token"),
+  };
+  const result = await generalServices.get(manifest.api_url + "/attendance", {
+    ...params,
+    headers,
+  });
+
   if (result.data) {
     return result.data.map((e) => mapInterfaceData(e, interfaceData));
   } else {
@@ -37,10 +34,17 @@ export const getAll = async (
   }
 };
 
-export const create = async (parameters, headers = {}) => {
+export const create = async (data, headers = {}) => {
+  let newInterfaceData = interfaceData;
+  newInterfaceData = {
+    ...interfaceData,
+    removeParameter: headers?.removeParameter ? headers?.removeParameter : [],
+    onlyParameter: headers?.onlyParameter ? headers?.onlyParameter : only,
+  };
+  let newData = mapInterfaceData(data, newInterfaceData, true);
   const result = await generalServices.post(
-    manifest.api_url + "Attendance",
-    parameters,
+    manifest.api_url + "/attendance",
+    newData,
     {
       headers: headers?.headers ? headers?.headers : {},
     }
@@ -55,17 +59,15 @@ export const create = async (parameters, headers = {}) => {
 
 export const update = async (data = {}, headers = {}) => {
   let newInterfaceData = interfaceData;
-  if (headers?.removeParameter || headers?.onlyParameter) {
-    newInterfaceData = {
-      ...interfaceData,
-      removeParameter: headers?.removeParameter ? headers?.removeParameter : [],
-      onlyParameter: headers?.onlyParameter ? headers?.onlyParameter : [],
-    };
-  }
+  newInterfaceData = {
+    ...interfaceData,
+    removeParameter: headers?.removeParameter ? headers?.removeParameter : [],
+    onlyParameter: headers?.onlyParameter ? headers?.onlyParameter : only,
+  };
   let newData = mapInterfaceData(data, newInterfaceData, true);
 
   const result = await generalServices.update(
-    manifest.api_url + "Attendance/" + data.id,
+    manifest.api_url + "/attendance/" + data.id,
     newData,
     {
       headers: headers?.headers ? headers?.headers : {},

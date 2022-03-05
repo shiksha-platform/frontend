@@ -104,11 +104,11 @@ const AttendanceMarkSheet = ({ showModal, setShowModal, selfAttendance }) => {
   const markSelfAttendance = () => {
     if (markAttendance) {
       localStorage.setItem("selfAttendance", markAttendance);
+      setLocationModal(true);
     } else {
       localStorage.removeItem("selfAttendance");
     }
     setShowModal(false);
-    setLocationModal(true);
   };
 
   React.useEffect(() => {
@@ -189,6 +189,7 @@ const AttendanceMarkSheet = ({ showModal, setShowModal, selfAttendance }) => {
                   variant="outline"
                   onPress={() => {
                     setLocationModal(false);
+                    setShowModal(true);
                   }}
                 >
                   Cancel

@@ -30,7 +30,7 @@ export default function ClassReportDetail() {
   const [datePage, setDatePage] = useState(0);
   const { classId } = useParams();
   const [classObject, setClassObject] = useState({});
-  const teacherId = sessionStorage.getItem("id");
+  const teacherId = localStorage.getItem("id");
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [compare, setCompare] = useState();
@@ -98,7 +98,7 @@ export default function ClassReportDetail() {
       subHeader={
         <Stack>
           <Text fontSize="16" fontWeight="600">
-            {classObject.className}
+            {classObject.name}
           </Text>
           <Text fontSize="10" fontWeight="300">
             {t("TOTAL")}: {students.length} {t("PRESENT")}:{presentCount}

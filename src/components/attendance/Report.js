@@ -5,30 +5,51 @@ import IconByName from "../IconByName";
 import manifest from "../../modules/attendance/manifest.json";
 import moment from "moment";
 import ProgressBar from "../ProgressBar";
+import { calendar } from "./AttendanceComponent";
 
-export default function Report({ students, attendance, title }) {
+export default function Report({
+  students,
+  attendance,
+  title,
+  page,
+  calendarView,
+}) {
   const { t } = useTranslation();
-  const fullName = sessionStorage.getItem("fullName");
+  const fullName = localStorage.getItem("fullName");
   const status = manifest?.status ? manifest?.status : [];
+  let studentIds = students.map((e) => e.id);
+  let withoutHolidays = calendar(
+    page ? page : 0,
+    calendarView ? calendarView : "days"
+  ).filter((e) => e.day()).length;
 
   const getStudentsAttendance = (attendance) => {
-    return students
+    return attendance
       .map((item) => {
-        return attendance
-          .slice()
-          .reverse()
-          .find(
-            (e) =>
-              e.date === moment().format("Y-MM-DD") && e.studentId === item.id
-          );
+        if (studentIds.includes(item.studentId)) {
+          return item;
+        }
       })
+      .slice()
+      .reverse()
+      .filter(
+        (value, index, self) =>
+          self.findIndex(
+            (m) => value?.studentId === m?.studentId && value?.date === m?.date
+            // && value?.attendance === m?.attendance
+          ) === index
+      )
       .filter((e) => e);
   };
 
-  const countReport = ({ gender, attendance, attendanceType, type }) => {
+  const countReport = ({
+    gender,
+    attendance,
+    attendanceType,
+    type,
+    studentIds,
+  }) => {
     let attendanceAll = getStudentsAttendance(attendance);
-
-    let studentIds = students.map((e) => e.id);
     if (gender && [t("BOYS"), t("GIRLS")].includes(gender)) {
       studentIds = students
         .filter(
@@ -42,27 +63,13 @@ export default function Report({ students, attendance, title }) {
         )
         .map((e) => e.id);
     }
-    if (type === "Total" && gender === t("TOTAL")) {
-      return studentIds.length;
-    } else if (type === "Total" && [t("BOYS"), t("GIRLS")].includes(gender)) {
-      let studentIds1 = studentIds.filter(
-        (e) =>
-          !attendanceAll
-            .filter((e) => studentIds.includes(e?.studentId))
-            .map((e) => e.studentId)
-            .includes(e)
-      );
 
-      return (
-        attendanceAll.filter((e) => studentIds.includes(e?.studentId)).length +
-        studentIds1.length
-      );
-    } else if (attendanceType === "Unmarked" && gender === t("TOTAL")) {
+    if (attendanceType === "Unmarked" && gender === t("TOTAL")) {
       let studentIds1 = attendanceAll.filter(
         (e) =>
           studentIds.includes(e.studentId) && e.attendance !== attendanceType
       );
-      return Math.abs(studentIds.length - studentIds1.length);
+      return Math.abs(studentIds.length * withoutHolidays - studentIds1.length);
     } else if (type === "Unmarked" || attendanceType === "Unmarked") {
       let studentIds1 = attendanceAll.filter((e) =>
         studentIds.includes(e.studentId)
@@ -74,7 +81,7 @@ export default function Report({ students, attendance, title }) {
             studentIds.includes(e?.studentId) && e.attendance !== attendanceType
         );
       }
-      return Math.abs(studentIds.length - studentIds1.length);
+      return Math.abs(studentIds.length * withoutHolidays - studentIds1.length);
     } else {
       return attendanceAll.filter(
         (e) =>
@@ -139,6 +146,7 @@ export default function Report({ students, attendance, title }) {
                               gender: item,
                               attendanceType: subItem,
                               attendance: itemAttendance,
+                              studentIds,
                             });
                             return {
                               name: subItem,

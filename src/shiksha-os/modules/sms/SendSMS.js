@@ -26,7 +26,7 @@ export default function SendSMS() {
   const [datePage, setDatePage] = useState(0);
   const { classId } = useParams();
   const [classObject, setClassObject] = useState({});
-  const teacherId = sessionStorage.getItem("id");
+  const teacherId = localStorage.getItem("id");
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
 
@@ -69,7 +69,7 @@ export default function SendSMS() {
     <Layout
       _header={{
         title: t("SEND_MESSAGE"),
-        subHeading: classObject.className,
+        subHeading: classObject.name,
         _subHeading: { fontWeight: 500 },
       }}
       subHeader={
@@ -87,7 +87,7 @@ export default function SendSMS() {
       <VStack space="1">
         <Box bg="white" p="5">
           <Text fontSize="16" fontWeight="600">
-            {classObject.className}
+            {classObject.name}
           </Text>
           <Text fontSize="10" fontWeight="300">
             {t("TOTAL")}: {students.length} {t("PRESENT")}:

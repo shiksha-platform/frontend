@@ -20,7 +20,7 @@ import IconByName from "../IconByName";
 import Report from "./Report";
 import { Link } from "react-router-dom";
 
-export function calendar(page, today, type) {
+export function calendar(page, type = "defaultWeek") {
   let date = moment();
   if (type === "month") {
     let startDate = moment().add(page, "months").startOf("month");
@@ -40,24 +40,23 @@ export function calendar(page, today, type) {
       days.push(startDate.clone());
     }
     return days;
-  } else {
+  } else if (["week", "weeks", "defaultWeek"].includes(type)) {
     date.add(page * 7, "days");
     if (type === "week") {
-      return weekDates({ today: today }, date);
+      return weekDates(date);
     } else if (type === "weeks") {
-      return [
-        weekDates({ today: today }, date),
-        weekDates({ today: today }, date.clone().add(-1 * 7, "days")),
-      ];
+      return [weekDates(date), weekDates(date.clone().add(-1 * 7, "days"))];
     }
-    return [weekDates({ today: today }, date)];
+    return [weekDates(date)];
+  } else {
+    if (type == "days") {
+      return [date.add(page * 1, "days")];
+    }
+    return date.add(page * 1, "days");
   }
 }
 
-export const weekDates = (filter = {}, currentDate = moment()) => {
-  if (filter.today) {
-    return [moment()];
-  }
+export const weekDates = (currentDate = moment()) => {
   let weekStart = currentDate.clone().startOf("isoWeek");
   let days = [];
   for (let i = 0; i <= 6; i++) {
@@ -66,9 +65,9 @@ export const weekDates = (filter = {}, currentDate = moment()) => {
   return days;
 };
 
-export const GetAttendance = async (filters) => {
+export const GetAttendance = async (params) => {
   return await attendanceServiceRegistry.getAll({
-    filters: filters,
+    params: params,
   });
 };
 
@@ -143,7 +142,7 @@ export const MultipalAttendance = ({
 }) => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
-  const teacherId = sessionStorage.getItem("id");
+  const teacherId = localStorage.getItem("id");
 
   const getStudentsAttendance = (e) => {
     return students
@@ -180,7 +179,7 @@ export const MultipalAttendance = ({
                 },
                 {
                   headers: {
-                    Authorization: "Bearer " + sessionStorage.getItem("token"),
+                    Authorization: "Bearer " + localStorage.getItem("token"),
                   },
                 }
               )
@@ -205,7 +204,7 @@ export const MultipalAttendance = ({
             },
             {
               headers: {
-                Authorization: "Bearer " + sessionStorage.getItem("token"),
+                Authorization: "Bearer " + localStorage.getItem("token"),
               },
             }
           );
@@ -345,7 +344,16 @@ export const MultipalAttendance = ({
                     </Text>
                   </Text>
                 </HStack>
-                <Report {...{ students, attendance: [attendance] }} />
+                <Report
+                  {...{
+                    students,
+                    attendance: [
+                      attendance.filter(
+                        (e) => e.date === moment().format("Y-MM-DD")
+                      ),
+                    ],
+                  }}
+                />
               </Box>
               <Box bg="white" p={5}>
                 <Box bg={"gray.100"} rounded={"md"} p="4">
@@ -425,7 +433,6 @@ export const MultipalAttendance = ({
 
 export default function AttendanceComponent({
   type,
-  today,
   weekPage,
   student,
   attendanceProp,
@@ -437,17 +444,17 @@ export default function AttendanceComponent({
   _weekBox,
 }) {
   const { t } = useTranslation();
-  const teacherId = sessionStorage.getItem("id");
+  const teacherId = localStorage.getItem("id");
   const [attendance, setAttendance] = useState([]);
   const [attendanceObject, setAttendanceObject] = useState([]);
-  const [weekDays, setWeekDays] = useState([]);
+  const [weekDays, setWeekDays] = useState(calendar(weekPage, type));
   const [showModal, setShowModal] = useState(false);
   const [smsShowModal, setSmsShowModal] = useState(false);
   const [loding, setLoding] = useState({});
   const status = manifest?.status ? manifest?.status : [];
 
   useEffect(() => {
-    setWeekDays(calendar(weekPage, today, type));
+    setWeekDays(calendar(weekPage, type));
     async function getData() {
       if (attendanceProp) {
         setAttendance(attendanceProp);
@@ -455,7 +462,7 @@ export default function AttendanceComponent({
       setLoding({});
     }
     getData();
-  }, [weekPage, attendanceProp, today, type]);
+  }, [weekPage, attendanceProp, type]);
 
   const markAttendance = async (dataObject) => {
     setLoding({
@@ -471,7 +478,7 @@ export default function AttendanceComponent({
           },
           {
             headers: {
-              Authorization: "Bearer " + sessionStorage.getItem("token"),
+              Authorization: "Bearer " + localStorage.getItem("token"),
             },
             onlyParameter: ["attendance", "id", "date"],
           }
@@ -496,7 +503,7 @@ export default function AttendanceComponent({
           },
           {
             headers: {
-              Authorization: "Bearer " + sessionStorage.getItem("token"),
+              Authorization: "Bearer " + localStorage.getItem("token"),
             },
           }
         )
@@ -508,21 +515,20 @@ export default function AttendanceComponent({
         });
     }
   };
-
   return (
-    <Stack space={!today ? "15px" : ""}>
-      <VStack space={!today ? "15px" : ""}>
+    <Stack space={type !== "day" ? "15px" : ""}>
+      <VStack space={type !== "day" ? "15px" : ""}>
         <Card
           item={student}
           _arrow={{ _icon: { fontSize: "large" } }}
           type="attendance"
           hidePopUpButton={hidePopUpButton}
-          {...(today ? { _textTitle: { fontSize: "xl" } } : {})}
+          {...(type === "day" ? { _textTitle: { fontSize: "xl" } } : {})}
           {..._card}
           rightComponent={
-            today ? (
+            type === "day" ? (
               <CalendarComponent
-                weekDays={weekDays}
+                monthDays={[[weekDays]]}
                 isIconSizeSmall={true}
                 isEditDisabled={isEditDisabled}
                 {...{
@@ -542,7 +548,7 @@ export default function AttendanceComponent({
             )
           }
         />
-        {!today ? (
+        {type !== "day" ? (
           <Box borderWidth={1} borderColor={"coolGray.200"} rounded="xl">
             <CalendarComponent
               monthDays={weekDays}
@@ -682,6 +688,8 @@ const CalendarComponent = ({
           (e) => e.date === day.format("Y-MM-DD") && e.studentId === student.id
         );
         let isToday = moment().format("Y-MM-DD") === day.format("Y-MM-DD");
+        let isFutureDay = day.format("Y-MM-DD") > moment().format("Y-MM-DD");
+        let isHoliday = day.day() === 0;
         let dateValue = day.format("Y-MM-DD");
         let attendanceItem = attendance
           .slice()
@@ -746,7 +754,7 @@ const CalendarComponent = ({
             opacity={
               type !== "month" && day.day() !== 0
                 ? 1
-                : day.day() === 0
+                : isHoliday
                 ? 0.3
                 : day.format("M") !== moment().format("M")
                 ? 0.3
@@ -799,11 +807,7 @@ const CalendarComponent = ({
             </Text>
             <TouchableHighlight
               onPress={(e) => {
-                if (
-                  !isEditDisabled &&
-                  day.format("M") === moment().format("M") &&
-                  day.day() !== 0
-                ) {
+                if (!isEditDisabled && !isFutureDay && !isHoliday) {
                   markAttendance({
                     attendanceId: attendanceItem?.id ? attendanceItem.id : null,
                     date: dateValue,

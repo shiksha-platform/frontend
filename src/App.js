@@ -196,7 +196,7 @@ function NotFound() {
 }
 
 export default function App() {
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   if (!token) {
     return (
       <Router>

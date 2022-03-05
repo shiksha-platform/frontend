@@ -3,13 +3,9 @@ import mapInterfaceData from "./mapInterfaceData";
 import manifest from "../manifest.json";
 
 const interfaceData = {
-  id: "osid",
-  fullName: "teacherFullName",
-  refId: "teacherRefId",
-  highestQualification: "highestQualification",
-  firstName: "teacherFirstName",
-  lastName: "teacherLastName",
-  currentServiceType: "currentServiceType",
+  id: "teacherId",
+  firstName: "firstName",
+  lastName: "lastName",
   email: "email",
   mergeParameterWithValue: {
     title: "teacherFullName",
@@ -22,7 +18,7 @@ export const getAll = async (
   }
 ) => {
   const result = await generalServices.post(
-    manifest.api_url + "Teacher/search",
+    manifest.api_url + "/teacher/search",
     filters
   );
   if (result.data) {
@@ -34,13 +30,13 @@ export const getAll = async (
 
 export const getOne = async (filters = {}, headers = {}) => {
   const result = await generalServices
-    .get(manifest.api_url + "Teacher/edccc63f-fcc7-4529-80b7-feea3fee0f3c", {
+    .get(manifest.api_url + "/teacher/ebecc2ee-4f56-43bf-8cc8-d4847a12762e", {
       headers: headers,
     })
     .catch((error) => error);
   if (result.data) {
-    return mapInterfaceData(result.data, interfaceData);
+    return mapInterfaceData(result.data.data, interfaceData);
   } else {
-    return {};
+    return;
   }
 };

@@ -330,7 +330,7 @@ const TimeTableRoute = () => {
 const MyClassRoute = () => {
   const { t } = useTranslation();
   const [classes, setClasses] = useState([]);
-  const authId = sessionStorage.getItem("id");
+  const teacherId = localStorage.getItem("id");
 
   useEffect(() => {
     let ignore = false;
@@ -338,17 +338,15 @@ const MyClassRoute = () => {
       if (!ignore) {
         setClasses(
           await classServiceRegistry.getAll({
-            filters: {
-              teacherId: {
-                eq: authId,
-              },
-            },
+            teacherId: teacherId,
+            type: "class",
+            role: "teacher",
           })
         );
       }
     };
     getData();
-  }, [authId]);
+  }, [teacherId]);
 
   return (
     <Box pb={4} pt="30">
@@ -356,7 +354,7 @@ const MyClassRoute = () => {
         <Widget
           data={classes.map((item, index) => {
             return {
-              title: item.className,
+              title: item.name,
               subTitle: t("CLASS_TEACHER"),
               link: generatePath(item.route, { ...{ id: item.id } }),
               _box: {

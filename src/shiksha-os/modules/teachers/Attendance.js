@@ -24,8 +24,8 @@ export default function App() {
   const [weekPage, setWeekPage] = useState(0);
   const [attendanceType, setAttendanceType] = useState("MORNING_SCHOOL");
   const [teacherObject, setTeacherObject] = useState({});
-  const teacherId = sessionStorage.getItem("id");
-  const token = sessionStorage.getItem("token");
+  const teacherId = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
   const [attendance, setAttendance] = useState([]);
   const [attendanceObject, setAttendanceObject] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -35,7 +35,7 @@ export default function App() {
     let ignore = false;
     const getData = async () => {
       if (!ignore) {
-        setWeekDays(calendar(weekPage, "", "month"));
+        setWeekDays(calendar(weekPage, "month"));
       }
     };
     getData();
@@ -50,7 +50,7 @@ export default function App() {
       );
       if (!ignore) {
         setTeacherObject(resultTeacher);
-        let newMonthDays = calendar(weekPage, "", "monthInDays");
+        let newMonthDays = calendar(weekPage, "monthInDays");
         setAttendance(
           newMonthDays
             .map((date, index) => {

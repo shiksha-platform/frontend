@@ -17,6 +17,7 @@ import Layout from "../../layout/Layout";
 import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router-dom";
 import AttendanceComponent, {
+  calendar,
   GetAttendance,
   MultipalAttendance,
 } from "../../components/attendance/AttendanceComponent";
@@ -35,7 +36,7 @@ export default function App() {
   const [classObject, setClassObject] = useState({});
   const { classId } = useParams();
   const [loding, setLoding] = useState(false);
-  const teacherId = sessionStorage.getItem("id");
+  const teacherId = localStorage.getItem("id");
   const [attendance, setAttendance] = useState([]);
   const [search, setSearch] = useState();
   const [isEditDisabled, setIsEditDisabled] = useState(true);
@@ -43,7 +44,7 @@ export default function App() {
 
   useEffect(() => {
     const filterStudent = students.filter((e) =>
-      e?.fullName.toLowerCase().match(search?.toLowerCase())
+      e?.fullName?.toLowerCase().match(search?.toLowerCase())
     );
     setSearchStudents(filterStudent);
   }, [search, students]);
@@ -51,16 +52,9 @@ export default function App() {
   useEffect(() => {
     let ignore = false;
     async function getData() {
-      const studentData = await studentServiceRegistry.getAll({
-        filters: {
-          currentClassID: {
-            eq: classId,
-          },
-        },
-      });
+      const studentData = await studentServiceRegistry.getAll({ classId });
       setStudents(studentData);
       setSearchStudents(studentData);
-      await getAttendance();
       if (!ignore)
         setClassObject(await classServiceRegistry.getOne({ id: classId }));
 
@@ -78,20 +72,28 @@ export default function App() {
     };
   }, [classId]);
 
-  const getAttendance = async (e) => {
-    const attendanceData = await GetAttendance({
-      classId: {
-        eq: classId,
-      },
-      teacherId: {
-        eq: teacherId,
-      },
-    });
+  useEffect(() => {
+    let ignore = false;
+    async function getData() {
+      if (!ignore) await getAttendance();
+    }
+    getData();
+    return () => {
+      ignore = true;
+    };
+  }, [weekPage]);
 
+  const getAttendance = async (e) => {
+    let weekdays = calendar(weekPage, "week");
+    let params = {
+      fromDate: weekdays?.[0]?.format("Y-MM-DD"),
+      toDate: weekdays?.[weekdays.length - 1]?.format("Y-MM-DD"),
+    };
+    const attendanceData = await GetAttendance(params);
     setAttendance(attendanceData);
   };
 
-  if (!classObject && !classObject?.className) {
+  if (!classObject && !classObject?.name) {
     return (
       <Center flex={1} px="3">
         <Center
@@ -251,7 +253,7 @@ export default function App() {
               isEditDisabled={isEditDisabled}
             />
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => (item?.id ? item?.id : index)}
         />
       </Box>
       <MultipalAttendance

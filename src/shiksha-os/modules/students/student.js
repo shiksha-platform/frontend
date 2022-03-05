@@ -47,7 +47,7 @@ export default function App() {
   return (
     <Layout
       _header={{
-        title: classObject.className,
+        title: classObject.name,
         subHeading: t("CLASS_DETAILS"),
         avatar: true,
       }}
