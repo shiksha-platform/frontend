@@ -307,7 +307,12 @@ export default function App() {
                     style={{
                       textDecoration: "none",
                     }}
-                    to={"/class/students/" + classObject?.id?.replace("1-", "")}
+                    to={
+                      "/class/students/" +
+                      (classObject?.id?.startsWith("1-")
+                        ? classObject?.id?.replace("1-", "")
+                        : classObject?.id)
+                    }
                   >
                     <Button mt="2" variant="outline" colorScheme="button">
                       {t("SHOW_ALL_STUDENTS")}

@@ -22,21 +22,18 @@ export default function Report({
     page ? page : 0,
     calendarView ? calendarView : "days"
   ).filter((e) => e.day()).length;
+  let per = ["week", "weeks", "month", "months", "monthInDays"].includes(
+    calendarView
+  );
 
   const getStudentsAttendance = (attendance) => {
     return attendance
-      .map((item) => {
-        if (studentIds.includes(item.studentId)) {
-          return item;
-        }
-      })
       .slice()
       .reverse()
       .filter(
         (value, index, self) =>
           self.findIndex(
             (m) => value?.studentId === m?.studentId && value?.date === m?.date
-            // && value?.attendance === m?.attendance
           ) === index
       )
       .filter((e) => e);
@@ -69,7 +66,12 @@ export default function Report({
         (e) =>
           studentIds.includes(e.studentId) && e.attendance !== attendanceType
       );
-      return Math.abs(studentIds.length * withoutHolidays - studentIds1.length);
+      let val = studentIds.length * withoutHolidays - studentIds1.length;
+      if (per) {
+        return Math.round((val * 100) / withoutHolidays);
+      } else {
+        return Math.round(val);
+      }
     } else if (type === "Unmarked" || attendanceType === "Unmarked") {
       let studentIds1 = attendanceAll.filter((e) =>
         studentIds.includes(e.studentId)
@@ -81,12 +83,23 @@ export default function Report({
             studentIds.includes(e?.studentId) && e.attendance !== attendanceType
         );
       }
-      return Math.abs(studentIds.length * withoutHolidays - studentIds1.length);
+      let val = studentIds.length * withoutHolidays - studentIds1.length;
+      if (per) {
+        return Math.round((val * 100) / withoutHolidays);
+      } else {
+        return Math.round(val);
+      }
     } else {
-      return attendanceAll.filter(
+      let val = attendanceAll.filter(
         (e) =>
           studentIds.includes(e?.studentId) && e.attendance === attendanceType
       ).length;
+
+      if (per) {
+        return Math.round((val * 100) / withoutHolidays);
+      } else {
+        return Math.round(val);
+      }
     }
   };
 
@@ -141,6 +154,7 @@ export default function Report({
                       </VStack>
                       <VStack flex="auto" alignContent={"center"}>
                         <ProgressBar
+                          sufix={per ? "%" : ""}
                           data={status.map((subItem, index) => {
                             let statusCount = countReport({
                               gender: item,

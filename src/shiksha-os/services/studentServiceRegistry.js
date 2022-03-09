@@ -53,7 +53,9 @@ export const getOne = async (filters = {}, headers = {}) => {
   );
   if (result.data) {
     let resultStudent = mapInterfaceData(result.data, interfaceData);
-    resultStudent.id = resultStudent.id.replace("1-", "");
+    resultStudent.id = resultStudent.id?.startsWith("1-")
+      ? resultStudent.id?.replace("1-", "")
+      : resultStudent.id;
     return resultStudent;
   } else {
     return {};
@@ -83,4 +85,8 @@ export const update = async (data = {}, headers = {}) => {
   } else {
     return {};
   }
+};
+
+export const setDefaultValue = async (data) => {
+  return data.map((e) => mapInterfaceData(e, interfaceData));
 };

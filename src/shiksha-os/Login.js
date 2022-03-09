@@ -72,7 +72,9 @@ export default function Home() {
           { Authorization: "Bearer " + token }
         );
         if (resultTeacher?.id) {
-          let id = resultTeacher.id.replace("1-", "");
+          let id = resultTeacher.id?.startsWith("1-")
+            ? resultTeacher.id?.replace("1-", "")
+            : resultTeacher.id;
           localStorage.setItem("id", id);
           localStorage.setItem("fullName", resultTeacher.fullName);
           localStorage.setItem("firstName", resultTeacher.firstName);

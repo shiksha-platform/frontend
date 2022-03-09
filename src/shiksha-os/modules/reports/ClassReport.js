@@ -173,7 +173,12 @@ export default function ClassReport() {
                       textDecoration: "none",
                     }}
                     to={
-                      "/classes/attendance/report/" + item.id.replace("1-", "")
+                      "/classes/attendance/report/" +
+                      (item.id.startsWith("1-")
+                        ? item.id.replace("1-", "")
+                        : item.id) +
+                      "/" +
+                      calendarView
                     }
                   >
                     <Box

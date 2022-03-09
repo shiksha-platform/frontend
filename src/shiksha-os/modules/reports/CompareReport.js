@@ -13,22 +13,25 @@ import {
 } from "native-base";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import DayWiesBar from "../../../components/CalendarBar";
+import CalendarBar from "../../../components/CalendarBar";
 import IconByName from "../../../components/IconByName";
 import Layout from "../../../layout/Layout";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import AttendanceComponent, {
+  calendar,
   GetAttendance,
 } from "../../../components/attendance/AttendanceComponent";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import Report from "../../../components/attendance/Report";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Card from "../../../components/students/Card";
+import { getStudentsPresentAbsent } from "../../../components/helper";
 
 export default function ClassReportDetail() {
   const { t } = useTranslation();
-  const [datePage, setDatePage] = useState(0);
+  const [page, setPage] = useState(0);
   const { classId } = useParams();
+  const navigate = useNavigate();
   const [classObject, setClassObject] = useState({});
   const teacherId = localStorage.getItem("id");
   const [students, setStudents] = useState([]);
@@ -39,42 +42,73 @@ export default function ClassReportDetail() {
   const presentCount = attendance.filter(
     (e) => e.attendance === "Present"
   ).length;
+  const [presentStudents, setPresentStudents] = useState([]);
+  const [absentStudents, setAbsentStudents] = useState([]);
 
   useEffect(() => {
     let ignore = false;
 
     const getData = async () => {
-      let classObj = await classServiceRegistry.getOne({ id: classId });
-      const studentData = await studentServiceRegistry.getAll({
-        filters: {
-          currentClassID: {
-            eq: classId,
-          },
-        },
-      });
-      if (!ignore) {
+      if (!ignore && compare) {
+        let classObj = await classServiceRegistry.getOne({ id: classId });
+        const studentData = await studentServiceRegistry.getAll({ classId });
         setClassObject(classObj);
         setStudents(studentData);
+        await getPresentStudents(studentData);
+        await getAbsentStudents(studentData);
         const newAttendance = await getAttendance();
-        setCompareAttendance(newAttendance);
         setAttendance(newAttendance);
+        const newCompareAttendance = await getAttendance(-1);
+        setCompareAttendance(newCompareAttendance);
       }
     };
     getData();
     return () => {
       ignore = true;
     };
-  }, [classId]);
+  }, [classId, compare, page]);
 
-  const getAttendance = async () => {
-    return await GetAttendance({
-      classId: {
-        eq: classId,
-      },
-      teacherId: {
-        eq: teacherId,
-      },
-    });
+  const getAttendance = async (newPage) => {
+    let weekdays = calendar(newPage ? newPage + page : page, "week");
+    let params = {
+      fromDate: weekdays?.[0]?.format("Y-MM-DD"),
+      toDate: weekdays?.[weekdays.length - 1]?.format("Y-MM-DD"),
+    };
+    return await GetAttendance(params);
+  };
+
+  const getPresentStudents = async (students) => {
+    let weekdays = calendar(
+      page,
+      ["days", "week"].includes(compare) ? "week" : compare
+    );
+    let workingDaysCount = weekdays.filter((e) => e.day())?.length;
+    let params = {
+      fromDate: weekdays?.[0]?.format("Y-MM-DD"),
+      toDate: weekdays?.[weekdays.length - 1]?.format("Y-MM-DD"),
+    };
+    const attendanceData = await GetAttendance(params);
+    const present = getStudentsPresentAbsent(
+      attendanceData,
+      students,
+      workingDaysCount
+    );
+    setPresentStudents(await studentServiceRegistry.setDefaultValue(present));
+  };
+
+  const getAbsentStudents = async (students) => {
+    let params = {
+      fromDate: moment().add(-2, "days").format("Y-MM-DD"),
+      toDate: moment().format("Y-MM-DD"),
+    };
+    const attendanceData = await GetAttendance(params);
+    const absent = getStudentsPresentAbsent(
+      attendanceData,
+      students,
+      3,
+      "Absent"
+    );
+    setAbsentStudents(await studentServiceRegistry.setDefaultValue(absent));
   };
 
   return (
@@ -88,7 +122,7 @@ export default function ClassReportDetail() {
           <Box rounded={"full"} px="5" py="2" bg="button.500">
             <HStack space="2">
               <Text color="white" fontSize="14" fontWeight="500">
-                {t("LAST_WEEK")}
+                {compare === "monthInDays" ? t("LAST_MONTH") : t("LAST_WEEK")}
               </Text>
               <IconByName color="white" name="ArrowDownSLineIcon" isDisabled />
             </HStack>
@@ -115,9 +149,10 @@ export default function ClassReportDetail() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <DayWiesBar
+              <CalendarBar
                 _box={{ p: 0 }}
-                {...{ page: datePage, setPage: setDatePage }}
+                {...{ page, setPage }}
+                view={compare}
               />
               <IconByName name={"ListUnorderedIcon"} isDisabled />
             </HStack>
@@ -176,7 +211,7 @@ export default function ClassReportDetail() {
                         100% {t("THIS_WEEK")}
                       </Text>
                       <Text fontSize={"xs"}>
-                        {students?.length + " " + t("STUDENTS")}
+                        {presentStudents?.length + " " + t("STUDENTS")}
                       </Text>
                     </VStack>
                   </>
@@ -185,7 +220,7 @@ export default function ClassReportDetail() {
                   <VStack space={2} pt="2">
                     <Box>
                       <FlatList
-                        data={students}
+                        data={presentStudents}
                         renderItem={({ item }) => (
                           <Box
                             borderWidth="1"
@@ -267,7 +302,7 @@ export default function ClassReportDetail() {
                         {t("ABSENT_CONSECUTIVE_3_DAYS")}
                       </Text>
                       <Text fontSize={"xs"}>
-                        {students?.length + " " + t("STUDENTS")}
+                        {absentStudents?.length + " " + t("STUDENTS")}
                       </Text>
                     </VStack>
                   </>
@@ -276,7 +311,7 @@ export default function ClassReportDetail() {
                   <VStack space={2} pt="2">
                     <Box>
                       <FlatList
-                        data={students}
+                        data={absentStudents}
                         renderItem={({ item }) => (
                           <Box
                             borderWidth="1"
@@ -369,7 +404,7 @@ export default function ClassReportDetail() {
                     renderItem={({ item, index }) => (
                       <AttendanceComponent
                         isEditDisabled
-                        type="weeks"
+                        type={compare === "monthInDays" ? "month" : "weeks"}
                         _weekBox={[{}, { bg: "weekCardCompareBg.500" }]}
                         weekPage={0}
                         student={item}
@@ -409,9 +444,9 @@ export default function ClassReportDetail() {
           <Box w="100%" bg="white">
             {[
               { name: t("PREVIOUS_WEEK"), value: "week" },
-              { name: t("PREVIOUS_MONTH"), value: "month" },
-              { name: t("BEST_PERFORMANCE"), value: "best-performance" },
-              { name: t("ANOTHER_SCHOOL"), value: "another-school" },
+              { name: t("PREVIOUS_MONTH"), value: "monthInDays" },
+              // { name: t("BEST_PERFORMANCE"), value: "best-performance" },
+              // { name: t("ANOTHER_SCHOOL"), value: "another-school" },
               {
                 name: t("DONT_SHOW_COMPARISON"),
                 value: "dont-show-comparison",
@@ -424,8 +459,12 @@ export default function ClassReportDetail() {
                   borderBottomColor="coolGray.100"
                   key={index}
                   onPress={(e) => {
-                    setCompare(item.value);
-                    setShowModal(false);
+                    if (item?.value === "dont-show-comparison") {
+                      navigate(-1);
+                    } else {
+                      setCompare(item.value);
+                      setShowModal(false);
+                    }
                   }}
                 >
                   <Text>{item.name}</Text>

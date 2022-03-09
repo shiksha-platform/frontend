@@ -19,6 +19,8 @@ import Card from "../students/Card";
 import IconByName from "../IconByName";
 import Report from "./Report";
 import { Link } from "react-router-dom";
+import { getStudentsPresentAbsent } from "../helper";
+import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
 
 export function calendar(page, type = "defaultWeek") {
   let date = moment();
@@ -26,9 +28,9 @@ export function calendar(page, type = "defaultWeek") {
     let startDate = moment().add(page, "months").startOf("month");
     let endDate = moment(startDate).endOf("month");
     var weeks = [];
-    weeks.push(weekDates({}, startDate));
+    weeks.push(weekDates(startDate));
     while (startDate.add(7, "days").diff(endDate) < 8) {
-      weeks.push(weekDates({}, startDate));
+      weeks.push(weekDates(startDate));
     }
     return weeks;
   } else if (type === "monthInDays") {
@@ -142,7 +144,27 @@ export const MultipalAttendance = ({
 }) => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
+  const [presentStudents, setPresentStudents] = useState([]);
   const teacherId = localStorage.getItem("id");
+
+  useEffect(() => {
+    const getPresentStudents = async ({ students }) => {
+      let weekdays = calendar(-1, "week");
+      let workingDaysCount = weekdays.filter((e) => e.day())?.length;
+      let params = {
+        fromDate: weekdays?.[0]?.format("Y-MM-DD"),
+        toDate: weekdays?.[weekdays.length - 1]?.format("Y-MM-DD"),
+      };
+      const attendanceData = await GetAttendance(params);
+      const present = getStudentsPresentAbsent(
+        attendanceData,
+        students,
+        workingDaysCount
+      );
+      setPresentStudents(await studentServiceRegistry.setDefaultValue(present));
+    };
+    getPresentStudents({ students });
+  }, []);
 
   const getStudentsAttendance = (e) => {
     return students
@@ -319,7 +341,9 @@ export const MultipalAttendance = ({
                     }}
                     to={
                       "/classes/attendance/sendSms/" +
-                      classObject?.id?.replace("1-", "")
+                      (classObject?.id?.startsWith("1-")
+                        ? classObject?.id?.replace("1-", "")
+                        : classObject?.id)
                     }
                   >
                     <Button variant="outline" colorScheme="button" rounded="lg">
@@ -368,7 +392,7 @@ export const MultipalAttendance = ({
                       <IconByName name="More2LineIcon" isDisabled />
                     </HStack>
                     <HStack alignItems="center" justifyContent={"space-around"}>
-                      {students.map((student, index) =>
+                      {presentStudents.map((student, index) =>
                         index < 3 ? (
                           <Stack key={index}>
                             <Card
@@ -383,8 +407,8 @@ export const MultipalAttendance = ({
                       )}
                     </HStack>
                     <Button colorScheme="button" variant="outline">
-                      {(students?.length > 3
-                        ? "+ " + (students.length - 3)
+                      {(presentStudents?.length > 3
+                        ? "+ " + (presentStudents.length - 3)
                         : "") +
                         " " +
                         t("MORE")}
@@ -411,7 +435,9 @@ export const MultipalAttendance = ({
                       }}
                       to={
                         "/classes/attendance/report/" +
-                        classObject?.id?.replace("1-", "")
+                        (classObject?.id?.startsWith("1-")
+                          ? classObject?.id?.replace("1-", "")
+                          : classObject?.id)
                       }
                     >
                       <Button colorScheme="button" _text={{ color: "white" }}>
