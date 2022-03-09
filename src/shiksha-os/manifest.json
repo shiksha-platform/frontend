@@ -30,9 +30,46 @@
     "main": [
       {
         "title": "MY_CLASSES",
-        "icon": "Class",
+        "icon": "users",
         "module": "Registry",
         "route": "/classes",
+        "routeparameters": {}
+      }
+    ],
+    "footer": [
+      {
+        "title": "HOME",
+        "icon": "Home4LineIcon",
+        "module": "Registry",
+        "route": "/",
+        "routeparameters": {}
+      },
+      {
+        "title": "CLASSES",
+        "icon": "TeamLineIcon",
+        "module": "Registry",
+        "route": "/classes",
+        "routeparameters": {}
+      },
+      {
+        "title": "SCHOOL",
+        "icon": "GovernmentLineIcon",
+        "module": "Registry",
+        "route": "/",
+        "routeparameters": {}
+      },
+      {
+        "title": "MATERIALS",
+        "icon": "BookOpenLineIcon",
+        "module": "Registry",
+        "route": "/",
+        "routeparameters": {}
+      },
+      {
+        "title": "CAREER",
+        "icon": "UserLineIcon",
+        "module": "Registry",
+        "route": "/",
         "routeparameters": {}
       }
     ]
@@ -59,5 +96,6 @@
     }
   ],
   "api_url": "https://dev-shiksha.uniteframework.io/registry/api/v1/",
-  "auth_url": "https://dev-shiksha.uniteframework.io/auth/realms/sunbird-rc/protocol/openid-connect/token"
+  "auth_url": "https://dev-shiksha.uniteframework.io/auth/realms/sunbird-rc/protocol/openid-connect/token",
+  "maxWidth": "1080"
 }

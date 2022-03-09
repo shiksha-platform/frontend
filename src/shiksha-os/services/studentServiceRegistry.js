@@ -32,7 +32,7 @@ export const getAll = async (
     manifest.api_url + "Student/search",
     filters
   );
-  if (result.data) {
+  if (result.data && result.data.length) {
     return result.data.map((e) => mapInterfaceData(e, interfaceData));
   } else {
     return [];

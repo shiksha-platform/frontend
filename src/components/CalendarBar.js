@@ -1,26 +1,27 @@
 import moment from "moment";
-import { Box, HStack, Text, useToast } from "native-base";
+import { Box, HStack, Text, useToast, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Icon from "./IconByName";
-import { weekDaysPageWise } from "./attendance/AttendanceComponent";
+import { calendar } from "./attendance/AttendanceComponent";
+import IconByName from "./IconByName";
 
 const FormatDate = ({ date, type }) => {
-  const { t } = useTranslation();
-  if (type === "Week") {
+  if (type === "Month") {
+    return moment(date[0]).format("MMMM Y");
+  } else if (type === "Week") {
     return (
-      moment(date[0]).format("Do MMM") +
+      moment(date[0]).format("D MMM") +
       " - " +
-      moment(date[date.length - 1]).format("Do MMM")
+      moment(date[date.length - 1]).format("D MMM")
     );
   } else if (type === "Today") {
-    return moment(date).format("Do MMM, ddd, HH:MM") + " (" + t("TODAY") + ")";
+    return moment(date).format("D MMM, ddd, HH:MM");
   } else if (type === "Tomorrow") {
-    return moment(date).format("Do MMM, ddd") + " (" + t("TOMORROW") + ")";
+    return moment(date).format("D MMM, ddd");
   } else if (type === "Yesterday") {
-    return moment(date).format("Do MMM, ddd") + " (" + t("YESTERDAY") + ")";
+    return moment(date).format("D MMM, ddd");
   } else {
-    return moment(date).format("Do MMM, ddd");
+    return moment(date).format("D MMMM, Y");
   }
 };
 
@@ -33,11 +34,12 @@ export default function DayWiesBar({
 }) {
   const todayDate = new Date();
   const [date, setDate] = useState();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setDate(new Date(todayDate.setDate(todayDate.getDate() + page)));
     if (setActiveColor) {
-      setActiveColor(page === 0 ? "primary.500" : "coolGray.500");
+      setActiveColor(page === 0 ? "button.500" : "coolGray.500");
     }
   }, [page]);
 
@@ -51,18 +53,20 @@ export default function DayWiesBar({
         _box,
       }}
     >
-      <FormatDate
-        date={date}
-        type={
-          page === 0
-            ? "Today"
+      <VStack>
+        <Text fontWeight={600} fontSize="16px">
+          {page === 0
+            ? t("TODAY")
             : page === 1
-            ? "Tomorrow"
+            ? t("TOMORROW")
             : page === -1
-            ? "Yesterday"
-            : ""
-        }
-      />
+            ? t("YESTERDAY")
+            : moment(date).format("dddd")}
+        </Text>
+        <Text fontWeight={300} fontSize="10px">
+          <FormatDate date={date} />
+        </Text>
+      </VStack>
     </Display>
   );
 }
@@ -79,11 +83,12 @@ export function WeekWiesBar({
   leftErrorText,
 }) {
   const [weekDays, setWeekDays] = useState([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    setWeekDays(weekDaysPageWise(page));
+    setWeekDays(calendar(page, null, "week"));
     if (setActiveColor) {
-      setActiveColor(page === 0 ? "primary.500" : "coolGray.500");
+      setActiveColor(page === 0 ? "button.500" : "coolGray.500");
     }
   }, [page]);
 
@@ -101,7 +106,56 @@ export function WeekWiesBar({
         leftErrorText,
       }}
     >
-      <FormatDate date={weekDays} type="Week" />
+      <VStack>
+        <FormatDate date={weekDays} type="Week" />
+        <Text fontSize="10" fontWeight="300">
+          {t("THIS_WEEK")}
+        </Text>
+      </VStack>
+    </Display>
+  );
+}
+
+export function MonthWiesBar({
+  activeColor,
+  setActiveColor,
+  page,
+  setPage,
+  _box,
+  nextDisabled,
+  previousDisabled,
+  rightErrorText,
+  leftErrorText,
+}) {
+  const [monthDays, setMonthDays] = useState([]);
+
+  useEffect(() => {
+    setMonthDays(calendar(page, null, "monthInDays"));
+    if (setActiveColor) {
+      setActiveColor(page === 0 ? "button.500" : "coolGray.500");
+    }
+  }, [page]);
+
+  return (
+    <Display
+      {...{
+        activeColor,
+        setActiveColor,
+        page,
+        setPage,
+        _box,
+        nextDisabled,
+        previousDisabled,
+        rightErrorText,
+        leftErrorText,
+      }}
+    >
+      <VStack>
+        <FormatDate date={monthDays} type="Month" />
+        {/* <Text fontSize="10" fontWeight="300">
+          {t("THIS_MONTH")}
+        </Text> */}
+      </VStack>
     </Display>
   );
 }
@@ -120,19 +174,19 @@ const Display = ({
   const toast = useToast();
   return (
     <Box bg="white" p="1" {..._box}>
-      <HStack justifyContent="space-between" alignItems="center">
+      <HStack justifyContent="space-between" alignItems="center" space={4}>
         <HStack space="4" alignItems="center">
-          <Icon
+          <IconByName
             size="sm"
             color={
               typeof previousDisabled === "undefined" ||
               previousDisabled === false
                 ? activeColor
                   ? activeColor
-                  : "primary.500"
+                  : "button.500"
                 : "gray.400"
             }
-            name="ArrowCircleLeftOutlined"
+            name="ArrowLeftSLineIcon"
             onPress={(e) => {
               if (leftErrorText) {
                 toast.show(leftErrorText);
@@ -151,16 +205,16 @@ const Display = ({
           </Text>
         </HStack>
         <HStack space="2">
-          <Icon
+          <IconByName
             size="sm"
             color={
               typeof nextDisabled === "undefined" || nextDisabled === false
                 ? activeColor
                   ? activeColor
-                  : "primary.500"
+                  : "button.500"
                 : "gray.400"
             }
-            name="ArrowCircleRightOutlined"
+            name="ArrowRightSLineIcon"
             onPress={(e) => {
               if (rightErrorText) {
                 toast.show(rightErrorText);

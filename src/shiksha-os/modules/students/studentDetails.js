@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Text, Button, Stack, Box, VStack, HStack } from "native-base";
+import {
+  Text,
+  Button,
+  Stack,
+  Box,
+  VStack,
+  HStack,
+  Pressable,
+  PresenceTransition,
+} from "native-base";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import { useTranslation } from "react-i18next";
-import Header from "../../../components/Header";
+import Layout from "../../../layout/Layout";
 import { Link, useParams } from "react-router-dom";
-import AttendanceComponent from "../../../components/attendance/AttendanceComponent";
-import Menu from "../../../components/Menu";
-import Icon from "../../../components/IconByName";
+import AttendanceComponent, {
+  GetAttendance,
+} from "../../../components/attendance/AttendanceComponent";
+import StudentEdit from "./StudentEdit";
 import manifest from "../../../modules/attendance/manifest.json";
+import Card from "../../../components/students/Card";
+import IconByName from "../../../components/IconByName";
 
 // Start editing here, save and see your changes.
 export default function App() {
@@ -16,6 +28,9 @@ export default function App() {
   const [studentObject, setStudentObject] = useState({});
   const [classObject, setClassObject] = useState({});
   const { studentId } = useParams();
+  const [attendance, setAttendance] = useState([]);
+  const teacherId = sessionStorage.getItem("id");
+  const [attendanceView, setAttendanceView] = useState("month");
 
   useEffect(() => {
     let ignore = false;
@@ -29,167 +44,303 @@ export default function App() {
       if (!ignore) {
         setStudentObject({ ...student, className: classObj.className });
         setClassObject(classObj);
+        await getAttendance({ classId: student.currentClassID });
       }
     };
     getData();
   }, [studentId]);
 
+  const getAttendance = async (e) => {
+    const attendanceData = await GetAttendance({
+      studentId: {
+        eq: studentId,
+      },
+      classId: {
+        eq: e.classId ? e.classId : studentObject.currentClassID,
+      },
+      teacherId: {
+        eq: teacherId,
+      },
+    });
+
+    setAttendance(attendanceData);
+  };
+
   return (
-    <>
-      <Header
-        title={t("STUDENTS_DETAIL")}
-        icon="Group"
-        heading={
-          studentObject?.fullName ? (
-            studentObject?.fullName
-          ) : (
-            <Text italic>{t("NOT_ENTERD")}</Text>
-          )
-        }
-        subHeading=""
-      />
-      <Stack p="4" space={2}>
-        <Stack>
-          <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <Box borderColor="gray.500">
-              <Text fontSize="md" color="primary.500" bold={true}>
-                {t("DETAILS")}
-              </Text>
-            </Box>
-            <Link to={"/students/" + studentObject.id + "/edit"}>
-              <Icon size="sm" color="gray.900" name="Edit" />
-            </Link>
-          </HStack>
-          <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
-            <Text>
-              <Text bold>{t("ADDRESS")} </Text>
-              {studentObject.address ? (
-                studentObject.address
-              ) : (
-                <Text italic>{t("NOT_ENTERD")}</Text>
-              )}
-            </Text>
-            <Text>
-              <Text bold>{t("FATHERS_NAME")} </Text>
-              {studentObject.fathersName ? (
-                studentObject.fathersName
-              ) : (
-                <Text italic>{t("NOT_ENTERD")}</Text>
-              )}
-            </Text>
-            <Text>
-              <Text bold>{t("ADMISSION_NO")} </Text>
-              {studentObject.admissionNo ? (
-                studentObject.admissionNo
-              ) : (
-                <Text italic>{t("NOT_ENTERD")}</Text>
-              )}
-            </Text>
-            <Text>
-              <Text bold>{t("STUDYING_IN")} </Text>
-              {studentObject.className ? (
-                studentObject.className
-              ) : studentObject.currentClassID ? (
-                studentObject.currentClassID
-              ) : (
-                <Text italic>{t("NOT_ENTERD")}</Text>
-              )}
-            </Text>
+    <Layout
+      _header={{
+        title: t("STUDENTS_DETAIL"),
+        subHeading: t("ABOUT"),
+      }}
+      subHeader={
+        <Card
+          textTitle={studentObject.fullName}
+          _textTitle={{ bold: false, fontWeight: "500", fontSize: "16px" }}
+          _textSubTitle={{
+            bold: false,
+            fontWeight: "400",
+            fontSize: "12px",
+            color: "coolGray.800",
+          }}
+          type="card"
+          item={studentObject}
+          hidePopUpButton={true}
+        />
+      }
+      _subHeader={{ bg: "studentCard.500" }}
+    >
+      <Stack space={2}>
+        <StudentEdit {...{ studentObject, setStudentObject }} />
+
+        <Section title={t("ACADEMIC")}>
+          <InfoSection
+            isLastBorderEnable
+            items={[
+              {
+                title: t("CLASS"),
+                value: classObject?.className
+                  ? classObject?.class + " " + classObject?.section
+                  : studentObject.currentClassID,
+              },
+            ]}
+          />
+          <Box bg="white" py="5">
+            <Collapsible
+              defaultCollapse
+              isDisableCollapse
+              onPressFuction={(e) => {
+                setAttendanceView(attendanceView === "month" ? "" : "month");
+              }}
+              collapsButton={attendanceView === "month" ? false : true}
+              header={t("ATTENDANCE")}
+              body={
+                <>
+                  {manifest.showOnStudentProfile &&
+                  studentObject &&
+                  studentObject?.id ? (
+                    <AttendanceComponent
+                      type={attendanceView}
+                      weekPage={0}
+                      student={studentObject}
+                      withDate={true}
+                      hidePopUpButton={true}
+                      attendanceProp={attendance}
+                      getAttendance={getAttendance}
+                      _card={{
+                        img: false,
+                        _textTitle: { display: "none" },
+                        _textSubTitle: { display: "none" },
+                      }}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                  <HStack space={2} justifyContent={"center"}>
+                    <Link
+                      to={"/attendance/" + studentObject.currentClassID}
+                      style={{
+                        textDecoration: "none",
+                        flex: "auto",
+                        textAlign: "center",
+                      }}
+                    >
+                      <Box
+                        rounded="lg"
+                        borderColor="button.500"
+                        borderWidth="1"
+                        _text={{ color: "button.500" }}
+                        px={4}
+                        py={2}
+                      >
+                        {t("FULL_CLASS_ATTENDANCE")}
+                      </Box>
+                    </Link>
+                    <Link
+                      to={"/students/sendSms/" + studentObject.id}
+                      style={{
+                        textDecoration: "none",
+                        flex: "auto",
+                        textAlign: "center",
+                      }}
+                    >
+                      <Box
+                        rounded="lg"
+                        bg="button.500"
+                        borderColor="button.500"
+                        borderWidth="1"
+                        _text={{ color: "white" }}
+                        px={4}
+                        py={2}
+                      >
+                        {t("MESSAGE_HISTORY")}
+                      </Box>
+                    </Link>
+                  </HStack>
+                </>
+              }
+            />
+          </Box>
+        </Section>
+
+        <Section
+          title={t("LEARNING")}
+          button={
             <Button
               variant="ghost"
-              rounded="full"
-              colorScheme="gray"
-              background="gray.200"
+              colorScheme="button"
+              endIcon={<IconByName name={"PencilLineIcon"} isDisabled />}
+              _text={{ fontWeight: "400" }}
             >
-              {t("SEE_MORE")}
+              {t("EDIT")}
             </Button>
-          </Box>
-        </Stack>
-
-        <Stack>
-          <Box borderColor="gray.500">
-            <Text fontSize="md" color="primary.500" bold={true}>
-              {t("CLASS")} {classObject.className}
-            </Text>
-          </Box>
-          <Box borderWidth={1} p="2" borderColor="gray.500" bg="gray.50">
-            <VStack space={2}>
-              {manifest.showOnStudentProfile &&
-              studentObject &&
-              studentObject?.id ? (
-                <AttendanceComponent
-                  weekPage={0}
-                  student={studentObject}
-                  withDate={true}
-                  hidePopUpButton={true}
-                  withApigetAttendance={true}
-                  _card={{
-                    textTitle: (
-                      <Text fontSize={"lg"}>{t("WEEK_ATTENDANCE")}</Text>
-                    ),
-                    _textSubTitle: { display: "none" },
-                  }}
-                />
-              ) : (
-                <></>
-              )}
-              <Box alignItems={"center"}>
-                <Link
-                  to={"/attendance/" + studentObject.currentClassID}
-                  style={{ color: "rgb(63, 63, 70)", textDecoration: "none" }}
-                >
-                  <Box
-                    variant="ghost"
-                    rounded="full"
-                    background="gray.200"
-                    px={6}
-                    py={2}
-                  >
-                    {t("FULL_CLASS_ATTENDANCE")}
+          }
+        >
+          {[
+            { title: t("RESULTS"), value: "Best in class" },
+            { title: t("COMPETENCY"), value: "Creative" },
+            { title: t("AWARDS"), value: "No awards yet" },
+          ].map((item, index) => (
+            <Box
+              key={index}
+              p="5"
+              borderBottomWidth="1"
+              borderColor={"coolGray.200"}
+            >
+              <Collapsible
+                defaultCollapse
+                header={item.title}
+                body={
+                  <Box pt="18px">
+                    <Text fontWeight="500" fontSize="14px">
+                      {item.value}
+                    </Text>
                   </Box>
-                </Link>
-              </Box>
-            </VStack>
+                }
+              />
+            </Box>
+          ))}
+        </Section>
+        <Section
+          title={t("NOTES_FEEDBACK_ON_STUDENT")}
+          _box={{ mb: "4", roundedBottom: "xl", shadow: 2 }}
+          button={
+            <Button
+              variant="ghost"
+              colorScheme="button"
+              endIcon={<IconByName name={"PencilLineIcon"} isDisabled />}
+              _text={{ fontWeight: "400" }}
+            >
+              {t("EDIT")}
+            </Button>
+          }
+        >
+          <Box p="5">
+            <Collapsible
+              defaultCollapse
+              header={t("NOTES")}
+              body={
+                <Box pt="18px">
+                  <Text fontWeight="500" fontSize="14px" pb="30">
+                    {"2 " + t("NOTES")}
+                  </Text>
+                </Box>
+              }
+            />
           </Box>
-        </Stack>
-
-        <Stack>
-          <Box>
-            <Text fontSize="md" color="primary.500" bold={true}>
-              {t("LEARNING")}
-            </Text>
-          </Box>
-          <Menu
-            _boxMenu={{ bg: "gray.100", mb: 2 }}
-            items={[
-              {
-                title: t("RESULTS"),
-              },
-              {
-                title: t("COMPETENCY"),
-              },
-              {
-                title: t("AWARDS"),
-              },
-            ]}
-          />
-        </Stack>
-        <Stack>
-          <Box>
-            <Text fontSize="md" color="primary.500" bold={true}>
-              {t("NOTES")}
-            </Text>
-          </Box>
-          <Menu
-            _boxMenu={{ bg: "gray.100", mb: 2 }}
-            items={[
-              {
-                title: t("NOTES_FEEDBACK_ON_STUDENT"),
-              },
-            ]}
-          />
-        </Stack>
+        </Section>
       </Stack>
-    </>
+    </Layout>
   );
 }
+
+const InfoSection = ({ items, isLastBorderEnable }) => {
+  const { t } = useTranslation();
+  return items.map((item, index) => (
+    <VStack
+      space="3"
+      py="5"
+      borderBottomWidth={
+        items.length - 1 !== index || isLastBorderEnable ? "1" : "0"
+      }
+      borderColor={"coolGray.200"}
+      key={index}
+    >
+      <Text fontSize={"14px"} fontWeight="500" color={"coolGray.400"}>
+        {item.title}
+      </Text>
+      {item.value ? (
+        <Text>{item.value}</Text>
+      ) : (
+        <Text italic>{t("NOT_ENTERED")}</Text>
+      )}
+    </VStack>
+  ));
+};
+
+const Section = ({ title, button, children, _box }) => (
+  <Box bg={"white"} p="5" {..._box}>
+    <HStack alignItems={"center"} justifyContent={"space-between"}>
+      <Text fontSize="16px" fontWeight="500">
+        {title}
+      </Text>
+      {button}
+    </HStack>
+    {children}
+  </Box>
+);
+
+const Collapsible = ({
+  header,
+  body,
+  defaultCollapse,
+  isHeaderBold,
+  isDisableCollapse,
+  onPressFuction,
+  collapsButton,
+  _header,
+  _icon,
+  _box,
+}) => {
+  const [collaps, setCollaps] = useState(defaultCollapse);
+
+  return (
+    <>
+      <Pressable
+        onPress={() => {
+          if (onPressFuction) {
+            onPressFuction();
+          }
+          if (!isDisableCollapse) {
+            setCollaps(!collaps);
+          }
+        }}
+      >
+        <Box>
+          <HStack alignItems={"center"} justifyContent={"space-between"}>
+            <Text
+              fontSize={typeof isHeaderBold === "undefined" ? "14px" : ""}
+              color="coolGray.400"
+              fontWeight="500"
+            >
+              {header}
+            </Text>
+            <IconByName
+              size="sm"
+              isDisabled={true}
+              color={
+                !collaps || collapsButton ? "coolGray.400" : "coolGray.600"
+              }
+              name={
+                !collaps || collapsButton
+                  ? "ArrowDownSLineIcon"
+                  : "ArrowUpSLineIcon"
+              }
+              {..._icon}
+            />
+          </HStack>
+        </Box>
+      </Pressable>
+      <PresenceTransition visible={collaps}>{body}</PresenceTransition>
+    </>
+  );
+};

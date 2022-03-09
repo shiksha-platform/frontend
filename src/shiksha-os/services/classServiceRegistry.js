@@ -17,7 +17,7 @@ const interfaceData = {
     title: "className",
   },
   mergeParameterWithDefaultValue: {
-    icon: "CalendarToday",
+    icon: "calendar",
     route: "/classes/:id",
   },
 };

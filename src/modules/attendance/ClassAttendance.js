@@ -6,6 +6,7 @@ import {
   FlatList,
   Heading,
   HStack,
+  Pressable,
   Spinner,
   Stack,
   Text,
@@ -17,9 +18,8 @@ import AttendanceComponent, {
   GetAttendance,
   MultipalAttendance,
 } from "../../components/attendance/AttendanceComponent";
-import Header from "../../components/Header";
+import Layout from "../../layout/Layout";
 import IconByName from "../../components/IconByName";
-import Icon from "../../components/IconByName";
 import * as classServiceRegistry from "../../shiksha-os/services/classServiceRegistry";
 import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
 
@@ -91,26 +91,38 @@ export default function ClassAttendance() {
   const PopupActionSheet = () => {
     return (
       <Actionsheet
+        // maxW={414}
+        // alignSelf="center"
         isOpen={showModal}
-        hideDragIndicator
+        // hideDragIndicator
         _backdrop={{ opacity: "0.9", bg: "gray.500" }}
       >
-        <Actionsheet.Content>
-          {!showType ? (
-            <Box w="100%" px={4}>
-              <Text
-                fontSize="16"
-                color="gray.500"
-                _dark={{
-                  color: "gray.300",
-                }}
-              >
-                {t("SELECT_SUBJECT")}
-              </Text>
-              {attendanceTypes.map((item) => {
+        <Actionsheet.Content
+          bg="classCard.500"
+          alignItems="inherit"
+          px="0"
+          pb="0"
+        >
+          <Box p="5" pt="2">
+            <Text fontSize="16" color="gray.500" textTransform={"inherit"}>
+              {!showType ? (
+                <Text>{t("SELECT_SUBJECT")}</Text>
+              ) : (
+                <Text>{t("SELECT_CLASS_MARK_ATTENDANCE")}</Text>
+              )}
+            </Text>
+          </Box>
+        </Actionsheet.Content>
+
+        <Box w="100%" bg="white" p="5">
+          {!showType
+            ? attendanceTypes.map((item, index) => {
                 return (
-                  <Actionsheet.Item
-                    key={item}
+                  <Pressable
+                    p="5"
+                    borderBottomWidth={1}
+                    borderBottomColor="coolGray.100"
+                    key={index}
                     onPress={(e) => {
                       setAttendanceType(item);
                       if (!classObject) {
@@ -122,31 +134,21 @@ export default function ClassAttendance() {
                   >
                     {attendanceType === item ? (
                       <HStack alignItems="center">
-                        <Text>{item}</Text>
-                        <IconByName isDisabled={false} name={"Check"} />
+                        <Text color={"button.500"}>{item}</Text>
                       </HStack>
                     ) : (
-                      item
+                      <Text>{item}</Text>
                     )}
-                  </Actionsheet.Item>
+                  </Pressable>
                 );
-              })}
-            </Box>
-          ) : (
-            <Box w="100%" px={4}>
-              <Text
-                fontSize="16"
-                color="gray.500"
-                _dark={{
-                  color: "gray.300",
-                }}
-              >
-                {t("SELECT_CLASS")}
-              </Text>
-              {calsses.map((item) => {
+              })
+            : calsses.map((item, index) => {
                 return (
-                  <Actionsheet.Item
-                    key={item.id}
+                  <Pressable
+                    p="5"
+                    borderBottomWidth={1}
+                    borderBottomColor="coolGray.100"
+                    key={index}
                     onPress={(e) => {
                       setClassObject(item);
                       if (!attendanceType) {
@@ -158,18 +160,15 @@ export default function ClassAttendance() {
                   >
                     {classObject.className === item.className ? (
                       <HStack alignItems="center">
-                        <Text>{item.className}</Text>
-                        <IconByName isDisabled={false} name={"Check"} />
+                        <Text color={"button.500"}>{item.className}</Text>
                       </HStack>
                     ) : (
-                      item.className
+                      <Text>{item.className}</Text>
                     )}
-                  </Actionsheet.Item>
+                  </Pressable>
                 );
               })}
-            </Box>
-          )}
-        </Actionsheet.Content>
+        </Box>
       </Actionsheet>
     );
   };
@@ -212,96 +211,78 @@ export default function ClassAttendance() {
       {showModal ? (
         <PopupActionSheet />
       ) : (
-        <>
-          <Box position={"sticky"} top={0} zIndex={"10"} width={"100%"}>
-            <Header
-              title={t("MY_CLASSES")}
-              fullRightComponent={
-                <Stack bg="black" p="2">
-                  <HStack space={4}>
+        <Layout
+          title={t("MY_CLASSES")}
+          _header={{
+            fullRightComponent: (
+              <Stack bg="black" px="10" py="3">
+                <HStack space={3} justifyContent={"space-between"}>
+                  <VStack space={1}>
+                    <Text fontSize={"lg"} color={"coolGray.100"} bold>
+                      {attendanceType ? attendanceType : t("SELECT_SUBJECT")}
+                    </Text>
+                    <Box
+                      rounded="full"
+                      borderColor="coolGray.200"
+                      borderWidth="1"
+                      bg="coolGray.100"
+                      px={1}
+                      minW={200}
+                    >
+                      <HStack
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
+                        <IconByName
+                          size="sm"
+                          name="Group"
+                          isDisabled={true}
+                          px={1}
+                        />
+                        <Text fontSize={"lg"}>
+                          {classObject?.className
+                            ? classObject?.className
+                            : t("SELECT_CLASS")}
+                        </Text>
+                        <IconByName
+                          size="sm"
+                          name="angle-right"
+                          isDisabled={true}
+                          pl={1}
+                        />
+                      </HStack>
+                    </Box>
+                    <Text fontSize={"xl"} color={"coolGray.50"}>
+                      {moment().format("dddd Do MMM")}
+                    </Text>
+                  </VStack>
+                  <VStack>
                     <IconByName
-                      p="0"
-                      isDisabled={true}
-                      name={"Group"}
-                      color="white"
-                      _icon={{
-                        style: { fontSize: "45px" },
+                      size="sm"
+                      name="edit"
+                      color={"coolGray.100"}
+                      pl={1}
+                      onPress={(e) => {
+                        setShowType(false);
+                        setShowModal(true);
                       }}
                     />
-                    <HStack
-                      space={3}
-                      justifyContent={"space-between"}
-                      width={"80%"}
-                    >
-                      <VStack space={1}>
-                        <Text fontSize={"lg"} color={"coolGray.100"} bold>
-                          {attendanceType
-                            ? attendanceType
-                            : t("SELECT_SUBJECT")}
-                        </Text>
-                        <Box
-                          rounded="full"
-                          borderColor="coolGray.200"
-                          borderWidth="1"
-                          bg="coolGray.100"
-                          px={1}
-                          minW={200}
-                        >
-                          <HStack
-                            justifyContent="space-between"
-                            alignItems="center"
-                          >
-                            <Icon
-                              size="sm"
-                              name="Group"
-                              isDisabled={true}
-                              px={1}
-                            />
-                            <Text fontSize={"lg"}>
-                              {classObject?.className
-                                ? classObject?.className
-                                : t("SELECT_CLASS")}
-                            </Text>
-                            <Icon
-                              size="sm"
-                              name="ArrowForwardIos"
-                              isDisabled={true}
-                              pl={1}
-                            />
-                          </HStack>
-                        </Box>
-                        <Text fontSize={"xl"} color={"coolGray.50"}>
-                          {moment().format("dddd Do MMM")}
-                        </Text>
-                      </VStack>
-                      <VStack>
-                        <Icon
-                          size="sm"
-                          name="Edit"
-                          color={"coolGray.100"}
-                          pl={1}
-                          onPress={(e) => {
-                            setShowType(false);
-                            setShowModal(true);
-                          }}
-                        />
-                        <Icon
-                          size="sm"
-                          name="Edit"
-                          color={"coolGray.50"}
-                          pl={1}
-                          onPress={(e) => {
-                            setShowType(true);
-                            setShowModal(true);
-                          }}
-                        />
-                      </VStack>
-                    </HStack>
-                  </HStack>
-                </Stack>
-              }
-            />
-          </Box>
+                    <IconByName
+                      size="sm"
+                      name="edit"
+                      color={"coolGray.50"}
+                      pl={1}
+                      onPress={(e) => {
+                        setShowType(true);
+                        setShowModal(true);
+                      }}
+                    />
+                  </VStack>
+                </HStack>
+              </Stack>
+            ),
+          }}
+        >
           {students.length === 0 ? (
             <Box p={6} minH={300}>
               <Center flex={1} px="3">
@@ -356,7 +337,7 @@ export default function ClassAttendance() {
               setIsEditDisabled,
             }}
           />
-        </>
+        </Layout>
       )}
     </>
   );

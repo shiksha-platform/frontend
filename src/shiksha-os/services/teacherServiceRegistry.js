@@ -34,12 +34,12 @@ export const getAll = async (
 
 export const getOne = async (filters = {}, headers = {}) => {
   const result = await generalServices
-    .get(manifest.api_url + "Teacher", {
+    .get(manifest.api_url + "Teacher/edccc63f-fcc7-4529-80b7-feea3fee0f3c", {
       headers: headers,
     })
     .catch((error) => error);
   if (result.data) {
-    return mapInterfaceData(result.data[0], interfaceData);
+    return mapInterfaceData(result.data, interfaceData);
   } else {
     return {};
   }
