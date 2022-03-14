@@ -381,7 +381,7 @@ export default function ClassReportDetail() {
                   renderItem={({ item, index }) => (
                     <AttendanceComponent
                       isEditDisabled
-                      weekPage={0}
+                      page={0}
                       student={item}
                       withDate={1}
                       attendanceProp={attendance}

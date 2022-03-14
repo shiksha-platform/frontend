@@ -3,7 +3,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import IconByName from "../IconByName";
 import manifest from "../../modules/attendance/manifest.json";
-import moment from "moment";
 import ProgressBar from "../ProgressBar";
 import { calendar } from "./AttendanceComponent";
 
@@ -15,16 +14,46 @@ export default function Report({
   calendarView,
 }) {
   const { t } = useTranslation();
+  const [studentIds, setStudentIds] = React.useState([]);
+  const [withoutHolidays, setWithoutHolidays] = React.useState([]);
+  const [isAvrage, setIsAvrage] = React.useState(false);
   const fullName = localStorage.getItem("fullName");
   const status = manifest?.status ? manifest?.status : [];
-  let studentIds = students.map((e) => e.id);
-  let withoutHolidays = calendar(
-    page ? page : 0,
-    calendarView ? calendarView : "days"
-  ).filter((e) => e.day()).length;
-  let per = ["week", "weeks", "month", "months", "monthInDays"].includes(
-    calendarView
-  );
+
+  React.useEffect(() => {
+    let ignore = false;
+    async function getData() {
+      if (!ignore) {
+        setStudentIds(students.map((e) => e.id));
+        if (typeof page === "object") {
+          setWithoutHolidays(
+            page.map(
+              (e) =>
+                calendar(e, calendarView ? calendarView : "days").filter((e) =>
+                  e.day()
+                ).length
+            )
+          );
+        } else {
+          setWithoutHolidays([
+            calendar(
+              page ? page : 0,
+              calendarView ? calendarView : "days"
+            ).filter((e) => e.day()).length,
+          ]);
+        }
+        setIsAvrage(
+          ["week", "weeks", "month", "months", "monthInDays"].includes(
+            calendarView
+          )
+        );
+      }
+    }
+    getData();
+    return () => {
+      ignore = true;
+    };
+  }, [calendarView, page, students]);
 
   const getStudentsAttendance = (attendance) => {
     return attendance
@@ -45,6 +74,7 @@ export default function Report({
     attendanceType,
     type,
     studentIds,
+    withoutHolidays,
   }) => {
     let attendanceAll = getStudentsAttendance(attendance);
     if (gender && [t("BOYS"), t("GIRLS")].includes(gender)) {
@@ -67,8 +97,8 @@ export default function Report({
           studentIds.includes(e.studentId) && e.attendance !== attendanceType
       );
       let val = studentIds.length * withoutHolidays - studentIds1.length;
-      if (per) {
-        return Math.round((val * 100) / withoutHolidays);
+      if (isAvrage) {
+        return Math.round(val ? val / studentIds.length : 0);
       } else {
         return Math.round(val);
       }
@@ -84,8 +114,8 @@ export default function Report({
         );
       }
       let val = studentIds.length * withoutHolidays - studentIds1.length;
-      if (per) {
-        return Math.round((val * 100) / withoutHolidays);
+      if (isAvrage) {
+        return Math.round(val ? val / studentIds.length : 0);
       } else {
         return Math.round(val);
       }
@@ -95,8 +125,8 @@ export default function Report({
           studentIds.includes(e?.studentId) && e.attendance === attendanceType
       ).length;
 
-      if (per) {
-        return Math.round((val * 100) / withoutHolidays);
+      if (isAvrage) {
+        return Math.round(val ? val / studentIds.length : 0);
       } else {
         return Math.round(val);
       }
@@ -154,13 +184,13 @@ export default function Report({
                       </VStack>
                       <VStack flex="auto" alignContent={"center"}>
                         <ProgressBar
-                          sufix={per ? "%" : ""}
-                          data={status.map((subItem, index) => {
+                          data={status.map((subItem, subIndex) => {
                             let statusCount = countReport({
                               gender: item,
                               attendanceType: subItem,
                               attendance: itemAttendance,
                               studentIds,
+                              withoutHolidays: withoutHolidays[index],
                             });
                             return {
                               name: subItem,

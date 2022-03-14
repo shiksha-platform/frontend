@@ -298,7 +298,7 @@ export default function ClassAttendance() {
                   >
                     <VStack space="2">
                       <AttendanceComponent
-                        weekPage={0}
+                        page={0}
                         type={"day"}
                         student={item}
                         withDate={1}
