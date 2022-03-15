@@ -58,6 +58,22 @@ export const getStudentsPresentAbsent = (
           id: value.id,
         };
       }
+      return undefined;
     })
     .filter((e) => e?.id);
+};
+
+export const getPercentageStudentsPresentAbsent = (
+  attendances,
+  student,
+  workingDaysCount,
+  status = "Present"
+) => {
+  const newPresent = getUniqAttendance(attendances, status, [student]);
+  let count = newPresent.filter((e) => e.studentId === student.id).length;
+  return {
+    count,
+    percentage: (count * 100) / workingDaysCount,
+    ...student,
+  };
 };

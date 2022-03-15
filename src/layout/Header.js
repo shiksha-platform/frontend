@@ -61,7 +61,7 @@ export default function Header({
           ) : avatar ? (
             <>
               <Pressable onPress={(e) => setShowModal(true)}>
-                {cameraUrl ? (
+                {cameraUrl && selfAttendance ? (
                   <Image
                     ref={myRef}
                     {...avatarUrlObject}

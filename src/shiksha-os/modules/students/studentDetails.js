@@ -120,7 +120,7 @@ export default function App() {
                   studentObject?.id ? (
                     <AttendanceComponent
                       type={attendanceView}
-                      weekPage={0}
+                      page={0}
                       student={studentObject}
                       withDate={true}
                       hidePopUpButton={true}

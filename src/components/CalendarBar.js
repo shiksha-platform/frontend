@@ -49,16 +49,15 @@ export function DayWiesBar({
   setPage,
   _box,
 }) {
-  const todayDate = new Date();
   const [date, setDate] = useState();
   const { t } = useTranslation();
 
   useEffect(() => {
-    setDate(new Date(todayDate.setDate(todayDate.getDate() + page)));
+    setDate(moment().add(page, "days"));
     if (setActiveColor) {
       setActiveColor(page === 0 ? "button.500" : "coolGray.500");
     }
-  }, [page]);
+  }, [page, setActiveColor]);
 
   return (
     <Display
@@ -107,7 +106,7 @@ export function WeekWiesBar({
     if (setActiveColor) {
       setActiveColor(page === 0 ? "button.500" : "coolGray.500");
     }
-  }, [page]);
+  }, [page, setActiveColor]);
 
   return (
     <Display
@@ -151,7 +150,7 @@ export function MonthWiesBar({
     if (setActiveColor) {
       setActiveColor(page === 0 ? "button.500" : "coolGray.500");
     }
-  }, [page]);
+  }, [page, setActiveColor]);
 
   return (
     <Display

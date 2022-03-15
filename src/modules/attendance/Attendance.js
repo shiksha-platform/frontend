@@ -36,7 +36,6 @@ export default function App() {
   const [classObject, setClassObject] = useState({});
   const { classId } = useParams();
   const [loding, setLoding] = useState(false);
-  const teacherId = localStorage.getItem("id");
   const [attendance, setAttendance] = useState([]);
   const [search, setSearch] = useState();
   const [isEditDisabled, setIsEditDisabled] = useState(true);
@@ -244,7 +243,7 @@ export default function App() {
           data={searchStudents}
           renderItem={({ item, index }) => (
             <AttendanceComponent
-              weekPage={weekPage}
+              page={weekPage}
               student={item}
               sms={sms.filter((e) => e.studentId === item.id)}
               withDate={1}

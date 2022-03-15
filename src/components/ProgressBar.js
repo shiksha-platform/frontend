@@ -32,6 +32,7 @@ export default function ProgressBar({ data, isTextShow, h, sufix, ...props }) {
           </Box>
         );
       }
+      return undefined;
     });
 
   let bars =
@@ -48,6 +49,7 @@ export default function ProgressBar({ data, isTextShow, h, sufix, ...props }) {
           />
         );
       }
+      return undefined;
     });
 
   let legends;
@@ -64,6 +66,7 @@ export default function ProgressBar({ data, isTextShow, h, sufix, ...props }) {
             </Text>
           );
         }
+        return undefined;
       });
   }
 
