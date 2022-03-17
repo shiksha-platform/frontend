@@ -16,7 +16,7 @@ import * as classServiceRegistry from "../../services/classServiceRegistry";
 import Layout from "../../../layout/Layout";
 import { useTranslation } from "react-i18next";
 import DayWiesBar from "../../../components/CalendarBar";
-import { generatePath, Link } from "react-router-dom";
+import { generatePath, Link, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { TabView, SceneMap } from "react-native-tab-view";
 import { Animated, Dimensions } from "react-native-web";
@@ -437,6 +437,7 @@ const MyClassRoute = () => {
 };
 
 const TimeTableRoute1 = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   let calendarRef = React.createRef();
   const [buttonName, setButtonName] = React.useState();
@@ -478,7 +479,10 @@ const TimeTableRoute1 = () => {
       calendarApi.view.type === "timeGridDay" ? t("WEEK_VIEW") : t("TODAY")
     );
     calendarApi.changeView(
-      calendarApi.view.type === "timeGridDay" ? "timeGridTowDay" : "timeGridDay"
+      calendarApi.view.type === "timeGridDay"
+        ? "timeGridTowDay"
+        : "timeGridDay",
+      moment().format("Y-MM-DD")
     );
   };
 
@@ -528,6 +532,7 @@ const TimeTableRoute1 = () => {
         eventContent={renderEventContent}
         dayHeaderFormat={{ weekday: "long" }}
         ref={calendarRef}
+        eventClick={(e) => navigate("/subject/" + e.event._def.publicId)}
       />
     </Box>
   );
@@ -539,13 +544,6 @@ const renderEventContent = (eventInfo) => {
     ...eventInfo?.event?._def?.extendedProps,
   };
   return (
-    // <Link
-    //   style={{
-    //     color: "rgb(63, 63, 70)",
-    //     textDecoration: "none",
-    //   }}
-    //   to={"/subject/subjectId"}
-    // >
     <Box p="4">
       <VStack space={"8px"}>
         <HStack
@@ -588,6 +586,5 @@ const renderEventContent = (eventInfo) => {
         </Text>
       </VStack>
     </Box>
-    // </Link>
   );
 };

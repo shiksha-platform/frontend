@@ -713,7 +713,7 @@ const CalendarComponent = ({
         monthDays.length > 1 && monthDays.length - 1 !== index ? "1" : "0"
       }
       borderBottomColor={"coolGray.300"}
-      p={"2"}
+      {...(type === "day" ? { px: "2" } : { p: "2" })}
       {..._weekBox}
     >
       {week.map((day, subIndex) => {
@@ -783,6 +783,7 @@ const CalendarComponent = ({
             alignItems="center"
             borderWidth={isToday ? "1" : ""}
             borderColor={isToday ? "button.500" : ""}
+            p={type === "day" ? "1" : "0"}
             rounded="lg"
             opacity={
               type !== "month" && day.day() !== 0

@@ -55,7 +55,7 @@ export default function ClassReport() {
     return () => {
       ignore = true;
     };
-  }, [page, calendarView, makeDefaultCollapse]);
+  }, [page, calendarView]);
 
   const getAttendance = async (classId) => {
     let weekdays = calendar(page, calendarView);
