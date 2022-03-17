@@ -381,9 +381,16 @@ export default function ClassReportDetail() {
                   renderItem={({ item, index }) => (
                     <AttendanceComponent
                       isEditDisabled
-                      page={0}
+                      page={page}
                       student={item}
                       withDate={1}
+                      type={
+                        calendarView === "monthInDays"
+                          ? "month"
+                          : calendarView === "days"
+                          ? "day"
+                          : "weeks"
+                      }
                       attendanceProp={attendance}
                       getAttendance={getAttendance}
                       _card={{ hidePopUpButton: true }}
