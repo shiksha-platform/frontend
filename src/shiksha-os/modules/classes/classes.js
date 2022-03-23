@@ -489,6 +489,7 @@ const TimeTableRoute1 = () => {
   return (
     <Box py="5">
       <FullCalendar
+        locale={localStorage.getItem("lang")}
         {...minMaxTime}
         height="auto"
         stickyHeaderDates
@@ -528,6 +529,10 @@ const TimeTableRoute1 = () => {
             },
             slotDuration: "00:15",
           },
+        }}
+        viewDidMount={(view) => {
+          view.el.querySelector(".fc-timegrid-axis-frame").innerHTML =
+            t("TIME");
         }}
         eventContent={renderEventContent}
         dayHeaderFormat={{ weekday: "long" }}

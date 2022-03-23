@@ -1,7 +1,8 @@
 .fc .fc-button-primary,
 .fc-toolbar-title,
 .fc-col-header-cell-cushion,
-.fc-timegrid-slot-label-cushion.fc-scrollgrid-shrink-cushion {
+.fc-timegrid-slot-label-cushion.fc-scrollgrid-shrink-cushion,
+.fc-timegrid-axis-frame {
   font-family: "Inter";
 }
 .fc-prev-button,
@@ -58,6 +59,13 @@
 }
 .fc-timegrid-slot-label-cushion.fc-scrollgrid-shrink-cushion {
   font-size: small !important;
+}
+.fc-col-header-cell,
+.fc-timegrid-axis {
+  text-align: left !important;
+}
+.fc .fc-timegrid-axis-frame {
+  justify-content: left;
 }
 @media only screen and (max-width: 414px) {
   .fc-toolbar-title {
