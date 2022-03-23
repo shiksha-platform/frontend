@@ -30,20 +30,12 @@ export default function App() {
   const [students, setStudents] = useState([]);
   const [classObject, setClassObject] = useState({});
   const { classId } = useParams();
-  const fullName = sessionStorage.getItem("fullName");
+  const fullName = localStorage.getItem("fullName");
 
   useEffect(() => {
     let ignore = false;
     const getData = async () => {
-      setStudents(
-        await studentServiceRegistry.getAll({
-          filters: {
-            currentClassID: {
-              eq: classId,
-            },
-          },
-        })
-      );
+      setStudents(await studentServiceRegistry.getAll({ classId }));
 
       let classObj = await classServiceRegistry.getOne({ id: classId });
       if (!ignore) setClassObject(classObj);
@@ -157,7 +149,7 @@ export default function App() {
             >
               <VStack>
                 <Text color="gray.100" fontWeight="700" fontSize="md">
-                  {classObject.className}
+                  {classObject.name}
                 </Text>
 
                 <Text color="gray.100" fontWeight="700" fontSize="2xl">
@@ -315,7 +307,12 @@ export default function App() {
                     style={{
                       textDecoration: "none",
                     }}
-                    to={"/class/students/" + classObject?.id?.replace("1-", "")}
+                    to={
+                      "/class/students/" +
+                      (classObject?.id?.startsWith("1-")
+                        ? classObject?.id?.replace("1-", "")
+                        : classObject?.id)
+                    }
                   >
                     <Button mt="2" variant="outline" colorScheme="button">
                       {t("SHOW_ALL_STUDENTS")}

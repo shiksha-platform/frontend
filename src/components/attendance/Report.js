@@ -3,32 +3,80 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import IconByName from "../IconByName";
 import manifest from "../../modules/attendance/manifest.json";
-import moment from "moment";
 import ProgressBar from "../ProgressBar";
+import { calendar } from "./AttendanceComponent";
 
-export default function Report({ students, attendance, title }) {
+export default function Report({
+  students,
+  attendance,
+  title,
+  page,
+  calendarView,
+}) {
   const { t } = useTranslation();
-  const fullName = sessionStorage.getItem("fullName");
+  const [studentIds, setStudentIds] = React.useState([]);
+  const [withoutHolidays, setWithoutHolidays] = React.useState([]);
+  const [isAvrage, setIsAvrage] = React.useState(false);
+  const fullName = localStorage.getItem("fullName");
   const status = manifest?.status ? manifest?.status : [];
 
-  const getStudentsAttendance = (attendance) => {
-    return students
-      .map((item) => {
-        return attendance
-          .slice()
-          .reverse()
-          .find(
-            (e) =>
-              e.date === moment().format("Y-MM-DD") && e.studentId === item.id
+  React.useEffect(() => {
+    let ignore = false;
+    async function getData() {
+      if (!ignore) {
+        setStudentIds(students.map((e) => e.id));
+        if (typeof page === "object") {
+          setWithoutHolidays(
+            page.map(
+              (e) =>
+                calendar(e, calendarView ? calendarView : "days").filter((e) =>
+                  e.day()
+                ).length
+            )
           );
-      })
+        } else {
+          setWithoutHolidays([
+            calendar(
+              page ? page : 0,
+              calendarView ? calendarView : "days"
+            ).filter((e) => e.day()).length,
+          ]);
+        }
+        setIsAvrage(
+          ["week", "weeks", "month", "months", "monthInDays"].includes(
+            calendarView
+          )
+        );
+      }
+    }
+    getData();
+    return () => {
+      ignore = true;
+    };
+  }, [calendarView, page, students]);
+
+  const getStudentsAttendance = (attendance) => {
+    return attendance
+      .slice()
+      .reverse()
+      .filter(
+        (value, index, self) =>
+          self.findIndex(
+            (m) => value?.studentId === m?.studentId && value?.date === m?.date
+          ) === index
+      )
       .filter((e) => e);
   };
 
-  const countReport = ({ gender, attendance, attendanceType, type }) => {
+  const countReport = ({
+    gender,
+    attendance,
+    attendanceType,
+    type,
+    studentIds,
+    withoutHolidays,
+  }) => {
     let attendanceAll = getStudentsAttendance(attendance);
-
-    let studentIds = students.map((e) => e.id);
     if (gender && [t("BOYS"), t("GIRLS")].includes(gender)) {
       studentIds = students
         .filter(
@@ -42,27 +90,18 @@ export default function Report({ students, attendance, title }) {
         )
         .map((e) => e.id);
     }
-    if (type === "Total" && gender === t("TOTAL")) {
-      return studentIds.length;
-    } else if (type === "Total" && [t("BOYS"), t("GIRLS")].includes(gender)) {
-      let studentIds1 = studentIds.filter(
-        (e) =>
-          !attendanceAll
-            .filter((e) => studentIds.includes(e?.studentId))
-            .map((e) => e.studentId)
-            .includes(e)
-      );
 
-      return (
-        attendanceAll.filter((e) => studentIds.includes(e?.studentId)).length +
-        studentIds1.length
-      );
-    } else if (attendanceType === "Unmarked" && gender === t("TOTAL")) {
+    if (attendanceType === "Unmarked" && gender === t("TOTAL")) {
       let studentIds1 = attendanceAll.filter(
         (e) =>
           studentIds.includes(e.studentId) && e.attendance !== attendanceType
       );
-      return Math.abs(studentIds.length - studentIds1.length);
+      let val = studentIds.length * withoutHolidays - studentIds1.length;
+      if (isAvrage) {
+        return Math.round(val ? val / studentIds.length : 0);
+      } else {
+        return Math.round(val);
+      }
     } else if (type === "Unmarked" || attendanceType === "Unmarked") {
       let studentIds1 = attendanceAll.filter((e) =>
         studentIds.includes(e.studentId)
@@ -74,12 +113,23 @@ export default function Report({ students, attendance, title }) {
             studentIds.includes(e?.studentId) && e.attendance !== attendanceType
         );
       }
-      return Math.abs(studentIds.length - studentIds1.length);
+      let val = studentIds.length * withoutHolidays - studentIds1.length;
+      if (isAvrage) {
+        return Math.round(val ? val / studentIds.length : 0);
+      } else {
+        return Math.round(val);
+      }
     } else {
-      return attendanceAll.filter(
+      let val = attendanceAll.filter(
         (e) =>
           studentIds.includes(e?.studentId) && e.attendance === attendanceType
       ).length;
+
+      if (isAvrage) {
+        return Math.round(val ? val / studentIds.length : 0);
+      } else {
+        return Math.round(val);
+      }
     }
   };
 
@@ -134,11 +184,13 @@ export default function Report({ students, attendance, title }) {
                       </VStack>
                       <VStack flex="auto" alignContent={"center"}>
                         <ProgressBar
-                          data={status.map((subItem, index) => {
+                          data={status.map((subItem, subIndex) => {
                             let statusCount = countReport({
                               gender: item,
                               attendanceType: subItem,
                               attendance: itemAttendance,
+                              studentIds,
+                              withoutHolidays: withoutHolidays[index],
                             });
                             return {
                               name: subItem,

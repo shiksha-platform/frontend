@@ -35,7 +35,7 @@ export default function App() {
     let ignore = false;
     const getData = async () => {
       if (!ignore) {
-        setWeekDays(calendar(weekPage, "", calendarView));
+        setWeekDays(calendar(weekPage, calendarView));
       }
     };
     getData();

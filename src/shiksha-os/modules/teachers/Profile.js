@@ -21,8 +21,8 @@ import Menu from "../../../components/Menu";
 export default function App() {
   const { t } = useTranslation();
   const [teacherObject, setTeacherObject] = useState({});
-  const teacherId = sessionStorage.getItem("id");
-  const token = sessionStorage.getItem("token");
+  const teacherId = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
   const [showModal, setShowModal] = React.useState(false);
 
   useEffect(() => {

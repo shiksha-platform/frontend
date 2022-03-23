@@ -110,6 +110,8 @@ export default function Camera({
               onPress={(e) => {
                 if (cameraUrl) {
                   setCameraUrl();
+                } else {
+                  setCameraModal(false);
                 }
               }}
             />

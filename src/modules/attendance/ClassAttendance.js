@@ -30,7 +30,7 @@ export default function ClassAttendance() {
   const [students, setStudents] = useState([]);
   const attendanceTypes = ["Morning", "Mid day meal"];
   const [attendanceType, setAttendanceType] = useState();
-  const teacherId = sessionStorage.getItem("id");
+  const teacherId = localStorage.getItem("id");
   const [showModal, setShowModal] = useState(true);
   const [showType, setShowType] = useState(true);
   const [attendance, setAttendance] = useState([]);
@@ -43,9 +43,9 @@ export default function ClassAttendance() {
 
     const getData = async () => {
       let responceClass = await classServiceRegistry.getAll({
-        filters: {
-          teacherId: { eq: teacherId },
-        },
+        teacherId: teacherId,
+        type: "class",
+        role: "teacher",
       });
       if (!ignore) setClasses(responceClass);
     };
@@ -60,11 +60,7 @@ export default function ClassAttendance() {
     const getData = async () => {
       if (classObject.id) {
         let data = await studentServiceRegistry.getAll({
-          filters: {
-            currentClassID: {
-              eq: classObject.id,
-            },
-          },
+          classId: classObject.id,
         });
         if (!ignore) {
           setStudents(data);
@@ -76,14 +72,11 @@ export default function ClassAttendance() {
   }, [classObject]);
 
   const getAttendance = async (e) => {
-    const attendanceData = await GetAttendance({
-      classId: {
-        eq: classObject.id,
-      },
-      teacherId: {
-        eq: teacherId,
-      },
-    });
+    let params = {
+      fromDate: moment().format("Y-MM-DD"),
+      toDate: moment().format("Y-MM-DD"),
+    };
+    const attendanceData = await GetAttendance(params);
 
     setAttendance(attendanceData);
   };
@@ -91,10 +84,7 @@ export default function ClassAttendance() {
   const PopupActionSheet = () => {
     return (
       <Actionsheet
-        // maxW={414}
-        // alignSelf="center"
         isOpen={showModal}
-        // hideDragIndicator
         _backdrop={{ opacity: "0.9", bg: "gray.500" }}
       >
         <Actionsheet.Content
@@ -158,12 +148,12 @@ export default function ClassAttendance() {
                       }
                     }}
                   >
-                    {classObject.className === item.className ? (
+                    {classObject.name === item.name ? (
                       <HStack alignItems="center">
-                        <Text color={"button.500"}>{item.className}</Text>
+                        <Text color={"button.500"}>{item.name}</Text>
                       </HStack>
                     ) : (
-                      <Text>{item.className}</Text>
+                      <Text>{item.name}</Text>
                     )}
                   </Pressable>
                 );
@@ -240,8 +230,8 @@ export default function ClassAttendance() {
                           px={1}
                         />
                         <Text fontSize={"lg"}>
-                          {classObject?.className
-                            ? classObject?.className
+                          {classObject?.name
+                            ? classObject?.name
                             : t("SELECT_CLASS")}
                         </Text>
                         <IconByName
@@ -308,8 +298,8 @@ export default function ClassAttendance() {
                   >
                     <VStack space="2">
                       <AttendanceComponent
-                        weekPage={0}
-                        today={true}
+                        page={0}
+                        type={"day"}
                         student={item}
                         withDate={1}
                         isEditDisabled={isEditDisabled}

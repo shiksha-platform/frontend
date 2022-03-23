@@ -1,7 +1,7 @@
 import { Box, HStack, Stack, Text, VStack } from "native-base";
 import React from "react";
 
-export default function ProgressBar({ data, isTextShow, h, ...props }) {
+export default function ProgressBar({ data, isTextShow, h, sufix, ...props }) {
   let total = data.reduce((a, b) => a + b["value"], 0);
 
   let values =
@@ -28,10 +28,11 @@ export default function ProgressBar({ data, isTextShow, h, ...props }) {
               fontWeight: 600,
             }}
           >
-            {item.value.toString().padStart(2, "0")}
+            {item.value.toString().padStart(2, "0") + (sufix ? sufix : "")}
           </Box>
         );
       }
+      return undefined;
     });
 
   let bars =
@@ -48,6 +49,7 @@ export default function ProgressBar({ data, isTextShow, h, ...props }) {
           />
         );
       }
+      return undefined;
     });
 
   let legends;
@@ -64,6 +66,7 @@ export default function ProgressBar({ data, isTextShow, h, ...props }) {
             </Text>
           );
         }
+        return undefined;
       });
   }
 

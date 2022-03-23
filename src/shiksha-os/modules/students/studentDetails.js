@@ -29,7 +29,7 @@ export default function App() {
   const [classObject, setClassObject] = useState({});
   const { studentId } = useParams();
   const [attendance, setAttendance] = useState([]);
-  const teacherId = sessionStorage.getItem("id");
+  const teacherId = localStorage.getItem("id");
   const [attendanceView, setAttendanceView] = useState("month");
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function App() {
         id: student.currentClassID,
       });
       if (!ignore) {
-        setStudentObject({ ...student, className: classObj.className });
+        setStudentObject({ ...student, name: classObj.name });
         setClassObject(classObj);
         await getAttendance({ classId: student.currentClassID });
       }
@@ -98,7 +98,7 @@ export default function App() {
             items={[
               {
                 title: t("CLASS"),
-                value: classObject?.className
+                value: classObject?.name
                   ? classObject?.class + " " + classObject?.section
                   : studentObject.currentClassID,
               },
@@ -120,7 +120,7 @@ export default function App() {
                   studentObject?.id ? (
                     <AttendanceComponent
                       type={attendanceView}
-                      weekPage={0}
+                      page={0}
                       student={studentObject}
                       withDate={true}
                       hidePopUpButton={true}

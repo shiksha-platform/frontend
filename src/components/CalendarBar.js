@@ -25,23 +25,39 @@ const FormatDate = ({ date, type }) => {
   }
 };
 
-export default function DayWiesBar({
+export default function CalendarBar({ view, ...props }) {
+  let CalendarBar = <></>;
+  switch (view) {
+    case "month":
+    case "monthInDays":
+      CalendarBar = <MonthWiesBar {...props} />;
+      break;
+    case "week":
+      CalendarBar = <WeekWiesBar {...props} />;
+      break;
+    default:
+      CalendarBar = <DayWiesBar {...props} />;
+      break;
+  }
+  return CalendarBar;
+}
+
+export function DayWiesBar({
   activeColor,
   setActiveColor,
   page,
   setPage,
   _box,
 }) {
-  const todayDate = new Date();
   const [date, setDate] = useState();
   const { t } = useTranslation();
 
   useEffect(() => {
-    setDate(new Date(todayDate.setDate(todayDate.getDate() + page)));
+    setDate(moment().add(page, "days"));
     if (setActiveColor) {
       setActiveColor(page === 0 ? "button.500" : "coolGray.500");
     }
-  }, [page]);
+  }, [page, setActiveColor]);
 
   return (
     <Display
@@ -86,11 +102,11 @@ export function WeekWiesBar({
   const { t } = useTranslation();
 
   useEffect(() => {
-    setWeekDays(calendar(page, null, "week"));
+    setWeekDays(calendar(page, "week"));
     if (setActiveColor) {
       setActiveColor(page === 0 ? "button.500" : "coolGray.500");
     }
-  }, [page]);
+  }, [page, setActiveColor]);
 
   return (
     <Display
@@ -130,11 +146,11 @@ export function MonthWiesBar({
   const [monthDays, setMonthDays] = useState([]);
 
   useEffect(() => {
-    setMonthDays(calendar(page, null, "monthInDays"));
+    setMonthDays(calendar(page, "monthInDays"));
     if (setActiveColor) {
       setActiveColor(page === 0 ? "button.500" : "coolGray.500");
     }
-  }, [page]);
+  }, [page, setActiveColor]);
 
   return (
     <Display

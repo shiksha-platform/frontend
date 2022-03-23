@@ -25,7 +25,7 @@ export default function AppBar({
   const navigate = useNavigate();
   const setLang = (e) => {
     if (e === "logout") {
-      sessionStorage.setItem("token", "");
+      localStorage.setItem("token", "");
     } else {
       localStorage.setItem("lang", e);
     }

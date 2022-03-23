@@ -19,16 +19,18 @@ import Card from "../students/Card";
 import IconByName from "../IconByName";
 import Report from "./Report";
 import { Link } from "react-router-dom";
+import { getStudentsPresentAbsent } from "../helper";
+import * as studentServiceRegistry from "../../shiksha-os/services/studentServiceRegistry";
 
-export function calendar(page, today, type) {
+export function calendar(page, type = "weeks") {
   let date = moment();
   if (type === "month") {
     let startDate = moment().add(page, "months").startOf("month");
     let endDate = moment(startDate).endOf("month");
     var weeks = [];
-    weeks.push(weekDates({}, startDate));
+    weeks.push(weekDates(startDate));
     while (startDate.add(7, "days").diff(endDate) < 8) {
-      weeks.push(weekDates({}, startDate));
+      weeks.push(weekDates(startDate));
     }
     return weeks;
   } else if (type === "monthInDays") {
@@ -40,24 +42,21 @@ export function calendar(page, today, type) {
       days.push(startDate.clone());
     }
     return days;
-  } else {
+  } else if (["week", "weeks"].includes(type)) {
     date.add(page * 7, "days");
     if (type === "week") {
-      return weekDates({ today: today }, date);
-    } else if (type === "weeks") {
-      return [
-        weekDates({ today: today }, date),
-        weekDates({ today: today }, date.clone().add(-1 * 7, "days")),
-      ];
+      return weekDates(date);
     }
-    return [weekDates({ today: today }, date)];
+    return [weekDates(date)];
+  } else {
+    if (type === "days") {
+      return [date.add(page * 1, "days")];
+    }
+    return date.add(page * 1, "days");
   }
 }
 
-export const weekDates = (filter = {}, currentDate = moment()) => {
-  if (filter.today) {
-    return [moment()];
-  }
+export const weekDates = (currentDate = moment()) => {
   let weekStart = currentDate.clone().startOf("isoWeek");
   let days = [];
   for (let i = 0; i <= 6; i++) {
@@ -66,9 +65,9 @@ export const weekDates = (filter = {}, currentDate = moment()) => {
   return days;
 };
 
-export const GetAttendance = async (filters) => {
+export const GetAttendance = async (params) => {
   return await attendanceServiceRegistry.getAll({
-    filters: filters,
+    params: params,
   });
 };
 
@@ -143,7 +142,27 @@ export const MultipalAttendance = ({
 }) => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
-  const teacherId = sessionStorage.getItem("id");
+  const [presentStudents, setPresentStudents] = useState([]);
+  const teacherId = localStorage.getItem("id");
+
+  useEffect(() => {
+    const getPresentStudents = async ({ students }) => {
+      let weekdays = calendar(-1, "week");
+      let workingDaysCount = weekdays.filter((e) => e.day())?.length;
+      let params = {
+        fromDate: weekdays?.[0]?.format("Y-MM-DD"),
+        toDate: weekdays?.[weekdays.length - 1]?.format("Y-MM-DD"),
+      };
+      const attendanceData = await GetAttendance(params);
+      const present = getStudentsPresentAbsent(
+        attendanceData,
+        students,
+        workingDaysCount
+      );
+      setPresentStudents(await studentServiceRegistry.setDefaultValue(present));
+    };
+    getPresentStudents({ students });
+  }, [students]);
 
   const getStudentsAttendance = (e) => {
     return students
@@ -180,7 +199,7 @@ export const MultipalAttendance = ({
                 },
                 {
                   headers: {
-                    Authorization: "Bearer " + sessionStorage.getItem("token"),
+                    Authorization: "Bearer " + localStorage.getItem("token"),
                   },
                 }
               )
@@ -205,7 +224,7 @@ export const MultipalAttendance = ({
             },
             {
               headers: {
-                Authorization: "Bearer " + sessionStorage.getItem("token"),
+                Authorization: "Bearer " + localStorage.getItem("token"),
               },
             }
           );
@@ -320,7 +339,9 @@ export const MultipalAttendance = ({
                     }}
                     to={
                       "/classes/attendance/sendSms/" +
-                      classObject?.id?.replace("1-", "")
+                      (classObject?.id?.startsWith("1-")
+                        ? classObject?.id?.replace("1-", "")
+                        : classObject?.id)
                     }
                   >
                     <Button variant="outline" colorScheme="button" rounded="lg">
@@ -345,7 +366,16 @@ export const MultipalAttendance = ({
                     </Text>
                   </Text>
                 </HStack>
-                <Report {...{ students, attendance: [attendance] }} />
+                <Report
+                  {...{
+                    students,
+                    attendance: [
+                      attendance.filter(
+                        (e) => e.date === moment().format("Y-MM-DD")
+                      ),
+                    ],
+                  }}
+                />
               </Box>
               <Box bg="white" p={5}>
                 <Box bg={"gray.100"} rounded={"md"} p="4">
@@ -360,7 +390,7 @@ export const MultipalAttendance = ({
                       <IconByName name="More2LineIcon" isDisabled />
                     </HStack>
                     <HStack alignItems="center" justifyContent={"space-around"}>
-                      {students.map((student, index) =>
+                      {presentStudents.map((student, index) =>
                         index < 3 ? (
                           <Stack key={index}>
                             <Card
@@ -375,8 +405,8 @@ export const MultipalAttendance = ({
                       )}
                     </HStack>
                     <Button colorScheme="button" variant="outline">
-                      {(students?.length > 3
-                        ? "+ " + (students.length - 3)
+                      {(presentStudents?.length > 3
+                        ? "+ " + (presentStudents.length - 3)
                         : "") +
                         " " +
                         t("MORE")}
@@ -403,7 +433,9 @@ export const MultipalAttendance = ({
                       }}
                       to={
                         "/classes/attendance/report/" +
-                        classObject?.id?.replace("1-", "")
+                        (classObject?.id?.startsWith("1-")
+                          ? classObject?.id?.replace("1-", "")
+                          : classObject?.id)
                       }
                     >
                       <Button colorScheme="button" _text={{ color: "white" }}>
@@ -425,8 +457,7 @@ export const MultipalAttendance = ({
 
 export default function AttendanceComponent({
   type,
-  today,
-  weekPage,
+  page,
   student,
   attendanceProp,
   hidePopUpButton,
@@ -437,17 +468,21 @@ export default function AttendanceComponent({
   _weekBox,
 }) {
   const { t } = useTranslation();
-  const teacherId = sessionStorage.getItem("id");
+  const teacherId = localStorage.getItem("id");
   const [attendance, setAttendance] = useState([]);
   const [attendanceObject, setAttendanceObject] = useState([]);
-  const [weekDays, setWeekDays] = useState([]);
+  const [days, setDays] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [smsShowModal, setSmsShowModal] = useState(false);
   const [loding, setLoding] = useState({});
   const status = manifest?.status ? manifest?.status : [];
 
   useEffect(() => {
-    setWeekDays(calendar(weekPage, today, type));
+    if (typeof page === "object") {
+      setDays(page.map((e) => calendar(e, type)));
+    } else {
+      setDays([calendar(page, type)]);
+    }
     async function getData() {
       if (attendanceProp) {
         setAttendance(attendanceProp);
@@ -455,7 +490,7 @@ export default function AttendanceComponent({
       setLoding({});
     }
     getData();
-  }, [weekPage, attendanceProp, today, type]);
+  }, [page, attendanceProp, type]);
 
   const markAttendance = async (dataObject) => {
     setLoding({
@@ -471,7 +506,7 @@ export default function AttendanceComponent({
           },
           {
             headers: {
-              Authorization: "Bearer " + sessionStorage.getItem("token"),
+              Authorization: "Bearer " + localStorage.getItem("token"),
             },
             onlyParameter: ["attendance", "id", "date"],
           }
@@ -496,7 +531,7 @@ export default function AttendanceComponent({
           },
           {
             headers: {
-              Authorization: "Bearer " + sessionStorage.getItem("token"),
+              Authorization: "Bearer " + localStorage.getItem("token"),
             },
           }
         )
@@ -508,24 +543,49 @@ export default function AttendanceComponent({
         });
     }
   };
-
   return (
-    <Stack space={!today ? "15px" : ""}>
-      <VStack space={!today ? "15px" : ""}>
+    <Stack space={type !== "day" ? "15px" : ""}>
+      <VStack space={type !== "day" ? "15px" : ""}>
         <Card
           item={student}
           _arrow={{ _icon: { fontSize: "large" } }}
           type="attendance"
           hidePopUpButton={hidePopUpButton}
-          {...(today ? { _textTitle: { fontSize: "xl" } } : {})}
+          {...(type === "day" ? { _textTitle: { fontSize: "xl" } } : {})}
           {..._card}
           rightComponent={
-            today ? (
+            type === "day"
+              ? days.map((day, index) => (
+                  <CalendarComponent
+                    key={index}
+                    monthDays={[[day]]}
+                    isIconSizeSmall={true}
+                    isEditDisabled={isEditDisabled}
+                    {...{
+                      attendance,
+                      student,
+                      markAttendance,
+                      setAttendanceObject,
+                      setShowModal,
+                      setSmsShowModal,
+                      loding,
+                      type,
+                      _weekBox: _weekBox?.[index] ? _weekBox[index] : {},
+                    }}
+                  />
+                ))
+              : false
+          }
+        />
+        {type !== "day" ? (
+          <Box borderWidth={1} borderColor={"coolGray.200"} rounded="xl">
+            {days.map((day, index) => (
               <CalendarComponent
-                weekDays={weekDays}
-                isIconSizeSmall={true}
+                key={index}
+                monthDays={day}
                 isEditDisabled={isEditDisabled}
                 {...{
+                  sms,
                   attendance,
                   student,
                   markAttendance,
@@ -534,32 +594,10 @@ export default function AttendanceComponent({
                   setSmsShowModal,
                   loding,
                   type,
-                  _weekBox,
+                  _weekBox: _weekBox?.[index] ? _weekBox[index] : {},
                 }}
               />
-            ) : (
-              false
-            )
-          }
-        />
-        {!today ? (
-          <Box borderWidth={1} borderColor={"coolGray.200"} rounded="xl">
-            <CalendarComponent
-              monthDays={weekDays}
-              isEditDisabled={isEditDisabled}
-              {...{
-                sms,
-                attendance,
-                student,
-                markAttendance,
-                setAttendanceObject,
-                setShowModal,
-                setSmsShowModal,
-                loding,
-                type,
-                _weekBox,
-              }}
-            />
+            ))}
           </Box>
         ) : (
           <></>
@@ -665,6 +703,7 @@ const CalendarComponent = ({
   loding,
   _weekBox,
 }) => {
+  let thisMonth = monthDays?.[1]?.[0]?.format("M");
   return monthDays.map((week, index) => (
     <HStack
       justifyContent="space-around"
@@ -674,14 +713,16 @@ const CalendarComponent = ({
         monthDays.length > 1 && monthDays.length - 1 !== index ? "1" : "0"
       }
       borderBottomColor={"coolGray.300"}
-      p={"2"}
-      {...(_weekBox?.[index] ? _weekBox[index] : {})}
+      {...(type === "day" ? { px: "2" } : { p: "2" })}
+      {..._weekBox}
     >
       {week.map((day, subIndex) => {
         let smsDay = sms?.find(
           (e) => e.date === day.format("Y-MM-DD") && e.studentId === student.id
         );
         let isToday = moment().format("Y-MM-DD") === day.format("Y-MM-DD");
+        let isFutureDay = day.format("Y-MM-DD") > moment().format("Y-MM-DD");
+        let isHoliday = day.day() === 0;
         let dateValue = day.format("Y-MM-DD");
         let attendanceItem = attendance
           .slice()
@@ -742,13 +783,14 @@ const CalendarComponent = ({
             alignItems="center"
             borderWidth={isToday ? "1" : ""}
             borderColor={isToday ? "button.500" : ""}
+            p={type === "day" ? "1" : "0"}
             rounded="lg"
             opacity={
               type !== "month" && day.day() !== 0
                 ? 1
-                : day.day() === 0
-                ? 0.3
-                : day.format("M") !== moment().format("M")
+                : thisMonth && day.format("M") !== thisMonth
+                ? 0
+                : isHoliday
                 ? 0.3
                 : 1
             }
@@ -799,11 +841,7 @@ const CalendarComponent = ({
             </Text>
             <TouchableHighlight
               onPress={(e) => {
-                if (
-                  !isEditDisabled &&
-                  day.format("M") === moment().format("M") &&
-                  day.day() !== 0
-                ) {
+                if (!isEditDisabled && !isFutureDay && !isHoliday) {
                   markAttendance({
                     attendanceId: attendanceItem?.id ? attendanceItem.id : null,
                     date: dateValue,

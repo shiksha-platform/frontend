@@ -102,7 +102,7 @@ export default function App({
       if (editChangeState) {
         let result = await studentServiceRegistry.update(studentObject, {
           headers: {
-            Authorization: "Bearer " + sessionStorage.getItem("token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
           onlyParameter: [...onlyParameter, "fullName"],
         });

@@ -12,60 +12,113 @@ import {
 } from "native-base";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import DayWiesBar from "../../../components/CalendarBar";
+import CalendarBar from "../../../components/CalendarBar";
 import IconByName from "../../../components/IconByName";
 import Layout from "../../../layout/Layout";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import AttendanceComponent, {
+  calendar,
   GetAttendance,
 } from "../../../components/attendance/AttendanceComponent";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import Report from "../../../components/attendance/Report";
 import { Link, useParams } from "react-router-dom";
 import Card from "../../../components/students/Card";
+import {
+  getStudentsPresentAbsent,
+  getUniqAttendance,
+} from "../../../components/helper";
 
 export default function ClassReportDetail() {
   const { t } = useTranslation();
-  const [datePage, setDatePage] = useState(0);
-  const { classId } = useParams();
+  const [page, setPage] = useState(0);
+  const { classId, view } = useParams();
   const [classObject, setClassObject] = useState({});
-  const teacherId = sessionStorage.getItem("id");
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
+  const [attendanceForReport, setAttendanceForReport] = useState([]);
+  const [presentStudents, setPresentStudents] = useState([]);
+  const [absentStudents, setAbsentStudents] = useState([]);
+  const [calendarView] = useState(
+    view
+      ? ["month", "monthInDays"].includes(view)
+        ? "monthInDays"
+        : ["week", "weeks"].includes(view)
+        ? "week"
+        : "days"
+      : "days"
+  );
 
   useEffect(() => {
     let ignore = false;
-
     const getData = async () => {
       let classObj = await classServiceRegistry.getOne({ id: classId });
       if (!ignore) setClassObject(classObj);
-      const studentData = await studentServiceRegistry.getAll({
-        filters: {
-          currentClassID: {
-            eq: classId,
-          },
-        },
-      });
+      const studentData = await studentServiceRegistry.getAll({ classId });
       setStudents(studentData);
+      await getPresentStudents(studentData);
+      await getAbsentStudents(studentData);
       await getAttendance();
+      await getAttendanceForReport();
     };
     getData();
     return () => {
       ignore = true;
     };
-  }, [classId]);
+  }, [classId, page]);
 
   const getAttendance = async (e) => {
-    const attendanceData = await GetAttendance({
-      classId: {
-        eq: classId,
-      },
-      teacherId: {
-        eq: teacherId,
-      },
-    });
-
+    let weekdays = calendar(page, "week");
+    let params = {
+      fromDate: weekdays?.[0]?.format("Y-MM-DD"),
+      toDate: weekdays?.[weekdays.length - 1]?.format("Y-MM-DD"),
+    };
+    const attendanceData = await GetAttendance(params);
     setAttendance(attendanceData);
+  };
+
+  const getPresentStudents = async (students) => {
+    let weekdays = calendar(
+      page,
+      ["days", "week"].includes(calendarView) ? "week" : calendarView
+    );
+    let workingDaysCount = weekdays.filter((e) => e.day())?.length;
+    let params = {
+      fromDate: weekdays?.[0]?.format("Y-MM-DD"),
+      toDate: weekdays?.[weekdays.length - 1]?.format("Y-MM-DD"),
+    };
+    const attendanceData = await GetAttendance(params);
+    const present = getStudentsPresentAbsent(
+      attendanceData,
+      students,
+      workingDaysCount
+    );
+    setPresentStudents(await studentServiceRegistry.setDefaultValue(present));
+  };
+
+  const getAbsentStudents = async (students) => {
+    let params = {
+      fromDate: moment().add(-2, "days").format("Y-MM-DD"),
+      toDate: moment().format("Y-MM-DD"),
+    };
+    const attendanceData = await GetAttendance(params);
+    const absent = getStudentsPresentAbsent(
+      attendanceData,
+      students,
+      3,
+      "Absent"
+    );
+    setAbsentStudents(await studentServiceRegistry.setDefaultValue(absent));
+  };
+
+  const getAttendanceForReport = async (e) => {
+    let weekdays = calendar(page, calendarView);
+    let params = {
+      fromDate: weekdays?.[0]?.format("Y-MM-DD"),
+      toDate: weekdays?.[weekdays.length - 1]?.format("Y-MM-DD"),
+    };
+    const attendanceData = await GetAttendance(params);
+    setAttendanceForReport(attendanceData);
   };
 
   return (
@@ -104,11 +157,14 @@ export default function ClassReportDetail() {
       subHeader={
         <Stack>
           <Text fontSize="16" fontWeight="600">
-            {classObject.className}
+            {classObject.name}
           </Text>
           <Text fontSize="10" fontWeight="300">
             {t("TOTAL")}: {students.length} {t("PRESENT")}:
-            {attendance.filter((e) => e.attendance === "Present").length}
+            {
+              attendanceForReport.filter((e) => e.attendance === "Present")
+                .length
+            }
           </Text>
         </Stack>
       }
@@ -117,9 +173,10 @@ export default function ClassReportDetail() {
       <VStack space="1">
         <Box bg="white" p="5">
           <HStack space="4" justifyContent="space-between" alignItems="center">
-            <DayWiesBar
+            <CalendarBar
               _box={{ p: 0 }}
-              {...{ page: datePage, setPage: setDatePage }}
+              {...{ page, setPage }}
+              view={calendarView}
             />
             <IconByName name={"ListUnorderedIcon"} isDisabled />
           </HStack>
@@ -136,15 +193,24 @@ export default function ClassReportDetail() {
                   <Text fontSize="10" fontWeight="300">
                     {t("TOTAL")}: {students.length} {t("PRESENT")}:
                     {
-                      attendance.filter((e) => e.attendance === "Present")
-                        .length
+                      getUniqAttendance(
+                        attendanceForReport,
+                        "Present",
+                        students
+                      ).length
                     }
                   </Text>
                 </VStack>
               }
               body={
                 <VStack pt="5">
-                  <Report {...{ students, attendance: [attendance] }} />
+                  <Report
+                    {...{
+                      students,
+                      attendance: [attendanceForReport],
+                      calendarView,
+                    }}
+                  />
                   <Text py="5" px="10px" fontSize={12} color={"gray.400"}>
                     <Text bold color={"gray.700"}>
                       {t("NOTES")}
@@ -166,10 +232,13 @@ export default function ClassReportDetail() {
                 <>
                   <VStack>
                     <Text bold fontSize={"md"}>
-                      100% {t("THIS_WEEK")}
+                      100%
+                      {calendarView === "monthInDays"
+                        ? t("THIS_MONTH")
+                        : t("THIS_WEEK")}
                     </Text>
                     <Text fontSize={"xs"}>
-                      {students?.length + " " + t("STUDENTS")}
+                      {presentStudents?.length + " " + t("STUDENTS")}
                     </Text>
                   </VStack>
                 </>
@@ -178,7 +247,7 @@ export default function ClassReportDetail() {
                 <VStack space={2} pt="2">
                   <Box>
                     <FlatList
-                      data={students}
+                      data={presentStudents}
                       renderItem={({ item }) => (
                         <Box
                           borderWidth="1"
@@ -234,7 +303,7 @@ export default function ClassReportDetail() {
                       {t("ABSENT_CONSECUTIVE_3_DAYS")}
                     </Text>
                     <Text fontSize={"xs"}>
-                      {students?.length + " " + t("STUDENTS")}
+                      {absentStudents?.length + " " + t("STUDENTS")}
                     </Text>
                   </VStack>
                 </>
@@ -243,7 +312,7 @@ export default function ClassReportDetail() {
                 <VStack space={2} pt="2">
                   <Box>
                     <FlatList
-                      data={students}
+                      data={absentStudents}
                       renderItem={({ item }) => (
                         <Box
                           borderWidth="1"
@@ -312,9 +381,16 @@ export default function ClassReportDetail() {
                   renderItem={({ item, index }) => (
                     <AttendanceComponent
                       isEditDisabled
-                      weekPage={0}
+                      page={page}
                       student={item}
                       withDate={1}
+                      type={
+                        calendarView === "monthInDays"
+                          ? "month"
+                          : calendarView === "days"
+                          ? "day"
+                          : "weeks"
+                      }
                       attendanceProp={attendance}
                       getAttendance={getAttendance}
                       _card={{ hidePopUpButton: true }}

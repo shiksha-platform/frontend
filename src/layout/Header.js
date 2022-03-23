@@ -26,7 +26,7 @@ export default function Header({
   fullRightComponent,
 }) {
   const myRef = React.useRef(null);
-  let newAvatar = sessionStorage.getItem("firstName");
+  let newAvatar = localStorage.getItem("firstName");
   let selfAttendance = localStorage.getItem("selfAttendance");
   let cameraUrl = localStorage.getItem("cameraUrl");
   let avatarUrlObject = cameraUrl
@@ -61,7 +61,7 @@ export default function Header({
           ) : avatar ? (
             <>
               <Pressable onPress={(e) => setShowModal(true)}>
-                {cameraUrl ? (
+                {cameraUrl && selfAttendance ? (
                   <Image
                     ref={myRef}
                     {...avatarUrlObject}

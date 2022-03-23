@@ -66,22 +66,26 @@ export default function Home() {
         .catch((e) => e);
       if (result?.data) {
         let token = result.data.access_token;
-        sessionStorage.setItem("token", token);
+        localStorage.setItem("token", token);
         const resultTeacher = await teacherServiceRegistry.getOne(
           {},
           { Authorization: "Bearer " + token }
         );
-
-        if (resultTeacher) {
-          let id = resultTeacher.id.replace("1-", "");
-          sessionStorage.setItem("id", id);
-          sessionStorage.setItem("fullName", resultTeacher.fullName);
-          sessionStorage.setItem("firstName", resultTeacher.firstName);
-          sessionStorage.setItem("lastName", resultTeacher.lastName);
+        if (resultTeacher?.id) {
+          let id = resultTeacher.id?.startsWith("1-")
+            ? resultTeacher.id?.replace("1-", "")
+            : resultTeacher.id;
+          localStorage.setItem("id", id);
+          localStorage.setItem("fullName", resultTeacher.fullName);
+          localStorage.setItem("firstName", resultTeacher.firstName);
+          localStorage.setItem("lastName", resultTeacher.lastName);
           window.location.reload();
+        } else {
+          localStorage.removeItem("token");
+          setErrors({ alert: "data not found" });
         }
       } else {
-        sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
         setErrors({ alert: "Please enter valid credentials" });
       }
     }

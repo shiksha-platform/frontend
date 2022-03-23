@@ -196,7 +196,7 @@ function NotFound() {
 }
 
 export default function App() {
-  const token = sessionStorage.getItem("token");
+  const token = localStorage.getItem("token");
   if (!token) {
     return (
       <Router>
@@ -331,6 +331,14 @@ export default function App() {
           }
         />
         <Route
+          path="/classes/attendance/report/:classId/:view"
+          element={
+            <SubApp>
+              <ClassReportDetail />
+            </SubApp>
+          }
+        />
+        <Route
           path="/classes/attendance/reportCompare/:classId"
           element={
             <SubApp>
@@ -353,12 +361,11 @@ export default function App() {
 }
 
 export function SubApp({ children }) {
-  const [width] = useWindowSize();
-
+  const [width, Height] = useWindowSize();
   return (
     <NativeBaseProvider theme={theme}>
       <Center>
-        <Box minH={window.outerHeight} w={width}>
+        <Box minH={Height} w={width}>
           {children}
         </Box>
       </Center>

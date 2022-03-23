@@ -13,68 +13,123 @@ import {
 } from "native-base";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import DayWiesBar from "../../../components/CalendarBar";
+import CalendarBar from "../../../components/CalendarBar";
 import IconByName from "../../../components/IconByName";
 import Layout from "../../../layout/Layout";
 import * as classServiceRegistry from "../../services/classServiceRegistry";
 import AttendanceComponent, {
+  calendar,
   GetAttendance,
 } from "../../../components/attendance/AttendanceComponent";
 import * as studentServiceRegistry from "../../services/studentServiceRegistry";
 import Report from "../../../components/attendance/Report";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Card from "../../../components/students/Card";
+import {
+  getPercentageStudentsPresentAbsent,
+  getStudentsPresentAbsent,
+  getUniqAttendance,
+} from "../../../components/helper";
 
 export default function ClassReportDetail() {
   const { t } = useTranslation();
-  const [datePage, setDatePage] = useState(0);
+  const [page, setPage] = useState(0);
   const { classId } = useParams();
+  const navigate = useNavigate();
   const [classObject, setClassObject] = useState({});
-  const teacherId = sessionStorage.getItem("id");
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [compare, setCompare] = useState();
   const [compareAttendance, setCompareAttendance] = useState([]);
   const [showModal, setShowModal] = useState(true);
-  const presentCount = attendance.filter(
-    (e) => e.attendance === "Present"
-  ).length;
+  const [presentStudents, setPresentStudents] = useState([]);
+  const [absentStudents, setAbsentStudents] = useState([]);
+  const [presentCount, setPresentCount] = useState(0);
+  const [thisTitle, setThisTitle] = useState("");
+  const [lastTitle, setLastTitle] = useState("");
 
   useEffect(() => {
     let ignore = false;
 
     const getData = async () => {
-      let classObj = await classServiceRegistry.getOne({ id: classId });
-      const studentData = await studentServiceRegistry.getAll({
-        filters: {
-          currentClassID: {
-            eq: classId,
-          },
-        },
-      });
-      if (!ignore) {
+      if (!ignore && compare) {
+        setThisTitle(compare === "week" ? t("THIS_WEEK") : t("THIS_MONTH"));
+        setLastTitle(compare === "week" ? t("LAST_WEEK") : t("LAST_MONTH"));
+        let classObj = await classServiceRegistry.getOne({ id: classId });
+        const studentData = await studentServiceRegistry.getAll({ classId });
         setClassObject(classObj);
         setStudents(studentData);
-        const newAttendance = await getAttendance();
-        setCompareAttendance(newAttendance);
-        setAttendance(newAttendance);
+        const { attendanceData, workingDaysCount } = await getAttendance(
+          0,
+          true
+        );
+        setAttendance(attendanceData);
+        setPresentCount(
+          getUniqAttendance(attendanceData, "Present", studentData).length
+        );
+        const newCompareAttendance = await getAttendance(-1);
+        setCompareAttendance(newCompareAttendance);
+
+        setPresentStudents(
+          await studentServiceRegistry.setDefaultValue(
+            getStudentsPresentAbsent(
+              attendanceData,
+              studentData,
+              workingDaysCount
+            )
+          )
+        );
+        setAbsentStudents(
+          await studentServiceRegistry.setDefaultValue(
+            getStudentsPresentAbsent(attendanceData, studentData, 3, "Absent")
+          )
+        );
       }
     };
     getData();
     return () => {
       ignore = true;
     };
-  }, [classId]);
+  }, [classId, compare, page, t]);
 
-  const getAttendance = async () => {
-    return await GetAttendance({
-      classId: {
-        eq: classId,
-      },
-      teacherId: {
-        eq: teacherId,
-      },
-    });
+  const getAttendance = async (newPage = 0, withCount = false) => {
+    let weekdays = calendar(
+      newPage ? newPage + page : page,
+      ["days", "week"].includes(compare) ? "week" : compare
+    );
+    let workingDaysCount = weekdays.filter((e) => e.day())?.length;
+    let params = {
+      fromDate: weekdays?.[0]?.format("Y-MM-DD"),
+      toDate: weekdays?.[weekdays.length - 1]?.format("Y-MM-DD"),
+    };
+    if (withCount) {
+      return { attendanceData: await GetAttendance(params), workingDaysCount };
+    } else {
+      return await GetAttendance(params);
+    }
+  };
+
+  const getPercentage = (
+    attendances,
+    student,
+    count,
+    status = "Present",
+    type = "percentage"
+  ) => {
+    let weekdays = calendar(
+      page,
+      ["days", "week"].includes(compare) ? "week" : compare
+    );
+    let workingDaysCount = count
+      ? count
+      : weekdays.filter((e) => e.day())?.length;
+    let percentage = getPercentageStudentsPresentAbsent(
+      attendances,
+      student,
+      workingDaysCount,
+      status
+    );
+    return percentage?.[type];
   };
 
   return (
@@ -88,7 +143,7 @@ export default function ClassReportDetail() {
           <Box rounded={"full"} px="5" py="2" bg="button.500">
             <HStack space="2">
               <Text color="white" fontSize="14" fontWeight="500">
-                {t("LAST_WEEK")}
+                {lastTitle}
               </Text>
               <IconByName color="white" name="ArrowDownSLineIcon" isDisabled />
             </HStack>
@@ -98,7 +153,7 @@ export default function ClassReportDetail() {
       subHeader={
         <Stack>
           <Text fontSize="16" fontWeight="600">
-            {classObject.className}
+            {classObject.name}
           </Text>
           <Text fontSize="10" fontWeight="300">
             {t("TOTAL")}: {students.length} {t("PRESENT")}:{presentCount}
@@ -115,9 +170,10 @@ export default function ClassReportDetail() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <DayWiesBar
+              <CalendarBar
                 _box={{ p: 0 }}
-                {...{ page: datePage, setPage: setDatePage }}
+                {...{ page, setPage }}
+                view={compare}
               />
               <IconByName name={"ListUnorderedIcon"} isDisabled />
             </HStack>
@@ -143,13 +199,15 @@ export default function ClassReportDetail() {
                       {...{
                         students,
                         title: [
-                          { name: t("THIS_WEEK") },
+                          { name: thisTitle },
                           {
-                            name: t("LAST_WEEK"),
+                            name: lastTitle,
                             _text: { color: "presentCardCompareText.500" },
                           },
                         ],
                         attendance: [attendance, compareAttendance],
+                        page: [page, page - 1],
+                        calendarView: compare,
                       }}
                     />
                     <Text py="5" px="10px" fontSize={12} color={"gray.400"}>
@@ -173,10 +231,10 @@ export default function ClassReportDetail() {
                   <>
                     <VStack>
                       <Text bold fontSize={"md"}>
-                        100% {t("THIS_WEEK")}
+                        100% {thisTitle}
                       </Text>
                       <Text fontSize={"xs"}>
-                        {students?.length + " " + t("STUDENTS")}
+                        {presentStudents?.length + " " + t("STUDENTS")}
                       </Text>
                     </VStack>
                   </>
@@ -185,7 +243,7 @@ export default function ClassReportDetail() {
                   <VStack space={2} pt="2">
                     <Box>
                       <FlatList
-                        data={students}
+                        data={presentStudents}
                         renderItem={({ item }) => (
                           <Box
                             borderWidth="1"
@@ -207,14 +265,14 @@ export default function ClassReportDetail() {
                                       fontWeight="500"
                                       color="presentCardText.500"
                                     >
-                                      100%
+                                      {getPercentage(attendance, item) + "%"}
                                     </Text>
                                     <Text
                                       fontSize="10"
                                       fontWeight="400"
                                       color="presentCardText.500"
                                     >
-                                      {t("THIS_WEEK")}
+                                      {thisTitle}
                                     </Text>
                                   </VStack>
                                   <VStack alignItems="center">
@@ -223,14 +281,15 @@ export default function ClassReportDetail() {
                                       fontWeight="500"
                                       color="presentCardCompareText.500"
                                     >
-                                      97%
+                                      {getPercentage(compareAttendance, item) +
+                                        "%"}
                                     </Text>
                                     <Text
                                       fontSize="10"
                                       fontWeight="400"
                                       color="presentCardCompareText.500"
                                     >
-                                      {t("LAST_WEEK")}
+                                      {lastTitle}
                                     </Text>
                                   </VStack>
                                 </HStack>
@@ -267,7 +326,7 @@ export default function ClassReportDetail() {
                         {t("ABSENT_CONSECUTIVE_3_DAYS")}
                       </Text>
                       <Text fontSize={"xs"}>
-                        {students?.length + " " + t("STUDENTS")}
+                        {absentStudents?.length + " " + t("STUDENTS")}
                       </Text>
                     </VStack>
                   </>
@@ -276,7 +335,7 @@ export default function ClassReportDetail() {
                   <VStack space={2} pt="2">
                     <Box>
                       <FlatList
-                        data={students}
+                        data={absentStudents}
                         renderItem={({ item }) => (
                           <Box
                             borderWidth="1"
@@ -298,14 +357,22 @@ export default function ClassReportDetail() {
                                       fontWeight="500"
                                       color="absentCardText.500"
                                     >
-                                      100%
+                                      {getPercentage(
+                                        attendance,
+                                        item,
+                                        6,
+                                        "Absent",
+                                        "count"
+                                      ) +
+                                        " " +
+                                        t("DAYS")}
                                     </Text>
                                     <Text
                                       fontSize="10"
                                       fontWeight="400"
                                       color="absentCardText.500"
                                     >
-                                      {t("THIS_WEEK")}
+                                      {thisTitle}
                                     </Text>
                                   </VStack>
                                   <VStack alignItems="center">
@@ -314,14 +381,22 @@ export default function ClassReportDetail() {
                                       fontWeight="500"
                                       color="absentCardCompareText.500"
                                     >
-                                      97%
+                                      {getPercentage(
+                                        compareAttendance,
+                                        item,
+                                        6,
+                                        "Absent",
+                                        "count"
+                                      ) +
+                                        " " +
+                                        t("DAYS")}
                                     </Text>
                                     <Text
                                       fontSize="10"
                                       fontWeight="400"
                                       color="absentCardCompareText.500"
                                     >
-                                      {t("LAST_WEEK")}
+                                      {lastTitle}
                                     </Text>
                                   </VStack>
                                 </HStack>
@@ -369,12 +444,12 @@ export default function ClassReportDetail() {
                     renderItem={({ item, index }) => (
                       <AttendanceComponent
                         isEditDisabled
-                        type="weeks"
+                        type={compare === "monthInDays" ? "month" : "weeks"}
                         _weekBox={[{}, { bg: "weekCardCompareBg.500" }]}
-                        weekPage={0}
+                        page={[page, page - 1]}
                         student={item}
                         withDate={1}
-                        attendanceProp={attendance}
+                        attendanceProp={[...attendance, ...compareAttendance]}
                         getAttendance={getAttendance}
                         _card={{ hidePopUpButton: true }}
                       />
@@ -409,9 +484,9 @@ export default function ClassReportDetail() {
           <Box w="100%" bg="white">
             {[
               { name: t("PREVIOUS_WEEK"), value: "week" },
-              { name: t("PREVIOUS_MONTH"), value: "month" },
-              { name: t("BEST_PERFORMANCE"), value: "best-performance" },
-              { name: t("ANOTHER_SCHOOL"), value: "another-school" },
+              { name: t("PREVIOUS_MONTH"), value: "monthInDays" },
+              // { name: t("BEST_PERFORMANCE"), value: "best-performance" },
+              // { name: t("ANOTHER_SCHOOL"), value: "another-school" },
               {
                 name: t("DONT_SHOW_COMPARISON"),
                 value: "dont-show-comparison",
@@ -424,8 +499,12 @@ export default function ClassReportDetail() {
                   borderBottomColor="coolGray.100"
                   key={index}
                   onPress={(e) => {
-                    setCompare(item.value);
-                    setShowModal(false);
+                    if (item?.value === "dont-show-comparison") {
+                      navigate(-1);
+                    } else {
+                      setCompare(item.value);
+                      setShowModal(false);
+                    }
                   }}
                 >
                   <Text>{item.name}</Text>

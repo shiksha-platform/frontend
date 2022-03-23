@@ -3,18 +3,17 @@ import mapInterfaceData from "./mapInterfaceData";
 import manifest from "../manifest.json";
 
 const interfaceData = {
-  id: "osid",
-  classID: "classID",
-  schoolID: "schoolID",
-  class: "class",
-  section: "section",
-  className: "className",
-  osCreatedAt: "osCreatedAt",
-  osUpdatedAt: "osUpdatedAt",
-  osCreatedBy: "osCreatedBy",
-  osUpdatedBy: "osUpdatedBy",
+  id: "id",
+  schoolId: "schoolId",
+  type: "type",
+  name: "name",
+  status: "status",
+  createdOn: "createdOn",
+  createdBy: "createdBy",
+  updatedBy: "updatedBy",
+  updatedOn: "updatedOn",
   mergeParameterWithValue: {
-    title: "className",
+    title: "name",
   },
   mergeParameterWithDefaultValue: {
     icon: "calendar",
@@ -22,17 +21,20 @@ const interfaceData = {
   },
 };
 
-export const getAll = async (
-  filters = {
-    filters: {},
-  }
-) => {
-  const result = await generalServices.post(
-    manifest.api_url + "Class/search",
-    filters
+export const getAll = async (params = {}, header = {}) => {
+  let headers = {
+    ...header,
+    Authorization: "Bearer " + localStorage.getItem("token"),
+  };
+  const result = await generalServices.get(
+    manifest.api_url + "/group/memberships/" + params.teacherId,
+    {
+      ...params,
+      headers,
+    }
   );
   if (result.data) {
-    return result.data.map((e) => mapInterfaceData(e, interfaceData));
+    return result.data.data.map((e) => mapInterfaceData(e, interfaceData));
   } else {
     return [];
   }
@@ -40,13 +42,13 @@ export const getAll = async (
 
 export const getOne = async (filters = {}, headers = {}) => {
   const result = await generalServices.get(
-    manifest.api_url + "Class/" + filters.id,
+    manifest.api_url + "/group/" + filters.id,
     {
       headers: headers,
     }
   );
   if (result.data) {
-    return mapInterfaceData(result.data, interfaceData);
+    return mapInterfaceData(result.data.data, interfaceData);
   } else {
     return {};
   }
